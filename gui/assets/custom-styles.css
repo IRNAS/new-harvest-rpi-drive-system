@@ -1,0 +1,298 @@
+/* Font styles */
+
+.section-title-text {
+    /*font-weight: bold;*/
+    color: darkgreen;
+    margin-bottom: 2px;
+}
+
+.property-title {
+    font-weight: bold;
+    margin-bottom: 0rem;
+}
+
+.big-text {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.large-text {
+    font-size: 8rem;
+    font-weight: bold;
+    line-height: 60px;
+}
+
+.btn-group-lg>.btn {
+    padding: 0.5rem 1rem;
+    font-size: inherit;
+    line-height: 1.5;
+    border-radius: 0.3rem
+}
+
+/* END OF FONT STYLE */
+
+/* Borders */
+
+.border-round {
+    border: 1px solid #ccc !important;
+    border-radius: 2px;
+}
+
+/* END OF BORDERS */
+
+/* TOGGLE SWITCH */
+
+/* The switch - the box around the slider */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+/* Hide default HTML checkbox */
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+
+.slider-toggle {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+.slider-toggle:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .2s;
+    transition: .2s;
+}
+
+input:checked+.slider-toggle {
+    background-color: #0d3cc0;
+}
+
+input:focus+.slider-toggle {
+    box-shadow: 0 0 1px #0d3cc0;
+}
+
+input:checked+.slider-toggle:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+
+.slider-toggle.round {
+    border-radius: 20px;
+}
+
+.slider-toggle.round:before {
+    border-radius: 50%;
+}
+
+/* END OF TOGGLE SWITCH */
+
+/* CUSTOM SLIDER */
+
+.slidecontainer {
+    width: 100%;
+    /* Width of the outside container */
+}
+
+/* The slider itself */
+
+.slider {
+    -webkit-appearance: none;
+    /* Override default CSS styles */
+    height: 10px;
+    border-radius: 5px;
+    width: 100%;
+    /* Full-width */
+    background: #d3d3d3;
+    /* Grey background */
+    outline: none;
+    /* Remove outline */
+    opacity: 0.7;
+    /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s;
+    /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+}
+
+.slider:disabled {
+    opacity: 0.3
+}
+
+.slider:not(:disabled):hover {
+    opacity: 1;
+}
+
+/* Mouse-over effects */
+
+.slider:disabled:hover {
+    opacity: 0.3;
+    /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Override default look */
+    appearance: none;
+    width: 15px;
+    /* Set a specific slider handle width */
+    height: 15px;
+    border-radius: 50%;
+    background: #2196F3;
+    /* Blue background */
+    cursor: pointer;
+    /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+    width: 15px;
+    /* Set a specific slider handle width */
+    height: 15px;
+    /* Slider handle height */
+    border-radius: 50%;
+    background: #2196F3;
+    /* Blue background */
+    cursor: pointer;
+    /* Cursor on hover */
+}
+
+.sliderticks {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sliderticks p {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    width: 1px;
+    background: #D3D3D3;
+    height: 8px;
+    line-height: 30px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-bottom: 2px;
+    font-size: 12px;
+}
+
+/* selected li items */
+.nav-link.active {
+    background: lightblue;
+}
+
+/* user input css styles */
+.input-row {
+    height: 64px;
+    /* margin-top: 2px; */
+}
+
+/* interrupt css styles */
+.pin-ind {
+    width: 5%;
+}
+
+/* electrode pressure control */
+.electrode-pressure-input {
+    width: 96%;
+    height: 100%;
+    padding-left: 2px;
+    font-weight: bold;
+    background: aliceblue;
+    border-radius: 5px;
+    font-size: 17px;
+}
+
+/* BODY */
+body {
+    font-size: 16px; /* currently ems cause chrome bug misinterpreting rems on body element */
+    line-height: normal;
+    font-family: "Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: rgb(50, 50, 50);  /* text color */
+    background-color: rgb(184, 195, 194); /* background color */
+}
+
+@media (min-width: 0px) {
+    .container, .container-sm {
+        max-width: 770px;
+        min-width: 770px
+    }
+    img {
+        height: 126px;
+    }
+}
+
+@media (min-width: 576px) {
+    .container, .container-sm {
+        max-width: 770px;
+        min-width: 770px
+    }
+    img {
+        height: 126px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container, .container-sm, .container-md {
+        max-width: 770px;
+        min-width: 770px
+    }
+    img {
+        height: 126px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container, .container-sm, .container-md, .container-lg {
+        max-width: 770px;
+        min-width: 770px
+    }
+    img {
+        height: 126px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container, .container-sm, .container-md, .container-lg, .container-xl {
+        max-width: 1240px;
+        min-width: 1240px
+    }
+    img {
+        height: 280px;
+    }
+}
+
+@media (min-width: 1780px) {
+    .container, .container-sm, .container-md, .container-lg, .container-xl {
+        max-width: 1600px;
+        min-width: 1600px
+    }
+    img {
+        height: 280px;
+    }
+}
