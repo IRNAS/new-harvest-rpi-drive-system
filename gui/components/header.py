@@ -68,13 +68,19 @@ navbar = dbc.Navbar(
                         html.Li(
                             # style={"width": "25%"},
                             children=[
-                                dbc.NavItem(dbc.NavLink(id="set-flow-input-navlink", children="Single Flow Speed", href="/set-flow-control", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px"}))
+                                dbc.NavItem(dbc.NavLink(id="calibration-input-navlink", children="Flow Speed Calibration", href="/calibration", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px"}))
                             ]
                         ),
                         html.Li(
                             # style={"width": "25%"},
                             children=[
-                                dbc.NavItem(dbc.NavLink(id="calibration-input-navlink", children="Flow Speed Calibration", href="/calibration", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px"}))
+                                dbc.NavItem(dbc.NavLink(id="single-speed-input-navlink", children="Single Flow Speed", href="/single-speed-control", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px"}))
+                            ]
+                        ),
+                        html.Li(
+                            # style={"width": "25%"},
+                            children=[
+                                dbc.NavItem(dbc.NavLink(id="speed-graph-input-navlink", children="Speed Profile", href="/speed-profile", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px"}))
                             ]
                         )
                     ]

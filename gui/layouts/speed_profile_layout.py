@@ -4,11 +4,11 @@ import dash_bootstrap_components as dbc
 from ..components.flow_graph import generate_graph_section
 from ..components.custom_toggle import custom_toggle
 
-def generate_single_speed_layout():
+def generate_speed_profile_layout():
     """
     Control layout generation with all widgets (buttons, sliders, and input windows).
     """
-    control_layout = html.Div(
+    speed_profile_layout = html.Div(
         id="singles-speed-display",
         className="d-flex flex-row",
         children=[
@@ -17,25 +17,23 @@ def generate_single_speed_layout():
                 className="d-flex flex-column mt-3",
                 children=[
                     html.Div(
-                        className="d-flex flex-column",
+                        className="d-flex flex-column mt-4",                        
                         children=[
-                            html.Span(
-                                "Flow speed (mL/min): ", className="h4 font-weight-bold"),
-                            dcc.Input(
-                                id="flow-speed-input",
-                                type="number",
-                                debounce=True,  # must be set to true for onscreen keyboard to work
-                                value=10,
-                                # max=90,
-                                # min=10,
-                                style={"width": "50%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
-                            )
+                            html.Span("Current Flow (mL/min)", style={"font-size": "20px", "font-weight": "bold"}),
+                            html.Span(id="current-speed-span", children="0")
                         ]
                     ),
                     html.Div(
                         className="mt-4",
                         children=[
-                            dbc.Button("SET", id="btn-set", style={"width": "100px"}, n_clicks=0)
+                            dbc.Label("No File Selected", className="wrap", id="procedure-sequence-filename", html_for="upload-speed-profile"),
+                            dcc.Upload(
+                                id="upload-speed-profile",
+                                #style={"display": "flex", "height": "100%", "width": "100%"},
+                                children=[
+                                    dbc.Button("Browse", style={"width": "100px"})
+                                ]
+                            )
                         ]
                     ),
                     html.Div(
@@ -66,13 +64,13 @@ def generate_single_speed_layout():
         ]
     )
 
-    return control_layout
+    return speed_profile_layout
 
-layout_single_speed = dbc.Container(
+layout_speed_profile = dbc.Container(
     id="main-layout",
     style={"padding-right": "0px", "padding-left": "0px"},
     children=[
         dcc.Interval(id="graph-refresh-interval-component", interval=100, n_intervals=0),
-        generate_single_speed_layout()
+        generate_speed_profile_layout()
     ]
 )

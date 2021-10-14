@@ -8,8 +8,9 @@ from gui.app import app
 from gui.layouts import no_page
 from gui.layouts.calibration_layout import layout_calibration
 from gui.layouts.single_speed_layout import layout_single_speed
+from gui.layouts.speed_profile_layout import layout_speed_profile
 from gui.components.header import Header
-import gui.callbacks
+# import gui.callbacks
 # # from src.new_harvest import NewHarvest
 # from gui.callbacks import NewHarvestCallbacks
 
@@ -54,8 +55,10 @@ app.layout = html.Div([
 def display_page(pathname):
     if pathname == "/calibration":
         return layout_calibration
-    if pathname == "/set-flow-control":
+    if pathname == "/single-speed-control":
         return layout_single_speed
+    if pathname == "/speed-profile":
+        return layout_speed_profile
     # else:
     #     return no_page
 

@@ -32,15 +32,15 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
         "layout":
         {
             # "width": 700,
-            "height": h,
+            # "height": h,
             "margin": {
                 "t": mt,
                 "b": mb,
                 "l": 50,
                 "r": 40
             },
-            "paper_bgcolor": "rgb(184, 195, 194)",
-            "plot_bgcolor": "rgb(184, 195, 194)",
+            "paper_bgcolor": "rgba(213, 237, 255, 0.2)",
+            "plot_bgcolor": "rgba(213, 237, 255, 0.2)",
             #"autosize": True,
             "xaxis": {
                 "title": "<b>" + x_axis_label + "</b>",
