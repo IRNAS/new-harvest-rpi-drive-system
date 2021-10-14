@@ -6,7 +6,8 @@ from dash.dependencies import Input, Output
 from gui.app import server
 from gui.app import app
 from gui.layouts import no_page
-from gui.layouts.flow_control_layout import layout_flow_control
+from gui.layouts.calibration_layout import layout_calibration
+from gui.layouts.single_speed_layout import layout_single_speed
 from gui.components.header import Header
 import gui.callbacks
 # # from src.new_harvest import NewHarvest
@@ -52,9 +53,9 @@ app.layout = html.Div([
               [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == "/calibration":
-        return None
+        return layout_calibration
     if pathname == "/set-flow-control":
-        return layout_flow_control
+        return layout_single_speed
     # else:
     #     return no_page
 

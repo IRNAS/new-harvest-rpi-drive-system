@@ -1,14 +1,13 @@
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
-from ..components.flow_graph import generate_graph_section
 
-def generate_flow_control_layout():
+def generate_calibration_layout():
     """
     Control layout generation with all widgets (buttons, sliders, and input windows).
     """
     control_layout = html.Div(
-        id="flow-control-display",
+        id="calibration-control-display",
         children=[
             html.Div(
                 style={"width": "40%"},
@@ -121,8 +120,8 @@ def generate_flow_control_layout():
                         className="d-flex justify-content-center",
                         # style={"width": "50%"},
                         children=[
-                            dbc.Button("START", id="btn-start", n_clicks=0, className="mr-4"),
-                            dbc.Button("STOP", id="btn-stop", n_clicks=0, className="mr-2")
+                            dbc.Button("START", id="btn-start", n_clicks=0, style={"width": "100px"}, className="mr-4"),
+                            dbc.Button("STOP", id="btn-stop", n_clicks=0, style={"width": "100px"}, className="mr-2")
                         ]
                     )
                 ]
@@ -132,7 +131,7 @@ def generate_flow_control_layout():
 
     return control_layout
 
-layout_flow_control = dbc.Container(
+layout_calibration = dbc.Container(
     id="main-layout",
     style={"padding-right": "0px", "padding-left": "0px"},
     children=[
@@ -153,6 +152,6 @@ layout_flow_control = dbc.Container(
             id="flow-output-alert",
             message="Flow is not connected!"
         ),
-        generate_flow_control_layout()
+        generate_calibration_layout()
     ]
 )
