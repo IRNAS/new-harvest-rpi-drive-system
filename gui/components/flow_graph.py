@@ -33,14 +33,19 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range, h=250, remov
                 ]
             ),
             html.Div(
-                style={"width": "110px"},
                 children=[
-                    dcc.Checklist(
-                        # className="d-flex flex-direction-column",
-                        style={"display":"block"},
-                        options=[
-                            {"label": "Flow", "value": "F"},
-                            {"label": "Temperature", "value": "T"},
+                    html.Span("Select variables to plot", style={"margin-left": "20px", "font-size": "20px"}),
+                    html.Div(
+                        style={"width": "110px", "margin-left": "20px", "margin-top": "10px"},
+                        children=[
+                            dcc.Checklist(
+                                # className="d-flex flex-direction-column",
+                                style={"display":"block"},
+                                options=[
+                                    {"label": "Flow", "value": "F"},
+                                    {"label": "Temperature", "value": "T"},
+                                ]
+                            )
                         ]
                     )
                 ]

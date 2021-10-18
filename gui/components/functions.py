@@ -1,9 +1,6 @@
 import os
-import random
-import logging
-import subprocess
-import time
-from threading import Thread
+
+from src.new_harvest import CalibrationStep
 
 def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_count=2000, mt=50, mb=40, fixed_x=True, fixed_y=True, show_x_labels=False):
     """Generates figure for given data"""
@@ -39,8 +36,8 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
                 "l": 50,
                 "r": 40
             },
-            "paper_bgcolor": "rgba(213, 237, 255, 0.2)",
-            "plot_bgcolor": "rgba(213, 237, 255, 0.2)",
+            # "paper_bgcolor": "rgba(213, 237, 255, 0.2)",
+            # "plot_bgcolor": "rgba(213, 237, 255, 0.2)",
             #"autosize": True,
             "xaxis": {
                 "title": "<b>" + x_axis_label + "</b>",
@@ -92,6 +89,24 @@ def generate_figure_data(y, x_names, trace_colors, y_range=None, data_count=2000
     # print(f"Returning {data}")
 
     return data
+
+def map_calibration_step(step):
+    """Map calibration step to text"""
+    text = ""
+    if step == CalibrationStep.IDLE:
+        text = "Idle"
+    if step == CalibrationStep.COMPLETED:
+        text = "Completed"
+    if step == CalibrationStep.LOW_RPM_RUNNING:
+        text = "Low Rpm Calibration"
+    if step == CalibrationStep.LOW_RPM_DONE:
+        text = "Low Rpm Calibration Done"
+    if step == CalibrationStep.HIGH_RPM_RUNNING:
+        text = "High Rpm Calibration"
+    if step == CalibrationStep.HIGH_RPM_DONE:
+        text = "High Rpm Calibration Done"
+
+    return text
 
 def shutdown_pi():
     """Shuts pi down on button click"""

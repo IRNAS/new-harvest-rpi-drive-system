@@ -4,7 +4,7 @@ Motor controller for bipolar stepper motor or two brushed DC motors
 I2C protocol
 Manual: PoStep User Manual 2019-05-31.pdf
 """
-import smbus
+import smbus2 as smbus
 import struct
 import logging
 

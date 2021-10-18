@@ -10,16 +10,15 @@ from gui.layouts.calibration_layout import layout_calibration
 from gui.layouts.single_speed_layout import layout_single_speed
 from gui.layouts.speed_profile_layout import layout_speed_profile
 from gui.components.header import Header
-# import gui.callbacks
-# # from src.new_harvest import NewHarvest
-# from gui.callbacks import NewHarvestCallbacks
+from src.new_harvest import NewHarvest
+from gui.callbacks import NewHarvestCallbacks
 
 # log = logging.getLogger('werkzeug')
 # log.setLevel(logging.ERROR)
 
-# new_harvest = NewHarvest()  # instantiate RHmicro class, measurements start on press of "Start" button
+new_harvest = NewHarvest()  # instantiate RHmicro class, measurements start on press of "Start" button
 
-# NewHarvestCallbacks(new_harvest).callbacks()
+NewHarvestCallbacks(new_harvest).callbacks()
 
 # see https://dash.plot.ly/external-resources to alter header, footer and favicon
 app.index_string = ''' 
