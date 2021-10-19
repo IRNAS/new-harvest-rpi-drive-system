@@ -7,7 +7,7 @@ from gui.app import app
 from dash.dependencies import Input, Output, State
 from src.new_harvest import CalibrationStep
 from src.calibration import Calibration
-from .components.functions import map_calibration_step
+from .components.functions import map_calibration_step, generate_figure_data, map_title, map_color
 
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
@@ -20,9 +20,6 @@ class NewHarvestCallbacks():
     def __init__(self, new_harvest):
         self.new_harvest = new_harvest
 
-        # values tracked for display, dict of values, each tracked value has to be timestamped
-        self.tracked_values = {}
-
         self.direction = self.new_harvest.get_direction()
 
         self.prev_state = self.new_harvest.get_state()
@@ -31,7 +28,6 @@ class NewHarvestCallbacks():
         self.prev_calibration_step = self.new_harvest.get_calibration_step()
         self.current_calibration_step = self.new_harvest.get_calibration_step()
 
-        self.calibration = None
         self.calibration_start_time = None
         self.calibration_percent_done = 0
 
@@ -109,8 +105,8 @@ class NewHarvestCallbacks():
                             calib_dialog_message = "Calibration done. Enter high rpm calibration volume (mL/min) and press save"
 
                         if self.current_calibration_step == CalibrationStep.COMPLETED:
-                            self.calibration = Calibration(filename)
-                            slope = self.calibration.get_slope()
+                            calibration = Calibration(filename)
+                            slope = calibration.get_slope()
                             display_calib_dialog = True
                             calib_dialog_message = f"Calibration saved to {filename}.\nCalculated mL/rpm: {round(slope, 2)}"
 
@@ -217,3 +213,33 @@ class NewHarvestCallbacks():
                         self.new_harvest.run_motor(dir_state, speed)
 
             return []
+
+        @app.callback(
+            Output("flow-speed-graph", "figure"),
+            [
+                Input("graph-refresh-interval", "n_intervals"),
+            ],
+            [
+                State("variable-checklist", "value"),
+                State("flow-speed-graph", "figure")
+            ]
+        )
+        def update_single_speed_graph(n, variables, flow_figure):
+            
+            state = self.new_harvest.get_state()
+            data = []
+            titles = []
+            colors = []
+
+            if variables is not None and len(variables) > 0:
+                for v in variables:
+                    data.append(state[v])
+                    titles.append(map_title(v))
+                    colors.append(map_color(v))
+                new_data = generate_figure_data(data, titles, ['rgb(10, 100, 200)', 'rgb(250, 140, 15)'])
+
+                flow_figure["data"] = new_data
+            else:
+                flow_figure["data"] = []
+                
+            return flow_figure

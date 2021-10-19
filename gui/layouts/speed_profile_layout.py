@@ -58,7 +58,7 @@ def generate_speed_profile_layout():
                 style={"width": "80%"},
                 className="d-flex flex-row mt-4",
                 children=[
-                    generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", y_range=[0,100])
+                    generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", y_range=[0,100])
                 ]
             )
         ]

@@ -6,7 +6,7 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range, h=250, remov
     """
     Generate graph section of GUI
     """
-    fig = generate_figure(x_axis_label, y_axis_label, [], y_range, h=h, mt=mt, mb=mb, fixed_x=fixed_x, fixed_y=fixed_y, show_x_labels=show_x_labels)
+    fig = generate_figure(x_axis_label, y_axis_label, [], y_range, h=h, mt=mt, mb=mb, fixed_x=fixed_x, fixed_y=fixed_y)
 
     graph_container = html.Div(
         className="d-flex flex-direction-row",
@@ -43,9 +43,9 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range, h=250, remov
                                 # className="d-flex flex-direction-column",
                                 style={"display":"block"},
                                 options=[
-                                    {"label": " Flow (mL/min)", "value": "F"},
-                                    {"label": " Speed (RPM)", "value": "S"},
-                                    {"label": " Temperature (°C)", "value": "T"}
+                                    {"label": " Flow (mL/min)", "value": "flow"},
+                                    {"label": " Speed (RPM)", "value": "rpm"},
+                                    {"label": " Temperature (°C)", "value": "temp"}
                                 ]
                             )
                         ]

@@ -2,7 +2,7 @@ import os
 
 from src.new_harvest import CalibrationStep
 
-def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_count=2000, mt=50, mb=40, fixed_x=True, fixed_y=True, show_x_labels=False):
+def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_count=600, mt=50, mb=40, fixed_x=True, fixed_y=True):
     """Generates figure for given data"""
     data = y
     #print(data)
@@ -30,22 +30,20 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
         {
             # "width": 700,
             # "height": h,
+            "showlegend": True,
             "margin": {
                 "t": mt,
                 "b": mb,
                 "l": 50,
                 "r": 40
             },
-            # "paper_bgcolor": "rgba(213, 237, 255, 0.2)",
-            # "plot_bgcolor": "rgba(213, 237, 255, 0.2)",
-            #"autosize": True,
             "xaxis": {
-                "title": "<b>" + x_axis_label + "</b>",
+                "title": "<b>Time (s)</b>",
                 "range": [-data_count, 0],
                 "fixedrange": fixed_x,
-                "zeroline": False,
+                # "zeroline": False,
                 "gridcolor": "rgb(50, 50, 50)",
-                "showticklabels": show_x_labels
+                "showticklabels": True
             },
             "yaxis": {
                 "title": "<b>" + y_axis_label + "</b>",
@@ -66,7 +64,7 @@ def generate_figure_data(y, x_names, trace_colors, y_range=None, data_count=2000
     if len(trace_colors) == 0:
         color = 'rgb(10, 100, 200)'
     for y_data, name, color in zip(y, x_names, trace_colors):
-    # data = [
+    
         trace = {
             "type": "scatter",
             "name": name,
@@ -84,9 +82,6 @@ def generate_figure_data(y, x_names, trace_colors, y_range=None, data_count=2000
             }
         }
         data.append(trace)
-        # ]
-
-    # print(f"Returning {data}")
 
     return data
 
@@ -107,6 +102,26 @@ def map_calibration_step(step):
         text = "High Rpm Done"
 
     return text
+
+def map_title(variable):
+    title = ""
+    if variable == "flow":
+        title = "Flow (mL/min)"
+    if variable == "rpm":
+        title = "Speed (RPM)"
+    if variable == "temp":
+        title = "Temperature (°C)"
+    return title
+
+def map_color(variable):
+    color = "rgb(0,0,255)"
+    if variable == "flow":
+        color = "rgb(50,160,235)"
+    if variable == "rpm":
+        color = "rgb(250,185,50)"
+    if variable == "temp":
+        color = "rgb(250,50,80)"
+    return color
 
 def shutdown_pi():
     """Shuts pi down on button click"""

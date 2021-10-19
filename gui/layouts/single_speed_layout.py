@@ -73,7 +73,7 @@ layout_single_speed = dbc.Container(
     id="main-layout",
     style={"padding-right": "0px", "padding-left": "0px"},
     children=[
-        dcc.Interval(id="graph-refresh-interval-component", interval=100, n_intervals=0),
+        dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
         generate_single_speed_layout()
     ]
 )
