@@ -132,20 +132,25 @@ def generate_calibration_layout():
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
-                        className="d-flex justify-content-left",
-                        style={"width": "50%", "padding-right": "50px"},
-                        # children=[
-                        #     dbc.Button("START", id="btn-start-calib", n_clicks=0, style={"width": "100px"}, className="mr-4"),
-                        #     dbc.Button("STOP", id="btn-stop-calib", n_clicks=0, style={"width": "100px"}, className="mr-2")
-                        # ]
-                    ),
-                    html.Div(
                         className="d-flex justify-content-between",
-                        style={"width": "50%"},
+                        style={"width": "50%", "padding-right": "50px"},
                         children=[
                             html.Span(
                                 "Current step: ", className="h4 font-weight-bold"),
                             html.Span(id="current-step-span", children="Idle", className="h4 font-weight-bold")
+                        ]
+                    ),
+                    html.Div(
+                        className="d-flex justify-content-left",
+                        style={"width": "50%"},
+                        children=[
+                            dbc.Progress(
+                                id="calib-progress",
+                                value=0, 
+                                style={"width": "100%", "height": "24px", "border-radius": "4px"},
+                                striped=True,
+                                animated=True
+                            )
                         ]
                     )
                 ]
@@ -171,7 +176,7 @@ def generate_calibration_layout():
                         ]
                     )
                 ]
-            )  
+            )
         ]
     )
 
@@ -181,7 +186,7 @@ layout_calibration = dbc.Container(
     id="main-layout",
     style={"padding-right": "0px", "padding-left": "0px"},
     children=[
-        dcc.Interval(id="check-state-interval", interval=1000, n_intervals=0),
+        dcc.Interval(id="check-state-interval", interval=500, n_intervals=0),
         dcc.ConfirmDialog(
             id="calib-dialog",
             message=""

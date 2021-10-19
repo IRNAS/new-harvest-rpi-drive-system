@@ -6,6 +6,7 @@ import datetime
 from gui.app import app
 from dash.dependencies import Input, Output, State
 from src.new_harvest import CalibrationStep
+from src.calibration import Calibration
 from .components.functions import map_calibration_step
 
 log = logging.getLogger("werkzeug")
@@ -28,10 +29,14 @@ class NewHarvestCallbacks():
         self.prev_calibration_step = self.new_harvest.get_calibration_step()
         self.current_calibration_step = self.new_harvest.get_calibration_step()
 
+        self.calibration = None
+        self.calibration_start_time = None
+        self.calibration_percent_done = 0
+
         self.abort = False
         self.btn_click = None
 
-    def callbacks(self):
+    def calibration_callbacks(self):
 
         @app.callback(
             [
@@ -39,7 +44,8 @@ class NewHarvestCallbacks():
                 Output("calib-dialog", "message"),
                 Output("calib-dialog", "displayed"),
                 Output("confirm-dialog", "message"),
-                Output("confirm-dialog", "displayed")
+                Output("confirm-dialog", "displayed"),
+                Output("calib-progress", "value")
             ],
             [
                 Input("check-state-interval", "n_intervals"),
@@ -56,7 +62,8 @@ class NewHarvestCallbacks():
                 State("high-rpm-volume-input", "value"),
                 State("set-time-input", "value"),
                 State("filename-input", "value"),
-                State("current-step-span", "children")
+                State("current-step-span", "children"),
+                # State("calib-progress", "value")
             ]
         )
         def update_calib_status(n, btn_start, btn_stop, btn_cont, btn_save, confirm, low_rpm_in, low_rpm_vol, high_rpm_in, high_rpm_vol, set_time, filename, current_step):
@@ -70,7 +77,9 @@ class NewHarvestCallbacks():
 
             current_step_text = current_step
 
-            filename = f"./calibration/{filename}.txt"
+            filename = f"./calibration/{filename}.json"
+
+            calib_progress = self.calibration_percent_done
 
             ctx = dash.callback_context
             if ctx.triggered and ctx.triggered[0]['value'] > 0:
@@ -92,11 +101,31 @@ class NewHarvestCallbacks():
                             display_calib_dialog = True
                             calib_dialog_message = "Calibration done. Enter high rpm calibration volume (mL/min) and press save"
 
+                        if self.current_calibration_step == CalibrationStep.COMPLETED:
+                            self.calibration = Calibration(filename)
+                            slope = self.calibration.get_slope()
+                            display_calib_dialog = True
+                            calib_dialog_message = f"Calibration saved to {filename}.\nCalculated mL/rpm: {round(slope, 2)}"
+
+                    if self.current_calibration_step == CalibrationStep.LOW_RPM_RUNNING:
+                        self.calibration_percent_done = min((((time.time() - self.calibration_start_time) / set_time) * 49), 49)
+                    if self.current_calibration_step == CalibrationStep.LOW_RPM_DONE:
+                        self.calibration_percent_done = 49
+                    if self.current_calibration_step == CalibrationStep.HIGH_RPM_RUNNING:
+                        self.calibration_percent_done = 49 + min((((time.time() - self.calibration_start_time) / set_time) * 49), 49)
+                    if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE:
+                        self.calibration_percent_done = 98
+                    if self.current_calibration_step == CalibrationStep.COMPLETED:
+                        self.calibration_percent_done = 100
+                    if self.current_calibration_step == CalibrationStep.IDLE:
+                        self.calibration_percent_done = 0
+
                     current_step_text = map_calibration_step(self.current_calibration_step)
 
                 if prop_id == "btn-start-calib":
                     if self.current_calibration_step == CalibrationStep.IDLE or self.current_calibration_step == CalibrationStep.COMPLETED:
                         self.btn_click = "START"
+                        self.calibration_start_time = time.time()
                         display_confirm_dialog = True
                         confirm_dialog_message = "Press OK to start calibration process with low rpm"
 
@@ -104,12 +133,14 @@ class NewHarvestCallbacks():
                     if self.current_calibration_step != CalibrationStep.IDLE and self.current_calibration_step != CalibrationStep.COMPLETED:
                         self.abort = True
                         self.btn_click = "STOP"
+                        self.calibration_percent_done = 0
                         display_confirm_dialog = True
                         confirm_dialog_message = "Press OK to abort calibration"
 
                 if prop_id == "btn-continue-calib":
                     if self.current_calibration_step == CalibrationStep.LOW_RPM_DONE:
                         self.btn_click = "CNT"
+                        self.calibration_start_time = time.time()
                         display_confirm_dialog = True
                         confirm_dialog_message = "Press OK to start calibration process with high rpm"
 
@@ -124,7 +155,7 @@ class NewHarvestCallbacks():
                         self.new_harvest.run_thread(self.new_harvest.run_high_rpm_calibration, (high_rpm_in, set_time))
                         self.btn_click = None
                     if self.btn_click == "SAVE":
-                        self.new_harvest.save_calibration_data(filename, low_rpm_vol, high_rpm_vol)
+                        self.new_harvest.save_calibration_data(filename, low_rpm_in, high_rpm_in, low_rpm_vol, high_rpm_vol, set_time)
                         self.btn_click = None
 
                 if prop_id == "btn-save-calib":
@@ -133,5 +164,5 @@ class NewHarvestCallbacks():
                         display_confirm_dialog = True
                         confirm_dialog_message = "Press OK to confirm saving to file"
 
-            return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog
+            return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress
                     

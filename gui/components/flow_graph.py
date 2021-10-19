@@ -42,8 +42,9 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range, h=250, remov
                                 # className="d-flex flex-direction-column",
                                 style={"display":"block"},
                                 options=[
-                                    {"label": "Flow", "value": "F"},
-                                    {"label": "Temperature", "value": "T"},
+                                    {"label": " Set Flow", "value": "F"},
+                                    {"label": " Speed", "value": "S"},
+                                    {"label": " Temperature", "value": "T"}
                                 ]
                             )
                         ]

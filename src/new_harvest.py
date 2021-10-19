@@ -1,4 +1,5 @@
 import time
+import json
 import logging
 
 from threading import Thread
@@ -114,14 +115,20 @@ class NewHarvest():
             self.stop_thread()  # stop currently running thread
             self.current_calibration_step = CalibrationStep.IDLE
 
-    def save_calibration_data(self, filename, low_rpm_vol, high_rpm_vol):
+    def save_calibration_data(self, filename, low_rpm, high_rpm, low_rpm_vol, high_rpm_vol, duration):
         """Save data to calibration file"""
 
         print(f"Current calibration step: {self.current_calibration_step}")
+        calib_json = {}
+        calib_json["low_rpm"] = low_rpm
+        calib_json["high_rpm"] = high_rpm
+        calib_json["low_rpm_vol"] = low_rpm_vol
+        calib_json["high_rpm_vol"] = high_rpm_vol
+        calib_json["duration"] = duration
+
         if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE or self.current_calibration_step == CalibrationStep.COMPLETED:
             with open(filename, "w") as calib_file:
-                calib_file.write(f"LOW_RPM_VOL={low_rpm_vol}\n")
-                calib_file.write(f"HIGH_RPM_VOL={high_rpm_vol}\n")
+                json.dump(calib_json, calib_file)
             
             self.current_calibration_step = CalibrationStep.COMPLETED
             self.current_state = State.IDLE

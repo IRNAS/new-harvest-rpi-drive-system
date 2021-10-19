@@ -18,7 +18,7 @@ from gui.callbacks import NewHarvestCallbacks
 
 new_harvest = NewHarvest()  # instantiate RHmicro class, measurements start on press of "Start" button
 
-NewHarvestCallbacks(new_harvest).callbacks()
+NewHarvestCallbacks(new_harvest).calibration_callbacks()
 
 # see https://dash.plot.ly/external-resources to alter header, footer and favicon
 app.index_string = ''' 
