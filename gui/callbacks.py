@@ -20,7 +20,9 @@ class NewHarvestCallbacks():
     def __init__(self, new_harvest):
         self.new_harvest = new_harvest
 
+        # values tracked for display, dict of values, each tracked value has to be timestamped
         self.tracked_values = {}
+
         self.direction = self.new_harvest.get_direction()
 
         self.prev_state = self.new_harvest.get_state()
@@ -33,10 +35,15 @@ class NewHarvestCallbacks():
         self.calibration_start_time = None
         self.calibration_percent_done = 0
 
+        self.motor_running = None
+
         self.abort = False
         self.btn_click = None
 
     def calibration_callbacks(self):
+
+        # stop motor when loading new layout
+        self.new_harvest.stop_motor()
 
         @app.callback(
             [
@@ -166,3 +173,47 @@ class NewHarvestCallbacks():
 
             return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress
                     
+    def single_speed_callbacks(self):
+
+        # stop motor when loading new layout
+        self.new_harvest.stop_motor()
+
+        @app.callback(
+            Output("hidden-div", "children"),
+            [
+                Input("btn-start", "n_clicks"),
+                Input("btn-set", "n_clicks"),
+                Input("btn-stop", "n_clicks"),
+                Input("direction-toggle", "checked")
+            ],
+            [
+                State("direction-toggle", "checked"),
+                State("flow-speed-input", "value")
+            ]
+        )
+        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, dir_state, speed):
+            """Update single speed layout"""
+            
+            ctx = dash.callback_context
+            if ctx.triggered:
+                split = ctx.triggered[0]["prop_id"].split(".")
+                prop_id = split[0]
+                print(split)
+
+                if prop_id == "btn-start":
+                    self.motor_running = True
+                    self.new_harvest.run_motor(dir_state, speed)
+                
+                if prop_id == "btn-stop":
+                    self.motor_running = False
+                    self.new_harvest.stop_motor()
+                
+                if prop_id == "btn-set":
+                    if self.motor_running:
+                        self.new_harvest.run_motor(dir_state, speed)
+
+                if prop_id == "direction-toggle":
+                    if self.motor_running:
+                        self.new_harvest.run_motor(dir_state, speed)
+
+            return []

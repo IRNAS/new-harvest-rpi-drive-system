@@ -60,6 +60,15 @@ class NewHarvest():
     def get_direction(self):
         return self.stepper.get_direction()
 
+    def stop_motor(self):
+        """Stop stepper motor"""
+        self.stepper.stop_motor()
+
+    def run_motor(self, direction, speed):
+        self.stepper.set_direction(direction)
+        self.stepper.set_speed(speed)
+        self.stepper.start_motor()
+
     def run_low_rpm_calibration(self, speed, duration):
         if self.current_state == State.IDLE:
             self.current_state = State.CALIBRATION

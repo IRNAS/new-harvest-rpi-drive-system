@@ -12,6 +12,7 @@ def generate_single_speed_layout():
         id="singles-speed-display",
         className="d-flex flex-row",
         children=[
+            html.Div(id="hidden-div", style={"visibility":"hidden"}),
             html.Div(
                 style={"width": "20%"},
                 className="d-flex flex-column mt-3",

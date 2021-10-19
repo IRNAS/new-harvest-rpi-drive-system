@@ -1,11 +1,14 @@
 import logging
 from hardware.postep256 import PoStep256, DRIVER_RUN, DRIVER_SLEEP, MODE_DEFAULT
 
+log = logging.getLogger()
+
 POSTEP_ADDRESS = 0x46
 
 class Direction():
     ACW = 0
     CW = 1
+
 class Stepper():
     def __init__(self):
         """Init stepper motor control"""
@@ -19,7 +22,7 @@ class Stepper():
 
             ret = self.postep.read_driver_mode()
             if not ret:
-                print(f"Failed to init postep driver!")
+                # print(f"Failed to init postep driver!")
                 self.postep = None
 
             if ret != MODE_DEFAULT:
@@ -59,6 +62,7 @@ class Stepper():
                     return False
             return False
         except Exception as e:
+            log.error(f"An exception occured when trying to set stepper speed: {e}")
             return None
 
     def get_speed(self):
@@ -67,6 +71,7 @@ class Stepper():
             ret = self.postep.read_current_speed()
             return ret
         except Exception as e:
+            log.error(f"An exception occured when trying to get stepper speed: {e}")
             return None
 
     def set_direction(self, direction):
@@ -82,6 +87,7 @@ class Stepper():
                     return False
             return False
         except Exception as e:
+            log.error(f"An exception occured when trying to set stepper direction: {e}")
             return None
 
     def get_direction(self):
@@ -90,6 +96,7 @@ class Stepper():
             ret = self.postep.read_auto_run_invert_direction_status()
             return ret
         except Exception as e:
+            log.error(f"An exception occured when trying to get stepper direction: {e}")
             return None
 
     def set_acceleration(self, accel):
@@ -105,6 +112,7 @@ class Stepper():
                     return False
             return False
         except Exception as e:
+            log.error(f"An exception occured when trying to set stepper acceleration: {e}")
             return None
 
     def get_acceleration(self):
@@ -113,6 +121,7 @@ class Stepper():
             ret = self.postep.read_acceleration()
             return ret
         except Exception as e:
+            log.error(f"An exception occured when trying to get stepper acceleration: {e}")
             return None
 
     def start_motor(self):
@@ -121,6 +130,7 @@ class Stepper():
             ret = self.postep.set_run_sleep_mode(DRIVER_RUN)
             return ret
         except Exception as e:
+            log.error(f"An exception occured when trying to start stepper motor: {e}")
             return None
 
     def stop_motor(self):
@@ -129,4 +139,5 @@ class Stepper():
             ret = self.postep.set_run_sleep_mode(DRIVER_SLEEP)
             return ret
         except Exception as e:
+            log.error(f"An exception occured when trying to stop stepper motor: {e}")
             return None
