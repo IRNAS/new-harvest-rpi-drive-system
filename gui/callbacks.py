@@ -55,10 +55,11 @@ class NewHarvestCallbacks():
                 State("high-rpm-input", "value"),
                 State("high-rpm-volume-input", "value"),
                 State("set-time-input", "value"),
+                State("filename-input", "value"),
                 State("current-step-span", "children")
             ]
         )
-        def update_calib_status(n, btn_start, btn_stop, btn_cont, btn_save, confirm, low_rpm_in, low_rpm_vol, high_rpm_in, high_rpm_vol, set_time, current_step):
+        def update_calib_status(n, btn_start, btn_stop, btn_cont, btn_save, confirm, low_rpm_in, low_rpm_vol, high_rpm_in, high_rpm_vol, set_time, filename, current_step):
             """Update calib status and display dialogs"""
 
             display_calib_dialog = False
@@ -69,13 +70,13 @@ class NewHarvestCallbacks():
 
             current_step_text = current_step
 
-            filename = f"calibration{time.time_ns()}.txt"
+            filename = f"./calibration/{filename}.txt"
 
             ctx = dash.callback_context
             if ctx.triggered and ctx.triggered[0]['value'] > 0:
                 split = ctx.triggered[0]["prop_id"].split(".")
                 prop_id = split[0]
-                print(split)
+                # print(split)
 
                 if prop_id == "check-state-interval":
 
@@ -90,10 +91,6 @@ class NewHarvestCallbacks():
                         if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE:
                             display_calib_dialog = True
                             calib_dialog_message = "Calibration done. Enter high rpm calibration volume (mL/min) and press save"
-
-                        if self.current_calibration_step == CalibrationStep.COMPLETED:
-                            display_calib_dialog = True
-                            calib_dialog_message = f"Calibration saved to {filename}"
 
                     current_step_text = map_calibration_step(self.current_calibration_step)
 
@@ -122,13 +119,16 @@ class NewHarvestCallbacks():
                         self.abort = False
                     if self.btn_click == "START":
                         self.new_harvest.run_thread(self.new_harvest.run_low_rpm_calibration, (low_rpm_in, set_time))
+                        self.btn_click = None
                     if self.btn_click == "CNT":
                         self.new_harvest.run_thread(self.new_harvest.run_high_rpm_calibration, (high_rpm_in, set_time))
+                        self.btn_click = None
                     if self.btn_click == "SAVE":
                         self.new_harvest.save_calibration_data(filename, low_rpm_vol, high_rpm_vol)
+                        self.btn_click = None
 
                 if prop_id == "btn-save-calib":
-                    if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE:
+                    if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE or self.current_calibration_step == CalibrationStep.COMPLETED:
                         self.btn_click = "SAVE"
                         display_confirm_dialog = True
                         confirm_dialog_message = "Press OK to confirm saving to file"

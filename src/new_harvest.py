@@ -118,7 +118,7 @@ class NewHarvest():
         """Save data to calibration file"""
 
         print(f"Current calibration step: {self.current_calibration_step}")
-        if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE:
+        if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE or self.current_calibration_step == CalibrationStep.COMPLETED:
             with open(filename, "w") as calib_file:
                 calib_file.write(f"LOW_RPM_VOL={low_rpm_vol}\n")
                 calib_file.write(f"HIGH_RPM_VOL={high_rpm_vol}\n")

@@ -112,7 +112,36 @@ def generate_calibration_layout():
                     ),
                     html.Div(
                         className="d-flex justify-content-between",
+                        style={"width": "50%"},
+                        children=[
+                            html.Span(
+                                "Filename: ", className="h4 font-weight-bold"),
+                            dcc.Input(
+                                id="filename-input",
+                                type="text",
+                                value="calibration-test",
+                                debounce=True,  # must be set to true for onscreen keyboard to work
+                                style={"width": "60%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
+                            )
+                        ]
+                    )
+                ]
+            ),
+            html.Div(
+                style={"width": "40%"},
+                className="d-flex flex-row mt-3",
+                children=[
+                    html.Div(
+                        className="d-flex justify-content-left",
                         style={"width": "50%", "padding-right": "50px"},
+                        # children=[
+                        #     dbc.Button("START", id="btn-start-calib", n_clicks=0, style={"width": "100px"}, className="mr-4"),
+                        #     dbc.Button("STOP", id="btn-stop-calib", n_clicks=0, style={"width": "100px"}, className="mr-2")
+                        # ]
+                    ),
+                    html.Div(
+                        className="d-flex justify-content-between",
+                        style={"width": "50%"},
                         children=[
                             html.Span(
                                 "Current step: ", className="h4 font-weight-bold"),
@@ -135,14 +164,14 @@ def generate_calibration_layout():
                     ),
                     html.Div(
                         className="d-flex justify-content-left",
-                        # style={"width": "50%"},
+                        style={"width": "50%"},
                         children=[
                             dbc.Button("CONTINUE", id="btn-continue-calib", n_clicks=0, style={"width": "100px"}, className="mr-4"),
                             dbc.Button("SAVE", id="btn-save-calib", n_clicks=0, style={"width": "100px"}, className="mr-2")
                         ]
                     )
                 ]
-            )                 
+            )  
         ]
     )
 
@@ -152,7 +181,7 @@ layout_calibration = dbc.Container(
     id="main-layout",
     style={"padding-right": "0px", "padding-left": "0px"},
     children=[
-        dcc.Interval(id="check-state-interval", interval=500, n_intervals=0),
+        dcc.Interval(id="check-state-interval", interval=1000, n_intervals=0),
         dcc.ConfirmDialog(
             id="calib-dialog",
             message=""

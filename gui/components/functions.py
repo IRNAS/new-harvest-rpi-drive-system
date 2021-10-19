@@ -98,13 +98,13 @@ def map_calibration_step(step):
     if step == CalibrationStep.COMPLETED:
         text = "Completed"
     if step == CalibrationStep.LOW_RPM_RUNNING:
-        text = "Low Rpm Calibration"
+        text = "Low Rpm"
     if step == CalibrationStep.LOW_RPM_DONE:
-        text = "Low Rpm Calibration Done"
+        text = "Low Rpm Done"
     if step == CalibrationStep.HIGH_RPM_RUNNING:
-        text = "High Rpm Calibration"
+        text = "High Rpm"
     if step == CalibrationStep.HIGH_RPM_DONE:
-        text = "High Rpm Calibration Done"
+        text = "High Rpm Done"
 
     return text
 
