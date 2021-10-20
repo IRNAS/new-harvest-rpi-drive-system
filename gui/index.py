@@ -20,6 +20,8 @@ new_harvest = NewHarvest()  # instantiate RHmicro class, measurements start on p
 
 NewHarvestCallbacks(new_harvest).calibration_callbacks()
 NewHarvestCallbacks(new_harvest).single_speed_callbacks()
+NewHarvestCallbacks(new_harvest).graph_update_callbacks()
+NewHarvestCallbacks(new_harvest).speed_profile_callbacks()
 
 # see https://dash.plot.ly/external-resources to alter header, footer and favicon
 app.index_string = ''' 

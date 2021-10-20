@@ -1,4 +1,6 @@
 import os
+import json
+import base64
 
 from src.new_harvest import CalibrationStep
 
@@ -84,6 +86,23 @@ def generate_figure_data(y, x_names, trace_colors, y_range=None, data_count=2000
         data.append(trace)
 
     return data
+
+def parse_json_contents(contents):
+    """Parse procedure file contents"""
+    print(contents)
+    split = contents.split(',')
+    content_string = split[1]
+
+    decoded = base64.b64decode(content_string)
+    json_obj = None  # value to return
+    print(decoded)
+    try:  # check if json is valid
+        json_obj = json.loads(decoded.decode('utf-8'))
+    except Exception as e:
+        print(f"An exceptin occured when decoding json file: {e}")
+
+    return json_obj
+
 
 def map_calibration_step(step):
     """Map calibration step to text"""

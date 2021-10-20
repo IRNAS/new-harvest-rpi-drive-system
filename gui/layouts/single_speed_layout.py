@@ -73,6 +73,10 @@ layout_single_speed = dbc.Container(
     id="main-layout",
     style={"padding-right": "0px", "padding-left": "0px"},
     children=[
+        dcc.ConfirmDialog(
+            id="confirm-dialog-sf",
+            message=""
+        ),
         dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
         generate_single_speed_layout()
     ]

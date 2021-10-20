@@ -1,5 +1,6 @@
 import time
 import dash
+import json
 import logging
 import datetime
 
@@ -7,7 +8,7 @@ from gui.app import app
 from dash.dependencies import Input, Output, State
 from src.new_harvest import CalibrationStep
 from src.calibration import Calibration
-from .components.functions import map_calibration_step, generate_figure_data, map_title, map_color
+from .components.functions import map_calibration_step, generate_figure_data, map_title, map_color, parse_json_contents
 
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
@@ -152,10 +153,10 @@ class NewHarvestCallbacks():
                         self.new_harvest.abort_calibration()
                         self.abort = False
                     if self.btn_click == "START":
-                        self.new_harvest.run_thread(self.new_harvest.run_low_rpm_calibration, (low_rpm_in, set_time))
+                        self.new_harvest.run_thread(target=self.new_harvest.run_low_rpm_calibration, args=(low_rpm_in, set_time, ))
                         self.btn_click = None
                     if self.btn_click == "CNT":
-                        self.new_harvest.run_thread(self.new_harvest.run_high_rpm_calibration, (high_rpm_in, set_time))
+                        self.new_harvest.run_thread(target=self.new_harvest.run_high_rpm_calibration, args=(high_rpm_in, set_time, ))
                         self.btn_click = None
                     if self.btn_click == "SAVE":
                         self.new_harvest.save_calibration_data(filename, low_rpm_in, high_rpm_in, low_rpm_vol, high_rpm_vol, set_time)
@@ -175,20 +176,28 @@ class NewHarvestCallbacks():
         self.new_harvest.stop_motor()
 
         @app.callback(
-            Output("hidden-div", "children"),
+            [
+                Output("hidden-div", "children"),
+                Output("confirm-dialog-sf", "displayed"),
+                Output("confirm-dialog-sf", "message")
+            ],
             [
                 Input("btn-start", "n_clicks"),
                 Input("btn-set", "n_clicks"),
                 Input("btn-stop", "n_clicks"),
-                Input("direction-toggle", "checked")
+                Input("direction-toggle", "checked"),
+                Input("confirm-dialog-sf", "submit_n_clicks")
             ],
             [
                 State("direction-toggle", "checked"),
                 State("flow-speed-input", "value")
             ]
         )
-        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, dir_state, speed):
+        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, dir_state, speed, confirm):
             """Update single speed layout"""
+
+            display_confirm_dialog = False
+            confirm_dialog_message = ""
             
             ctx = dash.callback_context
             if ctx.triggered:
@@ -197,22 +206,42 @@ class NewHarvestCallbacks():
                 print(split)
 
                 if prop_id == "btn-start":
-                    self.motor_running = True
-                    self.new_harvest.run_motor(dir_state, speed)
-                
+                    self.btn_click = "START"
+                    display_confirm_dialog = True
+                    confirm_dialog_message = "Press OK to start stepper motor"
+                    
                 if prop_id == "btn-stop":
-                    self.motor_running = False
-                    self.new_harvest.stop_motor()
-                
+                    self.btn_click = "STOP"
+                    display_confirm_dialog = True
+                    confirm_dialog_message = "Press OK to stop stepper motor"
+                    
                 if prop_id == "btn-set":
-                    if self.motor_running:
-                        self.new_harvest.run_motor(dir_state, speed)
+                    self.btn_click = "SET"
+                    display_confirm_dialog = True
+                    confirm_dialog_message = "Press OK to set adjust flow"
 
                 if prop_id == "direction-toggle":
                     if self.motor_running:
                         self.new_harvest.run_motor(dir_state, speed)
 
-            return []
+                if prop_id == "confirm-dialog-sf" and confirm:
+                    if self.btn_click == "START":
+                        if not self.motor_running:
+                            self.motor_running = True
+                            self.new_harvest.run_motor(dir_state, speed, new_log=True, type="single_speed")
+                        self.btn_click = None
+                    if self.btn_click == "STOP":
+                        self.motor_running = False
+                        self.new_harvest.stop_motor()
+                        self.btn_click = None
+                    if self.btn_click == "SET":
+                        if self.motor_running:
+                            self.new_harvest.run_motor(dir_state, speed)
+                        self.btn_click = None
+
+            return [], display_confirm_dialog, confirm_dialog_message
+
+    def graph_update_callbacks(self):
 
         @app.callback(
             Output("flow-speed-graph", "figure"),
@@ -243,3 +272,72 @@ class NewHarvestCallbacks():
                 flow_figure["data"] = []
                 
             return flow_figure
+
+    def speed_profile_callbacks(self):
+
+        # stop motor when loading new layout
+        self.new_harvest.stop_motor()
+
+        @app.callback(
+            [
+                Output("hidden-div-sp", "children"),
+                Output("procedure-sequence-filename", "children"),
+                Output("current-flow-span", "children"),
+                Output("confirm-dialog-sp", "displayed"),
+                Output("confirm-dialog-sp", "message")
+            ],
+            [
+                Input("btn-start-sp", "n_clicks"),
+                Input("btn-stop-sp", "n_clicks"),
+                Input("direction-toggle-sp", "checked"),
+                Input("upload-speed-profile", "contents"),
+                Input("confirm-dialog-sp", "submit_n_clicks")
+            ],
+            [
+                State("direction-toggle-sp", "checked"),
+                State("upload-speed-profile", "filename")
+            ]
+        )
+        def update_single_speed_status(btn_start, btn_stop, dir, contents, dir_state, profile, confirm):
+            """Update single speed layout"""
+            display_confirm_dialog = False
+            confirm_dialog_message = ""
+
+            if not profile:
+                profile = "No File Selected"
+
+            ctx = dash.callback_context
+            if ctx.triggered:
+                split = ctx.triggered[0]["prop_id"].split(".")
+                prop_id = split[0]
+                print(split)
+
+                if prop_id == "btn-start-sp":
+                    self.btn_click = "START"
+                    display_confirm_dialog = True
+                    confirm_dialog_message = "Press OK to start stepper motor"
+                    
+                if prop_id == "btn-stop-sp":
+                    self.btn_click = "STOP"
+                    display_confirm_dialog = True
+                    confirm_dialog_message = "Press OK to stop stepper motor"
+
+                if prop_id == "confirm-dialog-sp" and confirm:
+                    if self.btn_click == "START":
+                        self.new_harvest.run_thread(target=self.new_harvest.run_speed_profile, args=(dir_state, ))
+                        self.btn_click = None
+                    if self.btn_click == "STOP":
+                        self.new_harvest.stop_thread()
+                        self.btn_click = None
+
+                if prop_id == "direction-toggle-sp":
+                    self.new_harvest.run_thread(target=self.new_harvest.run_speed_profile, args=(dir_state, ))
+
+                if prop_id == "upload-speed-profile":
+                    if contents is not None and ".json" in profile:
+                        self.new_harvest.load_speed_profile(parse_json_contents(contents))
+                    pass
+
+            rpm = self.new_harvest.get_rpm()
+
+            return [], profile, rpm, display_confirm_dialog, confirm_dialog_message
