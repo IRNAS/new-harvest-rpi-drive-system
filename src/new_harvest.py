@@ -46,7 +46,7 @@ class NewHarvest():
         self.current_set_flow = 0
         self.current_set_rpm = 0
 
-        self.acceleration = 100
+        self.acceleration = 50
 
         self.state = {
             "flow": [],
@@ -178,17 +178,22 @@ class NewHarvest():
             if accel:
                 accel_speed = self.acceleration
                 while accel_speed < speed:
+                    print(f"Slowly accelerating")
                     ret = self.stepper.set_speed(accel_speed)
                     accel_speed += self.acceleration
                     accel_speed = min(accel_speed, speed)
+                    if ret:
+                        self.stepper.start_motor()
+                        self.current_set_rpm = speed
+                    time.sleep(0.5)
             else:
                 ret = self.stepper.set_speed(speed)
-        if ret:
-            self.stepper.start_motor()
-            self.current_set_rpm = speed
-            if new_log:
-                self.csv_writer.start_new_log(type)
-                self.csv_logging = True
+                if ret:
+                    self.stepper.start_motor()
+                    self.current_set_rpm = speed
+        if new_log:
+            self.csv_writer.start_new_log(type)
+            self.csv_logging = True
         return ret
 
     def run_low_rpm_calibration(self, speed, duration):
