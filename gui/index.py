@@ -63,11 +63,11 @@ def display_page(pathname):
         return layout_single_speed
     if pathname == "/speed-profile":
         return layout_speed_profile
-    if pathname == "/postep-config":
-        current_postep_config = new_harvest.get_postep_config()
-        current_accel = new_harvest.get_acceleration()
-        print(f"Current postep settings: {current_postep_config}")
-        return generate_postep_config_layout(current_postep_config, current_accel)
+    # if pathname == "/postep-config":
+    #     current_postep_config = new_harvest.get_postep_config()
+    #     current_accel = new_harvest.get_acceleration()
+    #     print(f"Current postep settings: {current_postep_config}")
+    #     return generate_postep_config_layout(current_postep_config, current_accel)
     # else:
     #     return no_page
 
