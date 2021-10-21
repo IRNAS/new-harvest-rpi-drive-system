@@ -17,23 +17,49 @@ def generate_speed_profile_layout():
                 className="d-flex flex-column mt-3",
                 children=[
                     html.Div(
+                        className="d-flex flex-column",                        
+                        children=[
+                            html.Span("Loaded Calibration:", style={"font-size": "20px", "font-weight": "bold"}),
+                            html.Div(
+                               className="mt-1",
+                               children=[
+                                    dbc.Label("No Calibration Loaded", className="wrap", id="calibration-filename-sp", html_for="upload-calibration-sp"),
+                                    dcc.Upload(
+                                        id="upload-calibration-sp",
+                                        accept=".json",
+                                        #style={"display": "flex", "height": "100%", "width": "100%"},
+                                        children=[
+                                            dbc.Button("Browse", style={"width": "100px"})
+                                        ]
+                                    )
+                               ] 
+                            )
+                        ]
+                    ),
+                    html.Div(
                         className="d-flex flex-column mt-4",                        
                         children=[
-                            html.Span("Current Flow (mL/min)", style={"font-size": "20px", "font-weight": "bold"}),
+                            html.Span("Set Flow (mL/min):", style={"font-size": "20px", "font-weight": "bold"}),
                             html.Span(id="current-flow-span", children="0")
                         ]
                     ),
                     html.Div(
                         className="mt-4",
                         children=[
-                            dbc.Label("No File Selected", className="wrap", id="procedure-sequence-filename", html_for="upload-speed-profile"),
-                            dcc.Upload(
-                                id="upload-speed-profile",
-                                accept=".json",
-                                #style={"display": "flex", "height": "100%", "width": "100%"},
-                                children=[
-                                    dbc.Button("Browse", style={"width": "100px"})
-                                ]
+                            html.Span("Loaded Speed Profile:", style={"font-size": "20px", "font-weight": "bold"}),
+                            html.Div(
+                               className="mt-1",
+                               children=[
+                                    dbc.Label("No File Selected", className="wrap", id="speed-profile-filename", html_for="upload-speed-profile"),
+                                    dcc.Upload(
+                                        id="upload-speed-profile",
+                                        accept=".json",
+                                        #style={"display": "flex", "height": "100%", "width": "100%"},
+                                        children=[
+                                            dbc.Button("Browse", style={"width": "100px"})
+                                        ]
+                                    )
+                               ] 
                             )
                         ]
                     ),
@@ -59,7 +85,7 @@ def generate_speed_profile_layout():
                 style={"width": "80%"},
                 className="d-flex flex-row mt-4",
                 children=[
-                    generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", y_range=[0,100])
+                    generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", y_range=[0,500])
                 ]
             )
         ]
@@ -76,6 +102,7 @@ layout_speed_profile = dbc.Container(
             id="confirm-dialog-sp",
             message=""
         ),
+        dcc.Interval(id="flow-update-interval", interval=1000, n_intervals=0),
         dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
         generate_speed_profile_layout()
     ]

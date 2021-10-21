@@ -6,7 +6,7 @@ import datetime
 from threading import Thread
 
 from src.calibration import Calibration
-from src.stepper import Stepper, Direction
+from src.stepper_usb import Stepper, Direction
 from src.csv_writer import CsvWriter
 
 log = logging.getLogger()
@@ -78,7 +78,7 @@ class NewHarvest():
                 self.state["flow"].append(self.current_set_flow)
                 self.state["rpm"].append(self.current_set_rpm)
                 if self.csv_logging:
-                    self.csv_writer.append_row(self.current_set_flow, self.current_set_rpm)
+                    self.csv_writer.append_row([self.current_set_flow, self.current_set_rpm])
                 # current_temp = self.get_temperature()  TODO: implement when sensor is known
                 # self.state["temp"].append(current_temp)[-600:] 
                 self.state["flow"] = self.state["flow"][-600:]
@@ -111,29 +111,51 @@ class NewHarvest():
     def get_rpm(self):
         return self.current_set_rpm
 
-    def load_calibration(self, filename):
-        """Load calibration"""
-        self.calibration = Calibration(filename)
+    def set_calibration(self, calibration_obj):
+        """Set json objs contents to calibration"""
+        self.calibration = calibration_obj
+
+    def get_calibration_filename(self):
+        """Return calibration filename"""
+        if self.calibration:
+            return self.calibration.get_filename()
+        else:
+            return "No Calibration Loaded"
 
     def load_speed_profile(self, speed_profile_json):
         """Load speed profile from json"""
         self.speed_profile = speed_profile_json
 
-    def set_flow(self, flow, direction):
+    def set_flow(self, direction, flow, new_log=False, type=""):
         """convert flow to rpm and set speed"""
         rpm = self.calibration.get_rpm(flow)
         ret = self.run_motor(direction, rpm)
+        print(f"Ret in set flow: {ret}")
         if ret:
             self.current_set_flow = flow
+        return ret
+
+    def get_flow(self):
+        """Get current set flow"""
+        return self.current_set_flow
 
     def stop_motor(self):
         """Stop stepper motor"""
         self.csv_logging = False
         ret = self.stepper.stop_motor()
+        if ret:
+            self.current_set_flow = 0
+            self.current_set_rpm = 0
         return ret
 
     def run_motor(self, direction, speed, new_log=False, type=""):
-        ret = self.stepper.set_direction(direction)
+        # dir_str = "cw"
+        print(f"Trying to run motor with direction: {direction} speed: {speed}")
+        if direction == True:
+            dir_str = "cw"
+        if direction == False:
+            dir_str = "acw"
+        ret = self.stepper.set_direction(dir_str)
         if ret:
             ret = self.stepper.set_speed(speed)
         if ret:
@@ -152,11 +174,11 @@ class NewHarvest():
             self.current_calibration_step = CalibrationStep.LOW_RPM_RUNNING
 
             print(f"Starting low rpm calibration")
-            ret = self.run_motor(Direction.ACW, speed)
+            ret = self.run_motor(Direction.CW, speed)
 
             start_time = time.time()
             while not self.stop_current_thread and time.time() - start_time < duration:
-                time.sleep(0.1)
+                time.sleep(0.01)
             
             if self.current_calibration_step == CalibrationStep.LOW_RPM_RUNNING:
                 ret = self.stop_motor()
@@ -174,11 +196,11 @@ class NewHarvest():
             print(f"Starting high rpm calibration")
             self.current_calibration_step = CalibrationStep.HIGH_RPM_RUNNING
 
-            ret = self.run_motor(Direction.ACW, speed)
+            ret = self.run_motor(Direction.CW, speed)
 
             start_time = time.time()
             while not self.stop_current_thread and time.time() - start_time < duration:
-                time.sleep(0.1)
+                time.sleep(0.01)
             
             if self.current_calibration_step == CalibrationStep.HIGH_RPM_RUNNING:
                 ret = self.stop_motor()
@@ -222,16 +244,18 @@ class NewHarvest():
             print(f"Speed profile set incorrectly. Returning!")
 
         self.csv_writer.start_new_log("speed_profile")
+        self.csv_logging = True
 
         for speed_setting in self.speed_profile["profile"]:
-            
+            print(f"Running speed setting: {speed_setting} with direction: {direction}")
             duration = speed_setting.get("duration", 0)
             flow = speed_setting.get("flow", 0)
             ret = self.set_flow(direction, flow)
+            print(f"Ret in run_speed_profile: {ret}")
             if ret:
                 start_time = time.time()
-                print(f"Running flow: {flow} for duration: {duration}")
+                # print(f"Running flow: {flow} for duration: {duration}")
                 while not self.stop_current_thread and time.time() - start_time < duration:
-                    time.sleep(0.1)
+                    time.sleep(0.01)
 
         ret = self.stop_motor()

@@ -18,10 +18,30 @@ def generate_single_speed_layout():
                 className="d-flex flex-column mt-3",
                 children=[
                     html.Div(
-                        className="d-flex flex-column",
+                        className="d-flex flex-column",                        
+                        children=[
+                            html.Span("Loaded Calibration:", style={"font-size": "20px", "font-weight": "bold"}),
+                            html.Div(
+                               className="mt-1",
+                               children=[
+                                    dbc.Label("No Calibration Loaded", className="wrap", id="calibration-filename", html_for="upload-calibration"),
+                                    dcc.Upload(
+                                        id="upload-calibration",
+                                        accept=".json",
+                                        #style={"display": "flex", "height": "100%", "width": "100%"},
+                                        children=[
+                                            dbc.Button("Browse", style={"width": "100px"})
+                                        ]
+                                    )
+                               ] 
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        className="d-flex flex-column mt-4",
                         children=[
                             html.Span(
-                                "Flow speed (mL/min): ", className="h4 font-weight-bold"),
+                                "Set Flow (mL/min): ", className="h4 font-weight-bold"),
                             dcc.Input(
                                 id="flow-speed-input",
                                 type="number",
@@ -61,7 +81,7 @@ def generate_single_speed_layout():
                 style={"width": "80%"},
                 className="d-flex flex-row mt-4",
                 children=[
-                    generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", y_range=[0,100])
+                    generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", y_range=[0,500])
                 ]
             )
         ]

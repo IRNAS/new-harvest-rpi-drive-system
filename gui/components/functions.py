@@ -49,8 +49,8 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
             },
             "yaxis": {
                 "title": "<b>" + y_axis_label + "</b>",
-                "range": y_range,
-                "fixedrange": fixed_y,
+                # "range": y_range,
+                # "fixedrange": fixed_y,
                 "gridcolor": "rgb(50, 50, 50)"
             }
         }

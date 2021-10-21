@@ -1,7 +1,8 @@
 {
     "profile": [
-        {"flow": 30, "duration": 30},
-        {"flow": 50, "duration": 10},
-        {"flow": 10, "duration": 60}
+        {"flow": 300, "duration": 60},
+        {"flow": 500, "duration": 10},
+        {"flow": 0, "duration": 20},
+        {"flow": 1000, "duration": 10}
     ]
 }

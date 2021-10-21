@@ -11,7 +11,7 @@ class CsvWriter():
     def set_filename(self, filename):
         self.filename = filename
 
-    def write_header(self, args):
+    def write_header(self):
         """
         Creates new .csv file with given header values 'Timestamp,*args'
         
@@ -41,5 +41,5 @@ class CsvWriter():
             logging.error("An exception occured when trying to append row to csv file")
 
     def start_new_log(self, type):
-        self.csv_writer.set_filename(f"./measurements/measure_{datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}_{type}.csv")
-        self.csv_writer.write_header()
+        self.set_filename(f"./measurements/measure_{datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}_{type}.csv")
+        self.write_header()

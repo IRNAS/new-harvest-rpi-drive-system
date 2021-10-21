@@ -55,7 +55,7 @@ class Stepper():
         try:
             ret = self.postep.set_requested_speed(self.current_speed)  # set speed
             if not ret:
-                read_speed = self.postet.read_requested_speed()
+                read_speed = self.postep.read_requested_speed()
                 if self.current_speed == read_speed:
                     return True
                 else:
@@ -80,7 +80,7 @@ class Stepper():
             self.current_direction = direction
             ret = self.postep.set_invert_direction(self.current_direction)
             if not ret:
-                read_direction = self.postet.read_auto_run_invert_direction_status()
+                read_direction = self.postep.read_auto_run_invert_direction_status()
                 if self.current_direction == read_direction:
                     return True
                 else:
@@ -105,7 +105,7 @@ class Stepper():
         try:
             ret = self.postep.set_acceleration(self.acceleration)
             if not ret:
-                read_accel = self.postet.read_acceleration()
+                read_accel = self.postep.read_acceleration()
                 if self.acceleration == read_accel:
                     return True
                 else:
