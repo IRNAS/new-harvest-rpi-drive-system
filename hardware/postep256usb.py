@@ -226,7 +226,34 @@ class PoStep256USB(object):
         settings_byte = received[36]
         print(f"Settings byte: {settings_byte}")
 
-        self.current_settings = received  # store settings as a list  
+        return received
+
+    def write_driver_settings(self, settings_list):
+        data_list = [0] * 64
+        data_list[1] = 0x80
+        data_list[20:36] = settings_list[40:56]
+        data_list[37] = settings_list[62]
+        data_list[38:44] = settings_list[56:62]
+        data_list[44] = settings_list[63]
+
+        print(f"Writing data list: {data_list}")
+        self.write_to_postep(data_list)
+        self.write_to_postep(data_list)
+        time.sleep(1)
+        received = self.read_from_postep(500)
+        print(list(received))
+
+    def read_driver_settings(self):
+        data_list = [0] * 64
+        data_list[1] = 0x85
+
+        self.write_to_postep(data_list)
+        received = self.read_from_postep(500)
+        print(list(received))
+
+        received = list(received)
+
+        return received
 
     def change_configuration(self, velocity=10000, acceleration=2000, deceleration=2000, settings=0):
         data_list = [0] * 64

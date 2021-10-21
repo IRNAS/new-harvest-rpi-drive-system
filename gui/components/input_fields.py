@@ -1,7 +1,7 @@
 import dash_html_components as html
 import dash_core_components as dcc
 
-def dropdown(id, label, fields):
+def dropdown(id, label, fields, value):
     """
     Return div with label and dropdown fields.
     Fields has to be a list of dicts in the for of [{"label": dd_label, "value": dd_value}, {"label": dd_label, "value": dd_value}]
@@ -17,7 +17,10 @@ def dropdown(id, label, fields):
             ),
             dcc.Dropdown(
                 id=f"{id}-dropdown",
-                options=fields
+                options=fields,
+                style={"width": "83%", "height": "30px"},
+                className="mt-1",
+                value=value
             ),
         ]
     )
@@ -42,7 +45,7 @@ def text_field(id, label, type, default_value):
                 debounce=True,  # must be set to true for onscreen keyboard to work
                 value=default_value,
                 style={"width": "70%", "height": "30px", "font-size": "20px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
-                # className="mt-2"
+                className="mt-1"
             )
         ]
     )

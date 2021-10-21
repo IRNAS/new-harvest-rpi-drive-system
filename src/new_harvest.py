@@ -46,6 +46,8 @@ class NewHarvest():
         self.current_set_flow = 0
         self.current_set_rpm = 0
 
+        self.acceleration = 100
+
         self.state = {
             "flow": [],
             "rpm": [],
@@ -99,6 +101,22 @@ class NewHarvest():
         print(f"Stopping thread")
         self.thread = None
 
+    def get_postep_config(self):
+        """Return current postep config in json format"""
+        settings_json = self.stepper.get_driver_settings()
+        return settings_json
+        # microstepping = config[36]
+
+    def set_acceleration(self, acc):
+        """Set acceleration"""
+        self.acceleration = acc
+
+    def get_acceleration(self):
+        return self.acceleration
+
+    def set_postep_config(self, fsc=None, idlec=None, overheatc=None, step_mode=None):
+        self.stepper.set_driver_settings(fsc, idlec, overheatc, step_mode)
+
     def get_state(self):
         return self.state
 
@@ -126,10 +144,10 @@ class NewHarvest():
         """Load speed profile from json"""
         self.speed_profile = speed_profile_json
 
-    def set_flow(self, direction, flow, new_log=False, type=""):
+    def set_flow(self, direction, flow, new_log=False, type="", accel=False):
         """convert flow to rpm and set speed"""
         rpm = self.calibration.get_rpm(flow)
-        ret = self.run_motor(direction, rpm)
+        ret = self.run_motor(direction, rpm, accel=accel)
         print(f"Ret in set flow: {ret}")
         if ret:
             self.current_set_flow = flow
@@ -148,7 +166,7 @@ class NewHarvest():
             self.current_set_rpm = 0
         return ret
 
-    def run_motor(self, direction, speed, new_log=False, type=""):
+    def run_motor(self, direction, speed, new_log=False, type="", accel=False):
         # dir_str = "cw"
         print(f"Trying to run motor with direction: {direction} speed: {speed}")
         if direction == True:
@@ -157,7 +175,14 @@ class NewHarvest():
             dir_str = "acw"
         ret = self.stepper.set_direction(dir_str)
         if ret:
-            ret = self.stepper.set_speed(speed)
+            if accel:
+                accel_speed = self.acceleration
+                while accel_speed < speed:
+                    ret = self.stepper.set_speed(accel_speed)
+                    accel_speed += self.acceleration
+                    accel_speed = min(accel_speed, speed)
+            else:
+                ret = self.stepper.set_speed(speed)
         if ret:
             self.stepper.start_motor()
             self.current_set_rpm = speed

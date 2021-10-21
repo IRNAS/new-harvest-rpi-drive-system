@@ -82,6 +82,12 @@ navbar = dbc.Navbar(
                             children=[
                                 dbc.NavItem(dbc.NavLink(id="speed-graph-input-navlink", children="Speed Profile", href="/speed-profile", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px"}))
                             ]
+                        ),
+                        html.Li(
+                            # style={"width": "25%"},
+                            children=[
+                                dbc.NavItem(dbc.NavLink(id="postep-config-navlink", children="PoStep Config", href="/postep-config", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px"}))
+                            ]
                         )
                     ]
                 ),

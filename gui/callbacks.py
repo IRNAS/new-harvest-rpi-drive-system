@@ -229,14 +229,14 @@ class NewHarvestCallbacks():
 
                 if prop_id == "direction-toggle":
                     if self.motor_running:
-                        self.new_harvest.set_flow(dir_state, speed)
+                        self.new_harvest.set_flow(dir_state, speed, accel=True)
 
                 if prop_id == "confirm-dialog-sf" and confirm:
                     if self.btn_click == "START":
                         if not self.motor_running:
                             self.motor_running = True
                             # self.new_harvest.run_motor(dir_state, speed, new_log=True, type="single_speed")
-                            self.new_harvest.set_flow(dir_state, speed, new_log=True, type="single_speed")
+                            self.new_harvest.set_flow(dir_state, speed, new_log=True, type="single_speed", accel=True)
                         self.btn_click = None
                     if self.btn_click == "STOP":
                         self.motor_running = False
@@ -244,7 +244,7 @@ class NewHarvestCallbacks():
                         self.btn_click = None
                     if self.btn_click == "SET":
                         if self.motor_running:
-                            self.new_harvest.set_flow(dir_state, speed)
+                            self.new_harvest.set_flow(dir_state, speed, accel=True)
                         self.btn_click = None
 
                 if prop_id == "upload-calibration":
@@ -366,3 +366,43 @@ class NewHarvestCallbacks():
             print(f"Set calibration file: {set_calibration_file}")
 
             return [], profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file
+
+    def postep_config_callbacks(self):
+
+        @app.callback(
+            [
+                Output("confirm-settings-dialog", "displayed"),
+                Output("confirm-settings-dialog", "message"),
+                Output("javascript", "run")
+            ],
+            [
+                Input("save-btn", "n_clicks"),
+                Input("confirm-settings-dialog", "submit_n_clicks")
+            ],
+            [
+                State("fs-current-input", "value"),
+                State("idle-current-input", "value"),
+                State("overheat-current-input", "value"),
+                State("acceleration-input", "value"),
+                State("step-mode-dropdown", "value")
+            ]
+        )
+        def update_postep_config_page(btn, confirm, fsc, idlec, occ, acc, step):
+            display_confirm_dialog = False
+            confirm_dialog_message = ""
+            js = ""
+
+            ctx = dash.callback_context
+            if ctx.triggered:
+                split = ctx.triggered[0]["prop_id"].split(".")
+                prop_id = split[0]
+                print(split)
+                if prop_id == "save-btn":
+                    display_confirm_dialog = True
+                    confirm_dialog_message = "Press OK to confirm settings. Page will refresh after confirmation"
+                if prop_id == "confirm-settings-dialog":
+                    self.new_harvest.set_postep_config(fsc=fsc, idlec=idlec, overheatc=occ, step_mode=step)
+                    self.new_harvest.set_acceleration(int(acc))
+                    js = "location.reload();"
+
+            return display_confirm_dialog, confirm_dialog_message, js

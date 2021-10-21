@@ -216,6 +216,11 @@ input:checked+.slider-toggle:before {
     border-radius: 6px;
 }
 
+.input-row {
+    height: 64px;
+    /* margin-top: 2px; */
+}
+
 /* BODY */
 body {
     font-size: 16px; /* currently ems cause chrome bug misinterpreting rems on body element */
