@@ -182,7 +182,8 @@ class NewHarvestCallbacks():
         @app.callback(
             [
                 Output("hidden-div", "children"),
-                Output("calibration-filename", "children")
+                Output("calibration-filename", "children"),
+                Output("direction-toggle", "checked")
             ],
             [
                 Input("btn-start", "n_clicks"),
@@ -209,7 +210,6 @@ class NewHarvestCallbacks():
 
                 if prop_id == "btn-start":
                     self.motor_running = True
-                    # self.new_harvest.run_motor(dir_state, speed, new_log=True, type="single_speed")
                     self.new_harvest.set_flow(dir_state, speed, new_log=True, type="single_speed", accel=True)
                     
                 if prop_id == "btn-stop":
@@ -222,7 +222,8 @@ class NewHarvestCallbacks():
 
                 if prop_id == "direction-toggle":
                     if self.motor_running:
-                        self.new_harvest.set_flow(dir_state, speed, accel=True)
+                        # self.new_harvest.set_flow(dir_state, speed, accel=True)
+                        self.new_harvest.change_direction(dir_state)
 
                 if prop_id == "upload-calibration":
                     if calib_contents is not None and ".json" in calibration_filename:
@@ -233,7 +234,15 @@ class NewHarvestCallbacks():
             set_calibration_file = self.new_harvest.get_calibration_filename()
             print(f"Set calibration file: {set_calibration_file}")
 
-            return [], set_calibration_file
+            dir_toggle = self.new_harvest.get_direction()
+            print(f"Direction: {dir_toggle}")
+            if dir_toggle == "acw":
+                dir_toggle = False
+            if dir_toggle == "cw":
+                dir_toggle = True
+
+
+            return [], set_calibration_file, dir_toggle
 
     def graph_update_callbacks(self):
 

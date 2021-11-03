@@ -3,6 +3,7 @@ import logging
 from hardware.postep256usb import PoStep256USB, DRIVER_RUN, DRIVER_SLEEP
 
 log = logging.getLogger()
+log.setLevel(logging.ERROR)
 
 POSTEP_ADDRESS = 0x46
 
@@ -39,7 +40,7 @@ class Stepper():
     def set_speed(self, speed):
         """Set speed to stepper motor"""
         self.current_speed = speed
-        print(f"Setting speed: {speed} to postep")
+        # print(f"Setting speed: {speed} to postep")
         try:
             ret = self.postep.set_requested_speed(self.current_speed, self.current_direction)  # set speed
             return ret

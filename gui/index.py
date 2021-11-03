@@ -1,3 +1,5 @@
+import logging
+
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
@@ -14,8 +16,8 @@ from gui.components.header import Header
 from src.new_harvest import NewHarvest
 from gui.callbacks import NewHarvestCallbacks
 
-# log = logging.getLogger('werkzeug')
-# log.setLevel(logging.ERROR)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 new_harvest = NewHarvest()  # instantiate RHmicro class, measurements start on press of "Start" button
 

@@ -35,6 +35,9 @@ class NewHarvest():
 
         self.current_calibration_step = CalibrationStep.IDLE
 
+        self.direction = False
+        self.action_in_progress = False
+
         # run all motor commands threaded so nothing is blocked
         self.thread = None
         self.stop_current_thread = False
@@ -46,7 +49,7 @@ class NewHarvest():
         self.current_set_flow = 0
         self.current_set_rpm = 0
 
-        self.acceleration = 50
+        self.acceleration = 10
 
         self.state = {
             "flow": [],
@@ -59,6 +62,7 @@ class NewHarvest():
 
         try:
             self.stepper = Stepper()
+            self.direction = self.stepper.get_direction()
             log.info("Initialized Stepper motor")
         except Exception as e:
             log.error(f"Failed to initialize stepper motor: {e}")
@@ -124,7 +128,7 @@ class NewHarvest():
         return self.current_calibration_step
 
     def get_direction(self):
-        return self.stepper.get_direction()
+        return self.direction
 
     def get_rpm(self):
         return self.current_set_rpm
@@ -147,11 +151,19 @@ class NewHarvest():
 
     def set_flow(self, direction, flow, new_log=False, type="", accel=False):
         """convert flow to rpm and set speed"""
+        if self.action_in_progress:
+            return
+
+        self.action_in_progress = True
+
         rpm = self.calibration.get_rpm(flow)
         ret = self.run_motor(direction, rpm, accel=accel)
         print(f"Ret in set flow: {ret}")
         if ret:
             self.current_set_flow = flow
+        
+        self.action_in_progress = False
+        
         return ret
 
     def get_flow(self):
@@ -161,37 +173,61 @@ class NewHarvest():
     def stop_motor(self):
         """Stop stepper motor"""
         self.csv_logging = False
-        ret = self.stepper.stop_motor()
+        ret = self.run_motor(self.direction, 0)  # set speed to 0
         if ret:
-            self.current_set_flow = 0
-            self.current_set_rpm = 0
+            ret = self.stepper.stop_motor()
+            if ret:
+                self.current_set_flow = 0
+                self.current_set_rpm = 0
         return ret
 
-    def run_motor(self, direction, speed, new_log=False, type="", accel=False):
+    def change_direction(self, direction):
+        if self.action_in_progress:
+            return
+        self.action_in_progress = True
+
+        if self.direction == "cw" and direction:
+            pass
+        elif self.direction == "acw" and not direction:
+            pass
+        else:
+            current_speed = self.current_set_rpm
+            self.stop_motor()
+            self.run_motor(direction, current_speed)
+
+        self.action_in_progress = False
+
+    def run_motor(self, direction, speed, new_log=False, type="", accel=True):
         # dir_str = "cw"
         print(f"Trying to run motor with direction: {direction} speed: {speed}")
-        if direction == True:
+        if direction == True or direction == "cw":
             dir_str = "cw"
-        if direction == False:
+        if direction == False or direction == "acw":
             dir_str = "acw"
         ret = self.stepper.set_direction(dir_str)
+        self.stepper.start_motor()
         if ret:
             if accel:
-                accel_speed = self.acceleration
-                while accel_speed < speed:
-                    print(f"Slowly accelerating")
+                start_speed = self.current_set_rpm
+                accel_speed = self.current_set_rpm
+                while accel_speed - speed != 0:
+                    if speed > start_speed:
+                        accel_speed += self.acceleration
+                        accel_speed = min(accel_speed, speed)
+                    else: 
+                        accel_speed -= self.acceleration
+                        accel_speed = max(accel_speed, speed)
                     ret = self.stepper.set_speed(accel_speed)
-                    accel_speed += self.acceleration
-                    accel_speed = min(accel_speed, speed)
-                    if ret:
-                        self.stepper.start_motor()
-                        self.current_set_rpm = speed
-                    time.sleep(0.5)
+                    time.sleep(0.0001)
             else:
                 ret = self.stepper.set_speed(speed)
                 if ret:
                     self.stepper.start_motor()
                     self.current_set_rpm = speed
+
+        if ret:
+            self.current_set_rpm = speed
+            self.direction = self.stepper.get_direction()
         if new_log:
             self.csv_writer.start_new_log(type)
             self.csv_logging = True
