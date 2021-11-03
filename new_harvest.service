@@ -1,0 +1,12 @@
+[Unit]
+Description="New Harvest Motor Control"
+After=multi-user.target
+
+[Service]
+WorkingDirectory=/home/pi/new-harvest-rpi-drive-system
+ExecStart=python3 -m gui.index
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

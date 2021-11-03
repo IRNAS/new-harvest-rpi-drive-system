@@ -107,10 +107,10 @@ class NewHarvestCallbacks():
 
                         if self.current_calibration_step == CalibrationStep.COMPLETED:
 
-                            calibration = Calibration()
-                            calibration.load_calibration(filename)
-                            slope = calibration.get_slope()
-                            self.new_harvest.set_calibration(calibration)
+                            calib = Calibration()
+                            calib.load_calibration(filename)
+                            slope = calib.get_slope()
+                            self.new_harvest.set_calibration(calib)
 
                             display_calib_dialog = True
                             calib_dialog_message = f"Calibration saved to {filename}.\nCalculated mL/rpm: {round(slope, 2)}"
@@ -182,8 +182,6 @@ class NewHarvestCallbacks():
         @app.callback(
             [
                 Output("hidden-div", "children"),
-                Output("confirm-dialog-sf", "displayed"),
-                Output("confirm-dialog-sf", "message"),
                 Output("calibration-filename", "children")
             ],
             [
@@ -202,9 +200,6 @@ class NewHarvestCallbacks():
         )
         def update_single_speed_status(btn_start, btn_set, btn_stop, dir, confirm, calib_contents, dir_state, speed, calibration_filename):
             """Update single speed layout"""
-
-            display_confirm_dialog = False
-            confirm_dialog_message = ""
             
             ctx = dash.callback_context
             if ctx.triggered:
@@ -213,39 +208,21 @@ class NewHarvestCallbacks():
                 print(split)
 
                 if prop_id == "btn-start":
-                    self.btn_click = "START"
-                    display_confirm_dialog = True
-                    confirm_dialog_message = "Press OK to start stepper motor"
+                    self.motor_running = True
+                    # self.new_harvest.run_motor(dir_state, speed, new_log=True, type="single_speed")
+                    self.new_harvest.set_flow(dir_state, speed, new_log=True, type="single_speed", accel=True)
                     
                 if prop_id == "btn-stop":
-                    self.btn_click = "STOP"
-                    display_confirm_dialog = True
-                    confirm_dialog_message = "Press OK to stop stepper motor"
+                    self.motor_running = False
+                    self.new_harvest.stop_motor()
                     
                 if prop_id == "btn-set":
-                    self.btn_click = "SET"
-                    display_confirm_dialog = True
-                    confirm_dialog_message = "Press OK to set adjust flow"
+                    if self.motor_running:
+                        self.new_harvest.set_flow(dir_state, speed, accel=True)
 
                 if prop_id == "direction-toggle":
                     if self.motor_running:
                         self.new_harvest.set_flow(dir_state, speed, accel=True)
-
-                if prop_id == "confirm-dialog-sf" and confirm:
-                    if self.btn_click == "START":
-                        if not self.motor_running:
-                            self.motor_running = True
-                            # self.new_harvest.run_motor(dir_state, speed, new_log=True, type="single_speed")
-                            self.new_harvest.set_flow(dir_state, speed, new_log=True, type="single_speed", accel=True)
-                        self.btn_click = None
-                    if self.btn_click == "STOP":
-                        self.motor_running = False
-                        self.new_harvest.stop_motor()
-                        self.btn_click = None
-                    if self.btn_click == "SET":
-                        if self.motor_running:
-                            self.new_harvest.set_flow(dir_state, speed, accel=True)
-                        self.btn_click = None
 
                 if prop_id == "upload-calibration":
                     if calib_contents is not None and ".json" in calibration_filename:
@@ -256,7 +233,7 @@ class NewHarvestCallbacks():
             set_calibration_file = self.new_harvest.get_calibration_filename()
             print(f"Set calibration file: {set_calibration_file}")
 
-            return [], display_confirm_dialog, confirm_dialog_message, set_calibration_file
+            return [], set_calibration_file
 
     def graph_update_callbacks(self):
 

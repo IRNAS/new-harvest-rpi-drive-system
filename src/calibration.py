@@ -29,6 +29,7 @@ class Calibration():
         with open(filename, "r") as calib:
             calib = json.load(calib)
         self.calib = calib
+        self.filename = filename.split("/")[-1]
         self.calc_slope()
 
     def calc_slope(self):

@@ -1,1 +1,1 @@
-{"low_rpm": 10, "high_rpm": 500, "low_rpm_vol": 10, "high_rpm_vol": 50, "duration": 10}
+{"low_rpm": 10, "high_rpm": 1000, "low_rpm_vol": 10, "high_rpm_vol": 30, "duration": 1}

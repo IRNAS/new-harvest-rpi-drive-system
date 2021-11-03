@@ -131,6 +131,7 @@ class NewHarvest():
 
     def set_calibration(self, calibration_obj):
         """Set json objs contents to calibration"""
+        print(f"Setting calibration: {calibration_obj}")
         self.calibration = calibration_obj
 
     def get_calibration_filename(self):
