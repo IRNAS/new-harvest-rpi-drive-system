@@ -191,7 +191,8 @@ class NewHarvestCallbacks():
                 Input("btn-stop", "n_clicks"),
                 Input("direction-toggle", "checked"),
                 Input("confirm-dialog-sf", "submit_n_clicks"),
-                Input("upload-calibration", "contents")
+                Input("upload-calibration", "contents"),
+                Input("check-dir-interval", "n_intervals")
             ],
             [
                 State("direction-toggle", "checked"),
@@ -199,8 +200,10 @@ class NewHarvestCallbacks():
                 State("upload-calibration", "filename")
             ]
         )
-        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, confirm, calib_contents, dir_state, speed, calibration_filename):
+        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, confirm, calib_contents, n_intervals, dir_state, speed, calibration_filename):
             """Update single speed layout"""
+
+            dir_toggle = self.new_harvest.get_direction()
             
             ctx = dash.callback_context
             if ctx.triggered:
@@ -232,17 +235,16 @@ class NewHarvestCallbacks():
                         calib = Calibration()
                         calib.set_calibration(parse_json_contents(calib_contents), calibration_filename)
                         self.new_harvest.set_calibration(calib)
+                if prop_id == "check-dir-interval":
+                    dir_toggle = self.new_harvest.get_direction()
+                    print(f"Direction: {dir_toggle}")
+                    if dir_toggle == "acw":
+                        dir_toggle = False
+                    if dir_toggle == "cw":
+                        dir_toggle = True
 
             set_calibration_file = self.new_harvest.get_calibration_filename()
             print(f"Set calibration file: {set_calibration_file}")
-
-            dir_toggle = self.new_harvest.get_direction()
-            print(f"Direction: {dir_toggle}")
-            if dir_toggle == "acw":
-                dir_toggle = False
-            if dir_toggle == "cw":
-                dir_toggle = True
-
 
             return [], set_calibration_file, dir_toggle
 

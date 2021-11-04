@@ -98,6 +98,7 @@ layout_single_speed = dbc.Container(
             message=""
         ),
         dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
+        dcc.Interval(id="check-dir-interval", interval=500, n_intervals=0),
         generate_single_speed_layout()
     ]
 )
