@@ -1,6 +1,7 @@
 import time
 import json
 import logging
+import pathlib
 import datetime
 
 from threading import Thread
@@ -73,6 +74,17 @@ class NewHarvest():
             self.temp_sensor = W1ThermSensor()
         except Exception as e:
             log.error(f"Failed to initialize DS1820: {e}")
+
+        # create folders where calibrations and flow profiles are saved
+        try:
+            pathlib.Path("/mnt/storage/calibrations").mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            log.warning(f"Failed to create calibrations folder")
+
+        try:
+            pathlib.Path("/mnt/storage/profiles").mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            log.warning(f"Failed to create profiles folder")
 
         self.state_loop_running = True
 
@@ -347,3 +359,9 @@ class NewHarvest():
                     time.sleep(0.01)
 
         ret = self.stop_motor()
+
+    def get_slope(self):
+        try:
+            return self.calibration.get_slope()
+        except Exception as e:
+            return 0

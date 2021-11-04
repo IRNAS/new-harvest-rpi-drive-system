@@ -103,6 +103,17 @@ def parse_json_contents(contents):
 
     return json_obj
 
+def load_filenames(file_root):
+    """Load all filenames"""
+    filenames = []
+    print(f"File root: {file_root}")
+    for root, dirs, files in os.walk(file_root):
+        for name in files:
+            print("file!")
+            filenames.append({"label": name, "value": os.path.join(root, name)})
+            # print(os.path.join(root, name))
+
+    return filenames
 
 def map_calibration_step(step):
     """Map calibration step to text"""

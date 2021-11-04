@@ -15,6 +15,7 @@ from gui.layouts.speed_profile_layout import layout_speed_profile
 from gui.components.header import Header
 from src.new_harvest import NewHarvest
 from gui.callbacks import NewHarvestCallbacks
+from gui.components.functions import load_filenames
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
@@ -62,9 +63,12 @@ def display_page(pathname):
     if pathname == "/calibration":
         return layout_calibration
     if pathname == "/single-speed-control":
-        return layout_single_speed
+        calibs = load_filenames("/mnt/storage/calibrations")
+        return layout_single_speed(calibs)
     if pathname == "/speed-profile":
-        return layout_speed_profile
+        calibs = load_filenames("/mnt/storage/calibrations")
+        profiles = load_filenames("/mnt/storage/profiles")
+        return layout_speed_profile(calibs, profiles)
     if pathname == "/postep-config":
         current_postep_config = new_harvest.get_postep_config()
         current_accel = new_harvest.get_acceleration()

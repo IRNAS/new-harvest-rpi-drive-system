@@ -3,11 +3,13 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from ..components.flow_graph import generate_graph_section
 from ..components.custom_toggle import custom_toggle
+from ..components.input_fields import dropdown
 
-def generate_single_speed_layout():
+def generate_single_speed_layout(calibs):
     """
     Control layout generation with all widgets (buttons, sliders, and input windows).
     """
+
     control_layout = html.Div(
         id="singles-speed-display",
         className="d-flex flex-row",
@@ -28,13 +30,15 @@ def generate_single_speed_layout():
                                     dcc.Upload(
                                         id="upload-calibration",
                                         accept=".json",
-                                        #style={"display": "flex", "height": "100%", "width": "100%"},
                                         children=[
                                             dbc.Button("Browse", style={"width": "100px"})
                                         ]
-                                    )
+                                    ),
+                                    dropdown(id="select-calibration", label="Select Calibration", fields=calibs)
                                ] 
-                            )
+                            ),
+                            html.Span("Slope (mL/min)/rpm:", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
+                            html.Span(id="slope", children="0")
                         ]
                     ),
                     html.Div(
@@ -89,16 +93,17 @@ def generate_single_speed_layout():
 
     return control_layout
 
-layout_single_speed = dbc.Container(
-    id="main-layout",
-    style={"padding-right": "0px", "padding-left": "0px"},
-    children=[
-        dcc.ConfirmDialog(
-            id="confirm-dialog-sf",
-            message=""
-        ),
-        dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
-        dcc.Interval(id="check-dir-interval", interval=500, n_intervals=0),
-        generate_single_speed_layout()
-    ]
-)
+def layout_single_speed(calibs):
+    return dbc.Container(
+        id="main-layout",
+        style={"padding-right": "0px", "padding-left": "0px"},
+        children=[
+            dcc.ConfirmDialog(
+                id="confirm-dialog-sf",
+                message=""
+            ),
+            dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
+            dcc.Interval(id="check-dir-interval", interval=500, n_intervals=0),
+            generate_single_speed_layout(calibs)
+        ]
+    )

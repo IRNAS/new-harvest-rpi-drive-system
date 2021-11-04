@@ -28,15 +28,17 @@ class Calibration():
         calib = {}
         with open(filename, "r") as calib:
             calib = json.load(calib)
+            print(f"Calib: {calib}")
         self.calib = calib
         self.filename = filename.split("/")[-1]
+        print(f"Set calibration: {self.calib} with filename: {self.filename}")
         self.calc_slope()
 
     def calc_slope(self):
         """Get function that describes relation between rpm and flow"""
         # equation in form of y = ax + b, b is 0 as there is no flow at 0 rpm
         duration_m = self.calib.get("duration", 1) / 60.0
-        self.slope = (self.calib.get("high_rpm_vol", 1) / duration_m - self.calib.get("low_rpm_vol", 1) / duration_m) / (self.calib.get("high_rpm", 1) - self.calib.get("low_rpm", 1))   # slope in mL/s/rpm
+        self.slope = (self.calib.get("high_rpm_vol", 1) / duration_m - self.calib.get("low_rpm_vol", 1) / duration_m) / (self.calib.get("high_rpm", 1) - self.calib.get("low_rpm", 1))   # slope in mL/min/rpm
         print(f"Calculated slope: {self.slope}")
 
     def get_slope(self):

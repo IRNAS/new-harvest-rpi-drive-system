@@ -81,7 +81,7 @@ class NewHarvestCallbacks():
 
             current_step_text = current_step
 
-            filename = f"./calibration/{filename}.json"
+            filename = f"/mnt/storage/calibrations/{filename}.json"
 
             calib_progress = self.calibration_percent_done
 
@@ -113,7 +113,7 @@ class NewHarvestCallbacks():
                             self.new_harvest.set_calibration(calib)
 
                             display_calib_dialog = True
-                            calib_dialog_message = f"Calibration saved to {filename}.\nCalculated mL/rpm: {round(slope, 2)}"
+                            calib_dialog_message = f"Calibration saved to {filename}.\nCalculated (mL/min)/rpm: {round(slope, 2)}"
 
                     if self.current_calibration_step == CalibrationStep.LOW_RPM_RUNNING:
                         self.calibration_percent_done = min((((time.time() - self.calibration_start_time) / set_time) * 49), 49)
@@ -183,7 +183,8 @@ class NewHarvestCallbacks():
             [
                 Output("hidden-div", "children"),
                 Output("calibration-filename", "children"),
-                Output("direction-toggle", "checked")
+                Output("direction-toggle", "checked"),
+                Output("slope", "children")
             ],
             [
                 Input("btn-start", "n_clicks"),
@@ -192,7 +193,8 @@ class NewHarvestCallbacks():
                 Input("direction-toggle", "checked"),
                 Input("confirm-dialog-sf", "submit_n_clicks"),
                 Input("upload-calibration", "contents"),
-                Input("check-dir-interval", "n_intervals")
+                Input("check-dir-interval", "n_intervals"),
+                Input("select-calibration-dropdown", "value")
             ],
             [
                 State("direction-toggle", "checked"),
@@ -200,7 +202,7 @@ class NewHarvestCallbacks():
                 State("upload-calibration", "filename")
             ]
         )
-        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, confirm, calib_contents, n_intervals, dir_state, speed, calibration_filename):
+        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, confirm, calib_contents, n_intervals, selected_calib, dir_state, speed, calibration_filename):
             """Update single speed layout"""
 
             dir_toggle = self.new_harvest.get_direction()
@@ -209,7 +211,7 @@ class NewHarvestCallbacks():
             if ctx.triggered:
                 split = ctx.triggered[0]["prop_id"].split(".")
                 prop_id = split[0]
-                print(split)
+                # print(split)
 
                 if prop_id == "btn-start":
                     self.motor_running = True
@@ -235,18 +237,27 @@ class NewHarvestCallbacks():
                         calib = Calibration()
                         calib.set_calibration(parse_json_contents(calib_contents), calibration_filename)
                         self.new_harvest.set_calibration(calib)
+
+                if prop_id == "select-calibration-dropdown":
+                    print(selected_calib)
+                    if ".json" in selected_calib:
+                        calib = Calibration()
+                        calib.load_calibration(selected_calib)
+                        self.new_harvest.set_calibration(calib)
+
                 if prop_id == "check-dir-interval":
                     dir_toggle = self.new_harvest.get_direction()
-                    print(f"Direction: {dir_toggle}")
+                    # print(f"Direction: {dir_toggle}")
                     if dir_toggle == "acw":
                         dir_toggle = False
                     if dir_toggle == "cw":
                         dir_toggle = True
 
             set_calibration_file = self.new_harvest.get_calibration_filename()
-            print(f"Set calibration file: {set_calibration_file}")
+            slope = round(self.new_harvest.get_slope(), 2)
+            # print(f"Set calibration file: {set_calibration_file}")
 
-            return [], set_calibration_file, dir_toggle
+            return [], set_calibration_file, dir_toggle, slope
 
     def graph_update_callbacks(self):
 
@@ -292,7 +303,8 @@ class NewHarvestCallbacks():
                 Output("current-flow-span", "children"),
                 Output("confirm-dialog-sp", "displayed"),
                 Output("confirm-dialog-sp", "message"),
-                Output("calibration-filename-sp", "children")
+                Output("calibration-filename-sp", "children"),
+                Output("slope-sp", "children")
             ],
             [
                 Input("btn-start-sp", "n_clicks"),
@@ -301,6 +313,7 @@ class NewHarvestCallbacks():
                 Input("upload-speed-profile", "contents"),
                 Input("confirm-dialog-sp", "submit_n_clicks"),
                 Input("upload-calibration-sp", "contents"),
+                Input("select-calibration-sp-dropdown", "value"),
                 Input("flow-update-interval", "n_intervals"),
             ],
             [
@@ -309,7 +322,7 @@ class NewHarvestCallbacks():
                 State("upload-calibration-sp", "filename")
             ]
         )
-        def update_speed_profile_status(btn_start, btn_stop, dir, contents, confirm, calib_contents, n, dir_state, profile_filename, calibration_filename):
+        def update_speed_profile_status(btn_start, btn_stop, dir, contents, confirm, calib_contents, selected_calib, n, dir_state, profile_filename, calibration_filename):
             """Update single speed layout"""
             display_confirm_dialog = False
             confirm_dialog_message = ""
@@ -351,11 +364,18 @@ class NewHarvestCallbacks():
                         calib.set_calibration(parse_json_contents(calib_contents), calibration_filename)
                         self.new_harvest.set_calibration(calib)
 
+                if prop_id == "select-calibration-sp-dropdown":
+                    print(selected_calib)
+                    if ".json" in selected_calib:
+                        calib = Calibration()
+                        calib.load_calibration(selected_calib)
+                        self.new_harvest.set_calibration(calib)
+
             flow = round(self.new_harvest.get_flow(), 2)
             set_calibration_file = self.new_harvest.get_calibration_filename()
             print(f"Set calibration file: {set_calibration_file}")
-
-            return [], profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file
+            slope = round(self.new_harvest.get_slope(), 2)
+            return [], profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope
 
     def postep_config_callbacks(self):
 

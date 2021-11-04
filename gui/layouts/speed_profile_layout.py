@@ -3,11 +3,13 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from ..components.flow_graph import generate_graph_section
 from ..components.custom_toggle import custom_toggle
+from ..components.input_fields import dropdown
 
-def generate_speed_profile_layout():
+def generate_speed_profile_layout(calibs, profiles):
     """
     Control layout generation with all widgets (buttons, sliders, and input windows).
     """
+    
     speed_profile_layout = html.Div(
         id="singles-speed-display",
         className="d-flex flex-row",
@@ -31,16 +33,10 @@ def generate_speed_profile_layout():
                                         children=[
                                             dbc.Button("Browse", style={"width": "100px"})
                                         ]
-                                    )
+                                    ),
+                                    dropdown(id="select-calibration-sp", label="Select Calibration", fields=calibs)
                                ] 
                             )
-                        ]
-                    ),
-                    html.Div(
-                        className="d-flex flex-column mt-4",                        
-                        children=[
-                            html.Span("Set Flow (mL/min):", style={"font-size": "20px", "font-weight": "bold"}),
-                            html.Span(id="current-flow-span", children="0")
                         ]
                     ),
                     html.Div(
@@ -58,9 +54,24 @@ def generate_speed_profile_layout():
                                         children=[
                                             dbc.Button("Browse", style={"width": "100px"})
                                         ]
-                                    )
+                                    ),
+                                    dropdown(id="select-speed-profile", label="Select Flow Profile", fields=profiles)
                                ] 
                             )
+                        ]
+                    ),
+                    html.Div(
+                        className="d-flex flex-column mt-5",
+                        children=[
+                            html.Span("Slope (mL/min)/rpm:", style={"font-size": "20px", "font-weight": "bold"}),
+                            html.Span(id="slope-sp", children="0")
+                        ]
+                    ),
+                    html.Div(
+                        className="d-flex flex-column mt-3",                        
+                        children=[
+                            html.Span("Set Flow (mL/min):", style={"font-size": "20px", "font-weight": "bold"}),
+                            html.Span(id="current-flow-span", children="0")
                         ]
                     ),
                     html.Div(
@@ -93,17 +104,18 @@ def generate_speed_profile_layout():
 
     return speed_profile_layout
 
-layout_speed_profile = dbc.Container(
-    id="main-layout",
-    style={"padding-right": "0px", "padding-left": "0px"},
-    children=[
-        html.Div(id="hidden-div-sp", style={"visibility":"hidden"}),
-        dcc.ConfirmDialog(
-            id="confirm-dialog-sp",
-            message=""
-        ),
-        dcc.Interval(id="flow-update-interval", interval=1000, n_intervals=0),
-        dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
-        generate_speed_profile_layout()
-    ]
-)
+def layout_speed_profile(calibs, profiles):
+    return dbc.Container(
+        id="main-layout",
+        style={"padding-right": "0px", "padding-left": "0px"},
+        children=[
+            html.Div(id="hidden-div-sp", style={"visibility":"hidden"}),
+            dcc.ConfirmDialog(
+                id="confirm-dialog-sp",
+                message=""
+            ),
+            dcc.Interval(id="flow-update-interval", interval=1000, n_intervals=0),
+            dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
+            generate_speed_profile_layout(calibs, profiles)
+        ]
+    )
