@@ -47,7 +47,7 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range, h=250, remov
                                     {"label": " Speed (RPM)", "value": "rpm"},
                                     {"label": " Temperature (°C)", "value": "temp"}
                                 ],
-                                value=["flow", "rpm"]
+                                value=["flow", "rpm", "temp"]
                             )
                         ]
                     )

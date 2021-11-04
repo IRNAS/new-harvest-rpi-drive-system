@@ -224,6 +224,8 @@ class NewHarvestCallbacks():
                     if self.motor_running:
                         # self.new_harvest.set_flow(dir_state, speed, accel=True)
                         self.new_harvest.change_direction(dir_state)
+                    else:
+                        self.new_harvest.set_direction(dir_state)
 
                 if prop_id == "upload-calibration":
                     if calib_contents is not None and ".json" in calibration_filename:
@@ -268,7 +270,7 @@ class NewHarvestCallbacks():
                     data.append(state[v])
                     titles.append(map_title(v))
                     colors.append(map_color(v))
-                new_data = generate_figure_data(data, titles, ['rgb(10, 100, 200)', 'rgb(250, 140, 15)'])
+                new_data = generate_figure_data(data, titles, ['rgb(10, 100, 200)', 'rgb(250, 140, 15)', 'rgb(190, 0, 250)'])
 
                 flow_figure["data"] = new_data
             else:
@@ -305,7 +307,7 @@ class NewHarvestCallbacks():
                 State("upload-calibration-sp", "filename")
             ]
         )
-        def update_single_speed_status(btn_start, btn_stop, dir, contents, confirm, calib_contents, n, dir_state, profile_filename, calibration_filename):
+        def update_speed_profile_status(btn_start, btn_stop, dir, contents, confirm, calib_contents, n, dir_state, profile_filename, calibration_filename):
             """Update single speed layout"""
             display_confirm_dialog = False
             confirm_dialog_message = ""

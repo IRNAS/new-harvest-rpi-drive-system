@@ -5,9 +5,10 @@ import datetime
 
 from threading import Thread
 
+from src.csv_writer import CsvWriter
+from w1thermsensor import W1ThermSensor
 from src.calibration import Calibration
 from src.stepper_usb import Stepper, Direction
-from src.csv_writer import CsvWriter
 
 log = logging.getLogger()
 
@@ -67,6 +68,12 @@ class NewHarvest():
         except Exception as e:
             log.error(f"Failed to initialize stepper motor: {e}")
 
+        self.temp_sensor = None
+        try:
+            self.temp_sensor = W1ThermSensor()
+        except Exception as e:
+            log.error(f"Failed to initialize DS1820: {e}")
+
         self.state_loop_running = True
 
         self.state_loop = Thread(target=self.state_update_loop, daemon=True)
@@ -81,12 +88,17 @@ class NewHarvest():
         """Periodically update state"""
         while True:
             if self.state_loop_running:
+                current_temp = self.temp_sensor.get_temperature()
+                try:
+                    self.state["temp"].append(round(current_temp, 1))
+                except Exception as e:
+                    pass
                 self.state["flow"].append(self.current_set_flow)
                 self.state["rpm"].append(self.current_set_rpm)
                 if self.csv_logging:
-                    self.csv_writer.append_row([self.current_set_flow, self.current_set_rpm])
-                # current_temp = self.get_temperature()  TODO: implement when sensor is known
-                # self.state["temp"].append(current_temp)[-600:] 
+                    self.csv_writer.append_row([self.current_set_flow, self.current_set_rpm, current_temp])
+
+                self.state["temp"] = self.state["temp"][-600:] 
                 self.state["flow"] = self.state["flow"][-600:]
                 self.state["rpm"] = self.state["rpm"][-600:]
             else:
@@ -133,6 +145,15 @@ class NewHarvest():
     def get_rpm(self):
         return self.current_set_rpm
 
+    def set_direction(self, direction):
+        if direction == True or direction == "cw":
+            dir_str = "cw"
+        if direction == False or direction == "acw":
+            dir_str = "acw"
+        ret = self.stepper.set_direction(dir_str)
+
+        self.direction = self.stepper.get_direction()
+
     def set_calibration(self, calibration_obj):
         """Set json objs contents to calibration"""
         print(f"Setting calibration: {calibration_obj}")
@@ -155,16 +176,18 @@ class NewHarvest():
             return
 
         self.action_in_progress = True
-
-        rpm = self.calibration.get_rpm(flow)
-        ret = self.run_motor(direction, rpm, accel=accel)
-        print(f"Ret in set flow: {ret}")
-        if ret:
-            self.current_set_flow = flow
-        
-        self.action_in_progress = False
-        
-        return ret
+        try:
+            rpm = self.calibration.get_rpm(flow)
+            ret = self.run_motor(direction, rpm, accel=accel)
+            print(f"Ret in set flow: {ret}")
+            if ret:
+                self.current_set_flow = flow
+            self.action_in_progress = False
+            return ret
+        except Exception as e:
+            logging.error(f"Failed to set flow: {e}")
+            self.action_in_progress = False
+            return None        
 
     def get_flow(self):
         """Get current set flow"""
@@ -192,20 +215,18 @@ class NewHarvest():
             pass
         else:
             current_speed = self.current_set_rpm
+            current_flow = self.current_set_flow
             self.stop_motor()
             self.run_motor(direction, current_speed)
+            self.current_set_flow = current_flow
 
         self.action_in_progress = False
 
     def run_motor(self, direction, speed, new_log=False, type="", accel=True):
         # dir_str = "cw"
         print(f"Trying to run motor with direction: {direction} speed: {speed}")
-        if direction == True or direction == "cw":
-            dir_str = "cw"
-        if direction == False or direction == "acw":
-            dir_str = "acw"
-        ret = self.stepper.set_direction(dir_str)
-        self.stepper.start_motor()
+        self.set_direction(direction)
+        ret = self.stepper.start_motor()
         if ret:
             if accel:
                 start_speed = self.current_set_rpm
@@ -227,7 +248,7 @@ class NewHarvest():
 
         if ret:
             self.current_set_rpm = speed
-            self.direction = self.stepper.get_direction()
+            # self.direction = self.stepper.get_direction()
         if new_log:
             self.csv_writer.start_new_log(type)
             self.csv_logging = True

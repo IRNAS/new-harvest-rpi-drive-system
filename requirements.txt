@@ -5,3 +5,4 @@ dash_bootstrap_components==0.12.2
 dash-html-components==1.1.2
 pyusb==1.2.1
 visdcc==0.0.40
+w1thermsensor==2.0.0
