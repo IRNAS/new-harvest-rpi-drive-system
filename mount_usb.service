@@ -1,0 +1,13 @@
+[Unit]
+Description=Mount usb service
+After=multi-user.target
+
+[Service]
+WorkingDirectory=/home/pi/new-harvest-rpi-drive-system
+ExecStart=/usr/bin/python3 discover_mount_usb.py
+Type=simple
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
