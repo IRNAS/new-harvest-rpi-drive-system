@@ -7,7 +7,7 @@ import datetime
 from threading import Thread
 
 from src.csv_writer import CsvWriter
-from w1thermsensor import W1ThermSensor
+# from w1thermsensor import W1ThermSensor
 from src.calibration import Calibration
 from src.stepper_usb import Stepper, Direction
 
@@ -70,10 +70,10 @@ class NewHarvest():
             log.error(f"Failed to initialize stepper motor: {e}")
 
         self.temp_sensor = None
-        try:
-            self.temp_sensor = W1ThermSensor()
-        except Exception as e:
-            log.error(f"Failed to initialize DS1820: {e}")
+        # try:
+        #     self.temp_sensor = W1ThermSensor()
+        # except Exception as e:
+        #     log.error(f"Failed to initialize DS1820: {e}")
 
         # create folders where calibrations and flow profiles are saved
         try:
@@ -85,6 +85,12 @@ class NewHarvest():
             pathlib.Path("/mnt/storage/profiles").mkdir(parents=True, exist_ok=True)
         except Exception as e:
             log.warning(f"Failed to create profiles folder")
+
+        # load last saved calibration
+        temp_c = Calibration()
+        with open("last_calibration.json", "r") as f:
+            calib_obj = json.loads(f)
+            self.calibration = temp_c.load_calibration(calib_obj)
 
         self.state_loop_running = True
 
@@ -100,11 +106,14 @@ class NewHarvest():
         """Periodically update state"""
         while True:
             if self.state_loop_running:
-                current_temp = self.temp_sensor.get_temperature()
-                try:
-                    self.state["temp"].append(round(current_temp, 1))
-                except Exception as e:
-                    pass
+                if self.temp_sensor is not None:
+                    current_temp = self.temp_sensor.get_temperature()
+                    try:
+                        self.state["temp"].append(round(current_temp, 1))
+                    except Exception as e:
+                        pass
+                else:
+                    current_temp = "Not Set"
                 self.state["flow"].append(self.current_set_flow)
                 self.state["rpm"].append(self.current_set_rpm)
                 if self.csv_logging:
@@ -170,6 +179,17 @@ class NewHarvest():
         """Set json objs contents to calibration"""
         print(f"Setting calibration: {calibration_obj}")
         self.calibration = calibration_obj
+
+        """Update last used calibration filename to file"""
+        # write last used calibration filename to json file
+        filename = self.calibration.get_filename()
+        file_obj = {}
+        with open("last_calibration.json", "r") as f:
+            file_obj = json.load(f)
+            
+        file_obj["calib_filename"] = filename
+        with open("last_calibration.json", "w") as f:
+            json.dump(file_obj, f)
 
     def get_calibration_filename(self):
         """Return calibration filename"""

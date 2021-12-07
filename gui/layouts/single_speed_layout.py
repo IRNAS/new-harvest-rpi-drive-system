@@ -37,8 +37,10 @@ def generate_single_speed_layout(calibs):
                                     dropdown(id="select-calibration", label="Select Calibration", fields=calibs)
                                ] 
                             ),
-                            html.Span("Slope (mL/min)/rpm:", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
-                            html.Span(id="slope", children="0")
+                            html.Span("Slope (mL/revol):", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
+                            html.Span(id="slope", children="0"),
+                            html.Span("Set rpm:", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
+                            html.Span(id="set-rpm", children="0")
                         ]
                     ),
                     html.Div(
@@ -99,7 +101,7 @@ def layout_single_speed(calibs):
         style={"padding-right": "0px", "padding-left": "0px"},
         children=[
             dcc.ConfirmDialog(
-                id="confirm-dialog-sf",
+                id="confirm-dialog-rpm-alert",
                 message=""
             ),
             dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),

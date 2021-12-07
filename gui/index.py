@@ -13,20 +13,21 @@ from gui.layouts.postep_config_layout import generate_postep_config_layout
 from gui.layouts.single_speed_layout import layout_single_speed
 from gui.layouts.speed_profile_layout import layout_speed_profile
 from gui.components.header import Header
-from src.new_harvest import NewHarvest
+# from src.new_harvest import NewHarvest
 from gui.callbacks import NewHarvestCallbacks
 from gui.components.functions import load_filenames
 
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-new_harvest = NewHarvest()  # instantiate RHmicro class, measurements start on press of "Start" button
+# new_harvest = NewHarvest()  # instantiate RHmicro class, measurements start on press of "Start" button
+new_harvest = None
 
-NewHarvestCallbacks(new_harvest).calibration_callbacks()
-NewHarvestCallbacks(new_harvest).single_speed_callbacks()
-NewHarvestCallbacks(new_harvest).graph_update_callbacks()
-NewHarvestCallbacks(new_harvest).speed_profile_callbacks()
-NewHarvestCallbacks(new_harvest).postep_config_callbacks()
+# NewHarvestCallbacks(new_harvest).calibration_callbacks()
+# NewHarvestCallbacks(new_harvest).single_speed_callbacks()
+# NewHarvestCallbacks(new_harvest).graph_update_callbacks()
+# NewHarvestCallbacks(new_harvest).speed_profile_callbacks()
+# NewHarvestCallbacks(new_harvest).postep_config_callbacks()
 
 # see https://dash.plot.ly/external-resources to alter header, footer and favicon
 app.index_string = ''' 

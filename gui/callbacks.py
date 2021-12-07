@@ -99,11 +99,11 @@ class NewHarvestCallbacks():
                     if self.prev_calibration_step != self.current_calibration_step:
                         if self.current_calibration_step == CalibrationStep.LOW_RPM_DONE:
                             display_calib_dialog = True
-                            calib_dialog_message = "Enter low rpm calibration volume (mL/min) and press continue"
+                            calib_dialog_message = "Enter low rpm calibration volume (mL) and press continue"
                     
                         if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE:
                             display_calib_dialog = True
-                            calib_dialog_message = "Calibration done. Enter high rpm calibration volume (mL/min) and press save"
+                            calib_dialog_message = "Calibration done. Enter high rpm calibration volume (mL) and press save"
 
                         if self.current_calibration_step == CalibrationStep.COMPLETED:
 
@@ -184,14 +184,16 @@ class NewHarvestCallbacks():
                 Output("hidden-div", "children"),
                 Output("calibration-filename", "children"),
                 Output("direction-toggle", "checked"),
-                Output("slope", "children")
+                Output("slope", "children"),
+                Output("set-rpm", "children"),
+                Output("confirm-dialog-rpm-alert", "message"),
+                Output("confirm-dialog-rpm-alert", "displayed")
             ],
             [
                 Input("btn-start", "n_clicks"),
                 Input("btn-set", "n_clicks"),
                 Input("btn-stop", "n_clicks"),
                 Input("direction-toggle", "checked"),
-                Input("confirm-dialog-sf", "submit_n_clicks"),
                 Input("upload-calibration", "contents"),
                 Input("check-dir-interval", "n_intervals"),
                 Input("select-calibration-dropdown", "value")
@@ -206,6 +208,9 @@ class NewHarvestCallbacks():
             """Update single speed layout"""
 
             dir_toggle = self.new_harvest.get_direction()
+            MAX_RPM = 5000
+            display_rpm_warning = False
+            rpm_dialog_message = f"Set rpm exceeds the maximum allowed rpm of {MAX_RPM}!"
             
             ctx = dash.callback_context
             if ctx.triggered:
@@ -255,9 +260,13 @@ class NewHarvestCallbacks():
 
             set_calibration_file = self.new_harvest.get_calibration_filename()
             slope = round(self.new_harvest.get_slope(), 2)
+
+            current_set_rpm = self.new_harvest.get_rpm()
+            if current_set_rpm > MAX_RPM:
+                display_rpm_warning = True
             # print(f"Set calibration file: {set_calibration_file}")
 
-            return [], set_calibration_file, dir_toggle, slope
+            return [], set_calibration_file, dir_toggle, slope, current_set_rpm, rpm_dialog_message, display_rpm_warning
 
     def graph_update_callbacks(self):
 
