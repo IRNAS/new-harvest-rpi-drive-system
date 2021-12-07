@@ -204,7 +204,7 @@ class NewHarvestCallbacks():
                 State("upload-calibration", "filename")
             ]
         )
-        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, confirm, calib_contents, n_intervals, selected_calib, dir_state, speed, calibration_filename):
+        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, calib_contents, n_intervals, selected_calib, dir_state, speed, calibration_filename):
             """Update single speed layout"""
 
             dir_toggle = self.new_harvest.get_direction()
@@ -213,6 +213,7 @@ class NewHarvestCallbacks():
             rpm_dialog_message = f"Set rpm exceeds the maximum allowed rpm of {MAX_RPM}!"
             
             ctx = dash.callback_context
+            # print(ctx)
             if ctx.triggered:
                 split = ctx.triggered[0]["prop_id"].split(".")
                 prop_id = split[0]
@@ -244,7 +245,7 @@ class NewHarvestCallbacks():
                         self.new_harvest.set_calibration(calib)
 
                 if prop_id == "select-calibration-dropdown":
-                    print(selected_calib)
+                    # print(selected_calib)
                     if ".json" in selected_calib:
                         calib = Calibration()
                         calib.load_calibration(selected_calib)
@@ -343,7 +344,7 @@ class NewHarvestCallbacks():
             if ctx.triggered:
                 split = ctx.triggered[0]["prop_id"].split(".")
                 prop_id = split[0]
-                print(split)
+                # print(split)
 
                 if prop_id == "btn-start-sp":
                     self.btn_click = "START"
@@ -374,7 +375,7 @@ class NewHarvestCallbacks():
                         self.new_harvest.set_calibration(calib)
 
                 if prop_id == "select-calibration-sp-dropdown":
-                    print(selected_calib)
+                    # print(selected_calib)
                     if ".json" in selected_calib:
                         calib = Calibration()
                         calib.load_calibration(selected_calib)
@@ -382,7 +383,7 @@ class NewHarvestCallbacks():
 
             flow = round(self.new_harvest.get_flow(), 2)
             set_calibration_file = self.new_harvest.get_calibration_filename()
-            print(f"Set calibration file: {set_calibration_file}")
+            # print(f"Set calibration file: {set_calibration_file}")
             slope = round(self.new_harvest.get_slope(), 2)
             return [], profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope
 

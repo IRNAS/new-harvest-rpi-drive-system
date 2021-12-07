@@ -106,10 +106,10 @@ def parse_json_contents(contents):
 def load_filenames(file_root):
     """Load all filenames"""
     filenames = []
-    print(f"File root: {file_root}")
+    # print(f"File root: {file_root}")
     for root, dirs, files in os.walk(file_root):
         for name in files:
-            print("file!")
+            # print("file!")
             filenames.append({"label": name, "value": os.path.join(root, name)})
             # print(os.path.join(root, name))
 

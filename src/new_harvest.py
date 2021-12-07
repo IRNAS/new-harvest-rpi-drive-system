@@ -88,9 +88,13 @@ class NewHarvest():
 
         # load last saved calibration
         temp_c = Calibration()
-        with open("last_calibration.json", "r") as f:
-            calib_obj = json.loads(f)
-            self.calibration = temp_c.load_calibration(calib_obj)
+        with open("/home/pi/last_calibration.json", "r") as f:
+            calib_obj = json.load(f)
+
+        filepath = calib_obj["calib_filename"]
+        if filepath != "":
+            temp_c.load_calibration(filepath)
+            self.set_calibration(temp_c)
 
         self.state_loop_running = True
 
@@ -184,11 +188,11 @@ class NewHarvest():
         # write last used calibration filename to json file
         filename = self.calibration.get_filename()
         file_obj = {}
-        with open("last_calibration.json", "r") as f:
+        with open("/home/pi/last_calibration.json", "r") as f:
             file_obj = json.load(f)
             
-        file_obj["calib_filename"] = filename
-        with open("last_calibration.json", "w") as f:
+        file_obj["calib_filename"] = f"/mnt/storage/calibrations/{filename}"
+        with open("/home/pi/last_calibration.json", "w") as f:
             json.dump(file_obj, f)
 
     def get_calibration_filename(self):
@@ -382,6 +386,7 @@ class NewHarvest():
 
     def get_slope(self):
         try:
+            # print("Getting slope")
             return self.calibration.get_slope()
         except Exception as e:
             return 0
