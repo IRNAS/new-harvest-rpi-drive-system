@@ -86,6 +86,12 @@ class NewHarvest():
         except Exception as e:
             log.warning(f"Failed to create profiles folder")
 
+        # create folder with measurements
+        try:
+            pathlib.Path("/mnt/storage/measurements").mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            log.warning(f"Failed to create profiles folder")
+
         # load last saved calibration
         temp_c = Calibration()
         with open("/home/pi/last_calibration.json", "r") as f:
@@ -111,17 +117,17 @@ class NewHarvest():
         while True:
             if self.state_loop_running:
                 if self.temp_sensor is not None:
-                    current_temp = self.temp_sensor.get_temperature()
+                    current_temp = round(self.temp_sensor.get_temperature(), 1)
                     try:
-                        self.state["temp"].append(round(current_temp, 1))
+                        self.state["temp"].append(current_temp)
                     except Exception as e:
                         pass
                 else:
-                    current_temp = "Not Set"
+                    current_temp = None
                 self.state["flow"].append(self.current_set_flow)
-                self.state["rpm"].append(self.current_set_rpm)
+                self.state["rpm"].append(int(self.current_set_rpm))
                 if self.csv_logging:
-                    self.csv_writer.append_row([self.current_set_flow, self.current_set_rpm, current_temp])
+                    self.csv_writer.append_row([self.current_set_flow, int(self.current_set_rpm), current_temp])
 
                 self.state["temp"] = self.state["temp"][-600:] 
                 self.state["flow"] = self.state["flow"][-600:]
@@ -214,7 +220,7 @@ class NewHarvest():
         self.action_in_progress = True
         try:
             rpm = self.calibration.get_rpm(flow)
-            ret = self.run_motor(direction, rpm, accel=accel)
+            ret = self.run_motor(direction, rpm, accel=accel, new_log=new_log, type=type)
             print(f"Ret in set flow: {ret}")
             if ret:
                 self.current_set_flow = flow

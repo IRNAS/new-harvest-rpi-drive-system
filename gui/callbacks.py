@@ -260,9 +260,9 @@ class NewHarvestCallbacks():
                         dir_toggle = True
 
             set_calibration_file = self.new_harvest.get_calibration_filename()
-            slope = round(self.new_harvest.get_slope(), 2)
+            slope = round(self.new_harvest.get_slope(), 3)
 
-            current_set_rpm = self.new_harvest.get_rpm()
+            current_set_rpm = int(self.new_harvest.get_rpm())
             if current_set_rpm > MAX_RPM:
                 display_rpm_warning = True
             # print(f"Set calibration file: {set_calibration_file}")
@@ -293,7 +293,7 @@ class NewHarvestCallbacks():
                     data.append(state[v])
                     titles.append(map_title(v))
                     colors.append(map_color(v))
-                new_data = generate_figure_data(data, titles, ['rgb(10, 100, 200)', 'rgb(250, 140, 15)', 'rgb(190, 0, 250)'])
+                new_data = generate_figure_data(data, titles, colors)
 
                 flow_figure["data"] = new_data
             else:
@@ -384,7 +384,7 @@ class NewHarvestCallbacks():
             flow = round(self.new_harvest.get_flow(), 2)
             set_calibration_file = self.new_harvest.get_calibration_filename()
             # print(f"Set calibration file: {set_calibration_file}")
-            slope = round(self.new_harvest.get_slope(), 2)
+            slope = round(self.new_harvest.get_slope(), 3)
             return [], profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope
 
     def postep_config_callbacks(self):
