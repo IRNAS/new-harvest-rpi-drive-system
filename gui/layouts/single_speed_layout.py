@@ -39,7 +39,7 @@ def generate_single_speed_layout(calibs):
                             ),
                             html.Span("Slope (mL/revol):", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
                             html.Span(id="slope", children="0"),
-                            html.Span("Set rpm:", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
+                            html.Span("Set pwm (%):", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
                             html.Span(id="set-rpm", children="0")
                         ]
                     ),

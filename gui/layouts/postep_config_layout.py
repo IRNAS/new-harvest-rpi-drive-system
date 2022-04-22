@@ -74,22 +74,22 @@ def generate_postep_config_layout(postep_settings, acc):
                             dbc.Col(
                                 width=4,
                                 children=[
-                                    text_field(id="acceleration", label="Acceleration (RPM)", type="text", default_value=acc)
+                                    text_field(id="acceleration", label="Acceleration (pwm)", type="text", default_value=acc)
                                 ]
                             )
                         ]
                     ),
-                    dbc.Row(
-                        className="input-row mt-2",
-                        children=[
-                            dbc.Col(
-                                width=4,
-                                children=[
-                                    dropdown(id="step-mode", label="Step Mode", fields=step_mode, value=postep_settings["microstepping"])
-                                ]
-                            )
-                        ]
-                    ),
+                    # dbc.Row(
+                    #     className="input-row mt-2",
+                    #     children=[
+                    #         dbc.Col(
+                    #             width=4,
+                    #             children=[
+                    #                 dropdown(id="step-mode", label="Step Mode", fields=step_mode, value=postep_settings["microstepping"])
+                    #             ]
+                    #         )
+                    #     ]
+                    # ),
                     dbc.Row(
                         className="input-row mt-4",
                         children=[

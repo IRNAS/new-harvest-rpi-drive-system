@@ -122,14 +122,14 @@ def map_calibration_step(step):
         text = "Idle"
     if step == CalibrationStep.COMPLETED:
         text = "Completed"
-    if step == CalibrationStep.LOW_RPM_RUNNING:
-        text = "Low Rpm"
-    if step == CalibrationStep.LOW_RPM_DONE:
-        text = "Low Rpm Done"
-    if step == CalibrationStep.HIGH_RPM_RUNNING:
-        text = "High Rpm"
-    if step == CalibrationStep.HIGH_RPM_DONE:
-        text = "High Rpm Done"
+    if step == CalibrationStep.LOW_PWM_RUNNING:
+        text = "Low PWM"
+    if step == CalibrationStep.LOW_PWM_DONE:
+        text = "Low PWM Done"
+    if step == CalibrationStep.HIGH_PWM_RUNNING:
+        text = "High PWM"
+    if step == CalibrationStep.HIGH_PWM_DONE:
+        text = "High PWM Done"
 
     return text
 
@@ -137,8 +137,8 @@ def map_title(variable):
     title = ""
     if variable == "flow":
         title = "Flow (mL/min)"
-    if variable == "rpm":
-        title = "Speed (RPM)"
+    if variable == "pwm":
+        title = "Speed (PWM)"
     if variable == "temp":
         title = "Temperature (°C)"
     return title
@@ -147,7 +147,7 @@ def map_color(variable):
     color = "rgb(0,0,255)"
     if variable == "flow":
         color = "rgb(50,160,235)"
-    if variable == "rpm":
+    if variable == "PWM":
         color = "rgb(250,185,50)"
     if variable == "temp":
         color = "rgb(250,50,80)"

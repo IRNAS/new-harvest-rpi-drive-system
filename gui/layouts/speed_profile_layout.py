@@ -63,7 +63,7 @@ def generate_speed_profile_layout(calibs, profiles):
                     html.Div(
                         className="d-flex flex-column mt-5",
                         children=[
-                            html.Span("Slope (mL/min)/rpm:", style={"font-size": "20px", "font-weight": "bold"}),
+                            html.Span("Slope (mL/min)/pwm:", style={"font-size": "20px", "font-weight": "bold"}),
                             html.Span(id="slope-sp", children="0")
                         ]
                     ),

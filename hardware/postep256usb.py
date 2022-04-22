@@ -56,7 +56,7 @@ class PoStep256USB(object):
             logging.error("Driver not found, make sure it is attached.")
             return
 
-        #print(self.device)
+        # print(self.device)
         self.device.reset()
 
         # Set the active configuration. With no arguments, the first configuration will be the active one
@@ -227,7 +227,6 @@ class PoStep256USB(object):
         print(f"Settings byte: {settings_byte}")
 
         return received
-
     def write_driver_settings(self, settings_list):
         data_list = [0] * 64
         data_list[1] = 0x80
@@ -286,11 +285,12 @@ class PoStep256USB(object):
         data_list[22] = 0
         data_list[23] = 24
 
-        data_list[45] = duty1_ccw
-        data_list[46] = duty1_acw
-        data_list[47] = duty2_ccw
-        data_list[48] = duty2_acw
+        data_list[24] = duty1_ccw
+        data_list[25] = duty1_acw
+        data_list[26] = duty2_ccw
+        data_list[27] = duty2_acw
 
+        print(f"Writing list: {data_list}")
         self.write_to_postep(data_list)
 
         received = self.read_from_postep(500)

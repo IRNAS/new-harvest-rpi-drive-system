@@ -7,12 +7,15 @@ log.setLevel(logging.ERROR)
 
 POSTEP_ADDRESS = 0x46
 
+DC_MODE = 0
+STEPPER_MODE = 1
+
 class Direction():
     ACW = 0
     CW = 1
 
-class Stepper():
-    def __init__(self):
+class Motor():
+    def __init__(self, mode=STEPPER_MODE):
         """Init stepper motor control"""
 
         self.postep = None
@@ -21,6 +24,8 @@ class Stepper():
 
         self.current_settings = []
         self.is_gain = 0
+
+        self.mode = mode
         
         try:
             self.postep = PoStep256USB(logging.INFO)
@@ -31,7 +36,7 @@ class Stepper():
             self.postep.read_configuration()
             self.postep.set_run_sleep_mode(DRIVER_SLEEP)
 
-            ret = self.postep.set_requested_speed(self.current_speed, self.current_direction)  # set speed to 0
+            ret = self.set_speed(self.current_speed)
 
         except Exception as e:
             self.postep = None
@@ -39,14 +44,36 @@ class Stepper():
 
     def set_speed(self, speed):
         """Set speed to stepper motor"""
+        print(f"Setting motor speed: {speed}")
         self.current_speed = speed
-        # print(f"Setting speed: {speed} to postep")
         try:
-            ret = self.postep.set_requested_speed(self.current_speed, self.current_direction)  # set speed
-            return ret
+            if self.mode == DC_MODE:
+                duty1_acw = 0
+                duty1_ccw = 0
+                duty2_acw = 0
+                duty2_ccw = 0
+
+                if self.current_direction == "cw":
+                    direction = 1
+                    duty1_ccw = 0
+                    duty2_ccw = speed
+                if self.current_direction == "acw":
+                    duty1_acw = 0
+                    duty2_acw = speed
+
+
+                
+                ret = self.postep.set_pwm(duty1_ccw, duty2_ccw, duty1_acw, duty2_acw)
+                return ret
+                
+            if self.mode == STEPPER_MODE:        
+                ret = self.postep.set_requested_speed(self.current_speed, self.current_direction)  # set speed
+                return ret
+        
         except Exception as e:
             log.error(f"An exception occured when trying to set stepper speed: {e}")
             return None
+      
 
     def map_gain(self, gain):
         if gain == 0:
@@ -138,7 +165,8 @@ class Stepper():
         """Set direction"""
         try:
             self.current_direction = direction
-            ret = self.postep.set_requested_speed(self.current_speed, self.current_direction)
+            print(f"Current set direction: {self.current_direction}")
+            ret = self.set_speed(self.current_speed)
             return ret
         except Exception as e:
             log.error(f"An exception occured when trying to set stepper direction: {e}")

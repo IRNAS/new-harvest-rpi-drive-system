@@ -23,7 +23,7 @@ class CsvWriter():
                     print(file)
                     print("Writing header")
                     writer = csv.writer(file)
-                    writer.writerow(["Timestamp", "Flow", "Rpm", "Temperature"])
+                    writer.writerow(["Timestamp", "Flow", "Pwm", "Temperature"])
         except Exception as e:
             logging.error("An exception occured when trying to write header to csv file")
 

@@ -44,10 +44,10 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range, h=250, remov
                                 style={"display":"block"},
                                 options=[
                                     {"label": " Flow (mL/min)", "value": "flow"},
-                                    {"label": " Speed (RPM)", "value": "rpm"},
+                                    {"label": " Speed (PWM)", "value": "pwm"},
                                     {"label": " Temperature (°C)", "value": "temp"}
                                 ],
-                                value=["flow", "rpm", "temp"]
+                                value=["flow", "pwm", "temp"]
                             )
                         ]
                     )

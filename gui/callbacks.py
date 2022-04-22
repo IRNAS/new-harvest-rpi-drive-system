@@ -60,17 +60,17 @@ class NewHarvestCallbacks():
                 Input("confirm-dialog", "submit_n_clicks"),
             ],
             [
-                State("low-rpm-input", "value"),
-                State("low-rpm-volume-input", "value"),
-                State("high-rpm-input", "value"),
-                State("high-rpm-volume-input", "value"),
+                State("low-pwm-input", "value"),
+                State("low-pwm-volume-input", "value"),
+                State("high-pwm-input", "value"),
+                State("high-pwm-volume-input", "value"),
                 State("set-time-input", "value"),
                 State("filename-input", "value"),
                 State("current-step-span", "children"),
                 # State("calib-progress", "value")
             ]
         )
-        def update_calib_status(n, btn_start, btn_stop, btn_cont, btn_save, confirm, low_rpm_in, low_rpm_vol, high_rpm_in, high_rpm_vol, set_time, filename, current_step):
+        def update_calib_status(n, btn_start, btn_stop, btn_cont, btn_save, confirm, low_pwm_in, low_pwm_vol, high_pwm_in, high_pwm_vol, set_time, filename, current_step):
             """Update calib status and display dialogs"""
 
             display_calib_dialog = False
@@ -97,13 +97,13 @@ class NewHarvestCallbacks():
                     self.current_calibration_step = self.new_harvest.get_calibration_step()
 
                     if self.prev_calibration_step != self.current_calibration_step:
-                        if self.current_calibration_step == CalibrationStep.LOW_RPM_DONE:
+                        if self.current_calibration_step == CalibrationStep.LOW_PWM_DONE:
                             display_calib_dialog = True
-                            calib_dialog_message = "Enter low rpm calibration volume (mL) and press continue"
+                            calib_dialog_message = "Enter low pwm calibration volume (mL) and press continue"
                     
-                        if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE:
+                        if self.current_calibration_step == CalibrationStep.HIGH_PWM_DONE:
                             display_calib_dialog = True
-                            calib_dialog_message = "Calibration done. Enter high rpm calibration volume (mL) and press save"
+                            calib_dialog_message = "Calibration done. Enter high pwm calibration volume (mL) and press save"
 
                         if self.current_calibration_step == CalibrationStep.COMPLETED:
 
@@ -113,15 +113,15 @@ class NewHarvestCallbacks():
                             self.new_harvest.set_calibration(calib)
 
                             display_calib_dialog = True
-                            calib_dialog_message = f"Calibration saved to {filename}.\nCalculated (mL/min)/rpm: {round(slope, 2)}"
+                            calib_dialog_message = f"Calibration saved to {filename}.\nCalculated (mL/min)/pwm: {round(slope, 2)}"
 
-                    if self.current_calibration_step == CalibrationStep.LOW_RPM_RUNNING:
+                    if self.current_calibration_step == CalibrationStep.LOW_PWM_RUNNING:
                         self.calibration_percent_done = min((((time.time() - self.calibration_start_time) / set_time) * 49), 49)
-                    if self.current_calibration_step == CalibrationStep.LOW_RPM_DONE:
+                    if self.current_calibration_step == CalibrationStep.LOW_PWM_DONE:
                         self.calibration_percent_done = 49
-                    if self.current_calibration_step == CalibrationStep.HIGH_RPM_RUNNING:
+                    if self.current_calibration_step == CalibrationStep.HIGH_PWM_RUNNING:
                         self.calibration_percent_done = 49 + min((((time.time() - self.calibration_start_time) / set_time) * 49), 49)
-                    if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE:
+                    if self.current_calibration_step == CalibrationStep.HIGH_PWM_DONE:
                         self.calibration_percent_done = 98
                     if self.current_calibration_step == CalibrationStep.COMPLETED:
                         self.calibration_percent_done = 100
@@ -135,7 +135,7 @@ class NewHarvestCallbacks():
                         self.btn_click = "START"
                         self.calibration_start_time = time.time()
                         display_confirm_dialog = True
-                        confirm_dialog_message = "Press OK to start calibration process with low rpm"
+                        confirm_dialog_message = "Press OK to start calibration process with low pwm"
 
                 if prop_id == "btn-stop-calib":
                     if self.current_calibration_step != CalibrationStep.IDLE and self.current_calibration_step != CalibrationStep.COMPLETED:
@@ -146,28 +146,28 @@ class NewHarvestCallbacks():
                         confirm_dialog_message = "Press OK to abort calibration"
 
                 if prop_id == "btn-continue-calib":
-                    if self.current_calibration_step == CalibrationStep.LOW_RPM_DONE:
+                    if self.current_calibration_step == CalibrationStep.LOW_PWM_DONE:
                         self.btn_click = "CNT"
                         self.calibration_start_time = time.time()
                         display_confirm_dialog = True
-                        confirm_dialog_message = "Press OK to start calibration process with high rpm"
+                        confirm_dialog_message = "Press OK to start calibration process with high pwm"
 
                 if prop_id == "confirm-dialog" and confirm:
                     if self.abort:
                         self.new_harvest.abort_calibration()
                         self.abort = False
                     if self.btn_click == "START":
-                        self.new_harvest.run_thread(target=self.new_harvest.run_low_rpm_calibration, args=(low_rpm_in, set_time, ))
+                        self.new_harvest.run_thread(target=self.new_harvest.run_low_pwm_calibration, args=(low_pwm_in, set_time, ))
                         self.btn_click = None
                     if self.btn_click == "CNT":
-                        self.new_harvest.run_thread(target=self.new_harvest.run_high_rpm_calibration, args=(high_rpm_in, set_time, ))
+                        self.new_harvest.run_thread(target=self.new_harvest.run_high_pwm_calibration, args=(high_pwm_in, set_time, ))
                         self.btn_click = None
                     if self.btn_click == "SAVE":
-                        self.new_harvest.save_calibration_data(filename, low_rpm_in, high_rpm_in, low_rpm_vol, high_rpm_vol, set_time)
+                        self.new_harvest.save_calibration_data(filename, low_pwm_in, high_pwm_in, low_pwm_vol, high_pwm_vol, set_time)
                         self.btn_click = None
 
                 if prop_id == "btn-save-calib":
-                    if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE or self.current_calibration_step == CalibrationStep.COMPLETED:
+                    if self.current_calibration_step == CalibrationStep.HIGH_PWM_DONE or self.current_calibration_step == CalibrationStep.COMPLETED:
                         self.btn_click = "SAVE"
                         display_confirm_dialog = True
                         confirm_dialog_message = "Press OK to confirm saving to file"
@@ -185,9 +185,9 @@ class NewHarvestCallbacks():
                 Output("calibration-filename", "children"),
                 Output("direction-toggle", "checked"),
                 Output("slope", "children"),
-                Output("set-rpm", "children"),
-                Output("confirm-dialog-rpm-alert", "message"),
-                Output("confirm-dialog-rpm-alert", "displayed")
+                Output("set-pwm", "children"),
+                Output("confirm-dialog-pwm-alert", "message"),
+                Output("confirm-dialog-pwm-alert", "displayed")
             ],
             [
                 Input("btn-start", "n_clicks"),
@@ -208,9 +208,9 @@ class NewHarvestCallbacks():
             """Update single speed layout"""
 
             dir_toggle = self.new_harvest.get_direction()
-            MAX_RPM = 5000
-            display_rpm_warning = False
-            rpm_dialog_message = f"Set rpm exceeds the maximum allowed rpm of {MAX_RPM}!"
+            MAX_PWM = 100
+            display_pwm_warning = False
+            pwm_dialog_message = f"Set pwm exceeds the maximum allowed pwm of {MAX_PWM}!"
             
             ctx = dash.callback_context
             # print(ctx)
@@ -262,12 +262,12 @@ class NewHarvestCallbacks():
             set_calibration_file = self.new_harvest.get_calibration_filename()
             slope = round(self.new_harvest.get_slope(), 3)
 
-            current_set_rpm = int(self.new_harvest.get_rpm())
-            if current_set_rpm > MAX_RPM:
-                display_rpm_warning = True
+            current_set_pwm = int(self.new_harvest.get_pwm())
+            if current_set_pwm > MAX_PWM:
+                display_pwm_warning = True
             # print(f"Set calibration file: {set_calibration_file}")
 
-            return [], set_calibration_file, dir_toggle, slope, current_set_rpm, rpm_dialog_message, display_rpm_warning
+            return [], set_calibration_file, dir_toggle, slope, current_set_pwm, pwm_dialog_message, display_pwm_warning
 
     def graph_update_callbacks(self):
 
