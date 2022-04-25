@@ -37,6 +37,8 @@ class NewHarvestCallbacks():
         self.abort = False
         self.btn_click = None
 
+        self.prev_direction = self.direction
+
     def calibration_callbacks(self):
 
         # stop motor when loading new layout
@@ -183,7 +185,7 @@ class NewHarvestCallbacks():
             [
                 Output("hidden-div", "children"),
                 Output("calibration-filename", "children"),
-                Output("direction-toggle", "checked"),
+                # Output("direction-toggle", "checked"),
                 Output("slope", "children"),
                 Output("set-pwm", "children"),
                 Output("confirm-dialog-pwm-alert", "message"),
@@ -193,18 +195,18 @@ class NewHarvestCallbacks():
                 Input("btn-start", "n_clicks"),
                 Input("btn-set", "n_clicks"),
                 Input("btn-stop", "n_clicks"),
-                Input("direction-toggle", "checked"),
+                Input("select-direction-dropdown", "value"),
                 Input("upload-calibration", "contents"),
-                Input("check-dir-interval", "n_intervals"),
+                # Input("check-dir-interval", "n_intervals"),
                 Input("select-calibration-dropdown", "value")
             ],
             [
-                State("direction-toggle", "checked"),
+                State("select-direction-dropdown", "value"),
                 State("flow-speed-input", "value"),
                 State("upload-calibration", "filename")
             ]
         )
-        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, calib_contents, n_intervals, selected_calib, dir_state, speed, calibration_filename):
+        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, calib_contents, selected_calib, dir_state, speed, calibration_filename):
             """Update single speed layout"""
 
             dir_toggle = self.new_harvest.get_direction()
@@ -221,22 +223,23 @@ class NewHarvestCallbacks():
 
                 if prop_id == "btn-start":
                     self.motor_running = True
+                    self.new_harvest.stop_motor()
                     self.new_harvest.set_flow(dir_state, speed, new_log=True, type="single_speed", accel=True)
+                    self.prev_direction = dir_state
                     
                 if prop_id == "btn-stop":
                     self.motor_running = False
                     self.new_harvest.stop_motor()
+                    self.prev_direction = dir_state
                     
                 if prop_id == "btn-set":
                     if self.motor_running:
+                        print(f"Current direction setting: {dir_state}")
+                        print(f"Prev direction: {self.prev_direction}")
+                        if dir_state != self.prev_direction:
+                            self.new_harvest.stop_motor()
+                            self.prev_direction = dir_state
                         self.new_harvest.set_flow(dir_state, speed, accel=True)
-
-                if prop_id == "direction-toggle":
-                    if self.motor_running:
-                        # self.new_harvest.set_flow(dir_state, speed, accel=True)
-                        self.new_harvest.change_direction(dir_state)
-                    else:
-                        self.new_harvest.set_direction(dir_state)
 
                 if prop_id == "upload-calibration":
                     if calib_contents is not None and ".json" in calibration_filename:
@@ -251,13 +254,13 @@ class NewHarvestCallbacks():
                         calib.load_calibration(selected_calib)
                         self.new_harvest.set_calibration(calib)
 
-                if prop_id == "check-dir-interval":
-                    dir_toggle = self.new_harvest.get_direction()
-                    # print(f"Direction: {dir_toggle}")
-                    if dir_toggle == "acw":
-                        dir_toggle = False
-                    if dir_toggle == "cw":
-                        dir_toggle = True
+                # if prop_id == "check-dir-interval":
+                #     dir_toggle = self.new_harvest.get_direction()
+                #     # print(f"Direction: {dir_toggle}")
+                #     if dir_toggle == "acw":
+                #         dir_toggle = False
+                #     if dir_toggle == "cw":
+                #         dir_toggle = True
 
             set_calibration_file = self.new_harvest.get_calibration_filename()
             slope = round(self.new_harvest.get_slope(), 3)
@@ -267,7 +270,9 @@ class NewHarvestCallbacks():
                 display_pwm_warning = True
             # print(f"Set calibration file: {set_calibration_file}")
 
-            return [], set_calibration_file, dir_toggle, slope, current_set_pwm, pwm_dialog_message, display_pwm_warning
+            
+
+            return [], set_calibration_file, slope, current_set_pwm, pwm_dialog_message, display_pwm_warning
 
     def graph_update_callbacks(self):
 
@@ -319,7 +324,7 @@ class NewHarvestCallbacks():
             [
                 Input("btn-start-sp", "n_clicks"),
                 Input("btn-stop-sp", "n_clicks"),
-                Input("direction-toggle-sp", "checked"),
+                Input("direction-toggle-sp", "value"),
                 Input("upload-speed-profile", "contents"),
                 Input("confirm-dialog-sp", "submit_n_clicks"),
                 Input("upload-calibration-sp", "contents"),
@@ -327,7 +332,7 @@ class NewHarvestCallbacks():
                 Input("flow-update-interval", "n_intervals"),
             ],
             [
-                State("direction-toggle-sp", "checked"),
+                State("direction-toggle-sp", "value"),
                 State("upload-speed-profile", "filename"),
                 State("upload-calibration-sp", "filename")
             ]

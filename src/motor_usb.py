@@ -11,8 +11,8 @@ DC_MODE = 0
 STEPPER_MODE = 1
 
 class Direction():
-    ACW = 0
-    CW = 1
+    ACW = "acw"
+    CW = "cw"
 
 class Motor():
     def __init__(self, mode=STEPPER_MODE):
@@ -44,7 +44,7 @@ class Motor():
 
     def set_speed(self, speed):
         """Set speed to stepper motor"""
-        print(f"Setting motor speed: {speed}")
+        # print(f"Setting motor speed: {speed}")
         self.current_speed = speed
         try:
             if self.mode == DC_MODE:
@@ -54,15 +54,12 @@ class Motor():
                 duty2_ccw = 0
 
                 if self.current_direction == "cw":
-                    direction = 1
                     duty1_ccw = 0
-                    duty2_ccw = speed
+                    duty2_ccw = int(speed)
                 if self.current_direction == "acw":
                     duty1_acw = 0
-                    duty2_acw = speed
+                    duty2_acw = int(speed)
 
-
-                
                 ret = self.postep.set_pwm(duty1_ccw, duty2_ccw, duty1_acw, duty2_acw)
                 return ret
                 
@@ -164,9 +161,11 @@ class Motor():
     def set_direction(self, direction):
         """Set direction"""
         try:
-            self.current_direction = direction
-            print(f"Current set direction: {self.current_direction}")
+            # self.current_direction = direction
             ret = self.set_speed(self.current_speed)
+            if ret:
+                self.current_direction = direction
+                print(f"Current set direction: {self.current_direction}")
             return ret
         except Exception as e:
             log.error(f"An exception occured when trying to set stepper direction: {e}")

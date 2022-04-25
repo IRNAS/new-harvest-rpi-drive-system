@@ -7,7 +7,7 @@ from dash.dependencies import Input, Output
 # see https://community.plot.ly/t/nolayoutexception-on-deployment-of-multi-page-dash-app-example-code/12463/2?u=dcomfort
 from gui.app import server
 from gui.app import app
-from gui.layouts import no_page
+from gui.layouts.no_page import no_page
 from gui.layouts.calibration_layout import layout_calibration
 from gui.layouts.postep_config_layout import generate_postep_config_layout
 from gui.layouts.single_speed_layout import layout_single_speed

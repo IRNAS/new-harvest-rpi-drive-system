@@ -51,7 +51,7 @@ class NewHarvest():
         self.current_set_flow = 0
         self.current_set_pwm = 0
 
-        self.acceleration = 10
+        self.acceleration = 1
 
         self.state = {
             "flow": [],
@@ -220,7 +220,7 @@ class NewHarvest():
         self.action_in_progress = True
         try:
             pwm = self.calibration.get_pwm(flow)
-            ret = self.run_motor(direction, pwm, accel=accel, new_log=new_log, type=type)
+            ret = self.run_motor(direction, pwm, new_log=new_log, type=type)
             print(f"Ret in set flow: {ret}")
             if ret:
                 self.current_set_flow = flow
@@ -235,10 +235,13 @@ class NewHarvest():
         """Get current set flow"""
         return self.current_set_flow
 
-    def stop_motor(self):
+    def stop_motor(self, conditional_stop=False):
         """Stop motor"""
+        print(F"STOPPING MOTOR")
         self.csv_logging = False
-        ret = self.run_motor(self.direction, 0)  # set speed to 0
+        direction = self.motor.get_direction()
+        # print(f"Current set direction: {direction}")
+        ret = self.run_motor(direction, 0)  # set speed to 0
         if ret:
             ret = self.motor.stop_motor()
             if ret:
@@ -258,38 +261,119 @@ class NewHarvest():
         else:
             current_speed = self.current_set_pwm
             current_flow = self.current_set_flow
-            self.stop_motor()
+            # self.stop_motor()
             self.run_motor(direction, current_speed)
             self.current_set_flow = current_flow
 
         self.action_in_progress = False
 
-    def run_motor(self, direction, speed, new_log=False, type="", accel=True):
-        # dir_str = "cw"
-        print(f"Trying to run motor with direction: {direction} speed: {speed}")
-        self.set_direction(direction)
-        ret = self.motor.start_motor()
-        if ret:
-            if accel:
-                start_speed = self.current_set_pwm
-                accel_speed = self.current_set_pwm
-                while accel_speed - speed != 0:
-                    if speed > start_speed:
-                        accel_speed += self.acceleration
-                        accel_speed = min(accel_speed, speed)
-                    else: 
-                        accel_speed -= self.acceleration
-                        accel_speed = max(accel_speed, speed)
-                    ret = self.motor.set_speed(accel_speed)
-                    time.sleep(0.0001)
-            else:
-                ret = self.motor.set_speed(speed)
-                if ret:
-                    self.motor.start_motor()
-                    self.current_set_pwm = speed
+    def get_current_mapped_pwm(self):
+        current_direction = self.motor.get_direction()
+        # print(f"Current motor direction: {current_direction}")
 
-        if ret:
-            self.current_set_pwm = speed
+        if current_direction == "cw":
+            direction_factor = 1
+        if current_direction == "acw":
+            direction_factor = -1
+
+        current_pwm = self.current_set_pwm * direction_factor  # map currently set pwm from [0, 100] to [-100, 100] based on direction
+
+        return current_pwm
+
+    def run_motor(self, set_dir, target_pwm, new_log=False, type=""):
+        # dir_str = "cw"
+        if target_pwm != "":
+            target_pwm = int(min(target_pwm, 100))
+
+        current_direction = self.motor.get_direction()
+        self.motor.set_direction(current_direction)
+
+        # speed = max(speed, 100)
+        # if set_dir == current_direction:
+        #     direction_factor = 1
+        # else:
+        if (set_dir == True or set_dir == "cw"):
+            direction_factor = 1
+            set_dir = "cw"
+        if (set_dir == False or set_dir == "acw"):
+            direction_factor = -1
+            set_dir = "acw"
+
+        target_pwm = direction_factor * target_pwm  # map from [0, 100] to [-100, 100] based on set direction
+        # print(f"Trying to run motor with direction: {set_dir} speed: {target_pwm}")
+        current_pwm = self.get_current_mapped_pwm()
+
+        ret = self.motor.start_motor()
+
+        skip_count = 0
+        if target_pwm == current_pwm:  # if speed is already set there is nothing to do
+            return True
+
+        dir_changed = False
+
+        if ret:        
+            start_pwm = self.current_set_pwm
+            speed_diff = abs(current_pwm - target_pwm)  # the difference in speed we need to change for, [0, 200] - we decrease this variable, when 0 is hit we are done
+            # speed_change = self.current_set_pwm
+            current_set_pwm = self.current_set_pwm  # the currently set pwm, we periodically adjust this to reflect the change in speed
+
+            # if current_pwm < target_pwm:
+            #     current_pwm = current_pwm * -1
+            slope = target_pwm - current_pwm  # the slope of pwm change
+
+            while True:
+                current_pwm = self.get_current_mapped_pwm()
+                speed_diff = abs(current_pwm - target_pwm)  # the difference in speed we need to change for, [0, 200] - we decrease this variable, when 0 is hit we are done
+                # print(f"Speed diff: {speed_diff}")
+                # print(f"Current set pwm: {self.current_set_pwm}")
+                prev_slope = slope
+
+                # if current_pwm < target_pwm:
+                #     current_pwm = current_pwm * -1
+                slope = target_pwm - current_pwm  # the slope of pwm change
+                # print(f"Current slope: {slope}")
+                
+                # print(f"slope//2: {slope//2}")
+                if slope == target_pwm and current_direction != set_dir and not dir_changed:
+                    self.motor.set_direction(set_dir)
+                    # print(f"CHAGING MOTOR DIRECTION")
+                    time.sleep(0.01)
+                    dir_changed = True
+                    continue
+
+                if slope < 0:
+                    if set_dir == "cw":
+                        current_set_pwm -= self.acceleration
+                    # if not dir_changed:
+                    #     current_set_pwm -= self.acceleration  # decrease current_set_pwm if slope is negative
+                    else:
+                        current_set_pwm += self.acceleration  # decrease current_set_pwm if slope is negative
+                    # print(F"Negative slope, current speed: {current_set_pwm}")
+                if slope > 0:
+                    if set_dir == "cw":
+                        current_set_pwm += self.acceleration
+                    # if not dir_changed:
+                    else:
+                        current_set_pwm -= self.acceleration
+                    # print(F"Positive slope, current speed: {current_set_pwm}")
+
+                current_set_pwm = min(abs(current_set_pwm), 100)  # cap to 100
+                ret = self.motor.set_speed(current_set_pwm)
+                if ret:
+                    self.current_set_pwm = current_set_pwm
+                
+                time.sleep(0.001)
+                
+                if speed_diff == 0:  # once speed diff is 0 exit out
+                    print("Speed set. Exiting")
+                    break
+            # else:
+            #     ret = self.motor.set_speed(speed)
+            #     if ret:
+            #         self.motor.start_motor()
+            #         self.current_set_pwm = speed
+
+        
             # self.direction = self.motor.get_direction()
         if new_log:
             self.csv_writer.start_new_log(type)

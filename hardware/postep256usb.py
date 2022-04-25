@@ -290,12 +290,14 @@ class PoStep256USB(object):
         data_list[26] = duty2_ccw
         data_list[27] = duty2_acw
 
-        print(f"Writing list: {data_list}")
+        # print(f"Writing list: {data_list}")
         self.write_to_postep(data_list)
 
         received = self.read_from_postep(500)
-        print(list(received))
-        print(f"Byte at 15: {received[15]}")
+        # print(list(received))
+        # print(f"Byte at 15: {received[15]}")
+
+        return received[15] == 0xB0
 
     def move_config(self,max_speed,max_accel,max_decel,endsw=None):
         '''

@@ -40,7 +40,7 @@ def generate_single_speed_layout(calibs):
                             html.Span("Slope (mL/revol):", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
                             html.Span(id="slope", children="0"),
                             html.Span("Set pwm (%):", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
-                            html.Span(id="set-rpm", children="0")
+                            html.Span(id="set-pwm", children="0")
                         ]
                     ),
                     html.Div(
@@ -67,12 +67,15 @@ def generate_single_speed_layout(calibs):
                     ),
                     html.Div(
                         className="d-flex flex-row mt-4 justify-content-between",
-                        style={"width": "50%"},
                         children=[
-                            html.Span("ACW"),
-                            custom_toggle(id="direction-toggle"),
-                            html.Span("CW")
+                            dropdown(id="select-direction", label="Select Direction", fields=[{"label": "ACW", "value": "acw"}, {"label": "CW", "value": "cw"}], value="acw")
                         ]
+                        # style={"width": "50%"},
+                        # children=[
+                        #     html.Span("ACW"),
+                        #     custom_toggle(id="direction-toggle"),
+                        #     html.Span("CW")
+                        # ]
                     ),
                     html.Div(
                         className="mt-4",
@@ -101,7 +104,7 @@ def layout_single_speed(calibs):
         style={"padding-right": "0px", "padding-left": "0px"},
         children=[
             dcc.ConfirmDialog(
-                id="confirm-dialog-rpm-alert",
+                id="confirm-dialog-pwm-alert",
                 message=""
             ),
             dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
