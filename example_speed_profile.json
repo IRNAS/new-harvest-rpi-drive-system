@@ -2,15 +2,18 @@
     "profile": [
         {
             "flow": 30,
-            "duration": 30
+            "duration": 30,
+            "acceleration": 100
         },
         {
             "flow": 50,
-            "duration": 10
+            "duration": 10,
+            "acceleration": 100
         },
         {
             "flow": 10,
-            "duration": 60
+            "duration": 60,
+            "acceleration": 100
         }
     ]
 }

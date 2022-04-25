@@ -51,7 +51,7 @@ class NewHarvest():
         self.current_set_flow = 0
         self.current_set_pwm = 0
 
-        self.acceleration = 1
+        self.stop_motor_flag = False
 
         self.state = {
             "flow": [],
@@ -126,10 +126,13 @@ class NewHarvest():
                         pass
                 else:
                     current_temp = None
+
+                pwm = self.get_current_mapped_pwm()
+                # print(f"Current pwm: {pwm}")
                 self.state["flow"].append(self.current_set_flow)
-                self.state["pwm"].append(int(self.current_set_pwm))
+                self.state["pwm"].append(int(pwm))
                 if self.csv_logging:
-                    self.csv_writer.append_row([self.current_set_flow, int(self.current_set_pwm), current_temp])
+                    self.csv_writer.append_row([self.current_set_flow, pwm, current_temp])
 
                 self.state["temp"] = self.state["temp"][-600:] 
                 self.state["flow"] = self.state["flow"][-600:]
@@ -145,6 +148,8 @@ class NewHarvest():
 
     def stop_thread(self):
         self.stop_current_thread = True
+        self.stop_motor_flag = True
+        self.csv_logging = False
         if self.thread is not None:
             self.thread.join()
         print(f"Stopping thread")
@@ -155,13 +160,6 @@ class NewHarvest():
         settings_json = self.motor.get_driver_settings()
         return settings_json
         # microstepping = config[36]
-
-    def set_acceleration(self, acc):
-        """Set acceleration"""
-        self.acceleration = acc
-
-    def get_acceleration(self):
-        return self.acceleration
 
     def set_postep_config(self, fsc=None, idlec=None, overheatc=None, step_mode=None):
         self.motor.set_driver_settings(fsc, idlec, overheatc, step_mode)
@@ -226,7 +224,7 @@ class NewHarvest():
                 self.speed_profile = speed_profile_json
                 self.profile_filename = profile_filename
 
-    def set_flow(self, direction, flow, new_log=False, type="", accel=False):
+    def set_flow(self, direction, flow, new_log=False, type="", pwm_per_sec=100):
         """convert flow to pwm and set speed"""
         if self.action_in_progress:
             return
@@ -234,7 +232,7 @@ class NewHarvest():
         self.action_in_progress = True
         try:
             pwm = self.calibration.get_pwm(flow)
-            ret = self.run_motor(direction, pwm, new_log=new_log, type=type)
+            ret = self.run_motor(direction, pwm, new_log=new_log, type=type, pwm_per_sec=pwm_per_sec)
             print(f"Ret in set flow: {ret}")
             if ret:
                 self.current_set_flow = flow
@@ -252,7 +250,7 @@ class NewHarvest():
     def stop_motor(self, conditional_stop=False):
         """Stop motor"""
         print(F"STOPPING MOTOR")
-        self.csv_logging = False
+        # self.csv_logging = False
         direction = self.motor.get_direction()
         # print(f"Current set direction: {direction}")
         ret = self.run_motor(direction, 0)  # set speed to 0
@@ -294,8 +292,18 @@ class NewHarvest():
 
         return current_pwm
 
-    def run_motor(self, set_dir, target_pwm, new_log=False, type=""):
+    def run_motor(self, set_dir, target_pwm, new_log=False, type="", pwm_per_sec=100):
         # dir_str = "cw"
+
+        if new_log:
+            self.csv_writer.start_new_log(type)
+            self.csv_logging = True
+
+        self.stop_motor_flag = False
+
+        pwm_per_tick = pwm_per_sec * 0.1
+        print(f"pwm per tick: {pwm_per_tick}")
+
         if target_pwm != "":
             target_pwm = int(min(target_pwm, 100))
 
@@ -319,15 +327,17 @@ class NewHarvest():
 
         ret = self.motor.start_motor()
 
-        skip_count = 0
         if target_pwm == current_pwm:  # if speed is already set there is nothing to do
             return True
 
         dir_changed = False
 
+        start_time = time.time()
+
         if ret:        
             start_pwm = self.current_set_pwm
             speed_diff = abs(current_pwm - target_pwm)  # the difference in speed we need to change for, [0, 200] - we decrease this variable, when 0 is hit we are done
+            
             # speed_change = self.current_set_pwm
             current_set_pwm = self.current_set_pwm  # the currently set pwm, we periodically adjust this to reflect the change in speed
 
@@ -335,40 +345,36 @@ class NewHarvest():
             #     current_pwm = current_pwm * -1
             slope = target_pwm - current_pwm  # the slope of pwm change
 
-            while True:
+            while True and not self.stop_motor_flag:
                 current_pwm = self.get_current_mapped_pwm()
                 speed_diff = abs(current_pwm - target_pwm)  # the difference in speed we need to change for, [0, 200] - we decrease this variable, when 0 is hit we are done
-                # print(f"Speed diff: {speed_diff}")
-                # print(f"Current set pwm: {self.current_set_pwm}")
-                prev_slope = slope
 
-                # if current_pwm < target_pwm:
-                #     current_pwm = current_pwm * -1
                 slope = target_pwm - current_pwm  # the slope of pwm change
-                # print(f"Current slope: {slope}")
-                
-                # print(f"slope//2: {slope//2}")
+                print(f"Speed diff: {speed_diff}")
+                print(f"Target pwm: {target_pwm}, current_pwm: {current_pwm}")
+
+                tick_multiplier = 1.0
+                if pwm_per_tick > 2 * speed_diff:
+                    tick_multiplier = 0.1
+
+        
                 if slope == target_pwm and current_direction != set_dir and not dir_changed:
                     self.motor.set_direction(set_dir)
-                    # print(f"CHAGING MOTOR DIRECTION")
                     time.sleep(0.01)
                     dir_changed = True
                     continue
 
                 if slope < 0:
                     if set_dir == "cw":
-                        current_set_pwm -= self.acceleration
-                    # if not dir_changed:
-                    #     current_set_pwm -= self.acceleration  # decrease current_set_pwm if slope is negative
+                        current_set_pwm -= pwm_per_tick * tick_multiplier
                     else:
-                        current_set_pwm += self.acceleration  # decrease current_set_pwm if slope is negative
-                    # print(F"Negative slope, current speed: {current_set_pwm}")
+                        current_set_pwm += pwm_per_tick * tick_multiplier  # decrease current_set_pwm if slope is negative
                 if slope > 0:
                     if set_dir == "cw":
-                        current_set_pwm += self.acceleration
+                        current_set_pwm += pwm_per_tick * tick_multiplier
                     # if not dir_changed:
                     else:
-                        current_set_pwm -= self.acceleration
+                        current_set_pwm -= pwm_per_tick * tick_multiplier
                     # print(F"Positive slope, current speed: {current_set_pwm}")
 
                 current_set_pwm = min(abs(current_set_pwm), 100)  # cap to 100
@@ -376,22 +382,13 @@ class NewHarvest():
                 if ret:
                     self.current_set_pwm = current_set_pwm
                 
-                time.sleep(0.001)
-                
-                if speed_diff == 0:  # once speed diff is 0 exit out
+                time.sleep(0.1)  # sleep for predefined duration - acceleration is based on this duration
+                # print(f"Duration: {time.time() - start_time}")
+                if speed_diff <= 1:  # once speed diff is 0 exit out
                     print("Speed set. Exiting")
                     break
-            # else:
-            #     ret = self.motor.set_speed(speed)
-            #     if ret:
-            #         self.motor.start_motor()
-            #         self.current_set_pwm = speed
+         
 
-        
-            # self.direction = self.motor.get_direction()
-        if new_log:
-            self.csv_writer.start_new_log(type)
-            self.csv_logging = True
         return ret
 
     def run_low_pwm_calibration(self, speed, duration):
@@ -483,7 +480,8 @@ class NewHarvest():
                 print(f"Running speed setting: {speed_setting} with direction: {direction}")
                 duration = speed_setting.get("duration", 0)
                 flow = speed_setting.get("flow", 0)
-                ret = self.set_flow(direction, flow)
+                pwm_per_second = speed_setting.get("pwm_per_second", 100)
+                ret = self.set_flow(direction, flow, pwm_per_second)
                 print(f"Ret in run_speed_profile: {ret}")
                 if ret:
                     start_time = time.time()
@@ -492,6 +490,9 @@ class NewHarvest():
                         time.sleep(0.01)
 
             ret = self.stop_motor()
+
+        # stop csv logging
+        self.csv_logging = False
 
     def get_slope(self):
         try:
