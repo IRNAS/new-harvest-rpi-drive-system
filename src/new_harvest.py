@@ -104,6 +104,8 @@ class NewHarvest():
 
         self.state_loop_running = True
 
+        self.profile_filename = None
+
         self.state_loop = Thread(target=self.state_update_loop, daemon=True)
         self.state_loop.start()
 
@@ -208,9 +210,21 @@ class NewHarvest():
         else:
             return "No Calibration Loaded"
 
-    def load_speed_profile(self, speed_profile_json):
+    def get_profile_filename(self):
+        return self.profile_filename
+
+    def load_speed_profile(self, speed_profile_json=None, profile_filename=None):
         """Load speed profile from json"""
-        self.speed_profile = speed_profile_json
+        if speed_profile_json is not None and profile_filename is not None:
+            self.speed_profile = speed_profile_json
+            self.profile_filename = profile_filename
+            return
+
+        if profile_filename is not None:
+            with open(profile_filename, "r") as f:
+                speed_profile_json = json.load(f)
+                self.speed_profile = speed_profile_json
+                self.profile_filename = profile_filename
 
     def set_flow(self, direction, flow, new_log=False, type="", accel=False):
         """convert flow to pwm and set speed"""
@@ -447,7 +461,7 @@ class NewHarvest():
             self.current_calibration_step = CalibrationStep.COMPLETED
             self.current_state = State.IDLE
 
-    def run_speed_profile(self, direction):
+    def run_speed_profile(self, direction, num_repeat):
         if self.speed_profile is None:
             print("No speed profile set! Returning!")
             return
@@ -460,19 +474,24 @@ class NewHarvest():
         self.csv_writer.start_new_log("speed_profile")
         self.csv_logging = True
 
-        for speed_setting in self.speed_profile["profile"]:
-            print(f"Running speed setting: {speed_setting} with direction: {direction}")
-            duration = speed_setting.get("duration", 0)
-            flow = speed_setting.get("flow", 0)
-            ret = self.set_flow(direction, flow)
-            print(f"Ret in run_speed_profile: {ret}")
-            if ret:
-                start_time = time.time()
-                # print(f"Running flow: {flow} for duration: {duration}")
-                while not self.stop_current_thread and time.time() - start_time < duration:
-                    time.sleep(0.01)
+        if num_repeat is None:
+            num_repeat = 1
+        
+        print(f"Running speed profile {num_repeat} times")
+        for _ in range(0, num_repeat):
+            for speed_setting in self.speed_profile["profile"]:
+                print(f"Running speed setting: {speed_setting} with direction: {direction}")
+                duration = speed_setting.get("duration", 0)
+                flow = speed_setting.get("flow", 0)
+                ret = self.set_flow(direction, flow)
+                print(f"Ret in run_speed_profile: {ret}")
+                if ret:
+                    start_time = time.time()
+                    # print(f"Running flow: {flow} for duration: {duration}")
+                    while not self.stop_current_thread and time.time() - start_time < duration:
+                        time.sleep(0.01)
 
-        ret = self.stop_motor()
+            ret = self.stop_motor()
 
     def get_slope(self):
         try:

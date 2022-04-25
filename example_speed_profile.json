@@ -1,7 +1,16 @@
 {
     "profile": [
-        {"flow": 30, "duration": 30},  // flow is mL/min, duration is in seconds
-        {"flow": 50, "duration": 10},
-        {"flow": 10, "duration": 60}
+        {
+            "flow": 30,
+            "duration": 30
+        },
+        {
+            "flow": 50,
+            "duration": 10
+        },
+        {
+            "flow": 10,
+            "duration": 60
+        }
     ]
 }

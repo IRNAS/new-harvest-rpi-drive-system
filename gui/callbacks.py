@@ -324,26 +324,25 @@ class NewHarvestCallbacks():
             [
                 Input("btn-start-sp", "n_clicks"),
                 Input("btn-stop-sp", "n_clicks"),
-                Input("direction-toggle-sp", "value"),
+                Input("direction-toggle-sp", "checked"),
                 Input("upload-speed-profile", "contents"),
+                Input("select-speed-profile-dropdown", "value"),
                 Input("confirm-dialog-sp", "submit_n_clicks"),
                 Input("upload-calibration-sp", "contents"),
                 Input("select-calibration-sp-dropdown", "value"),
                 Input("flow-update-interval", "n_intervals"),
+                Input("num-repeat-input", "value")
             ],
             [
-                State("direction-toggle-sp", "value"),
+                State("direction-toggle-sp", "checked"),
                 State("upload-speed-profile", "filename"),
                 State("upload-calibration-sp", "filename")
             ]
         )
-        def update_speed_profile_status(btn_start, btn_stop, dir, contents, confirm, calib_contents, selected_calib, n, dir_state, profile_filename, calibration_filename):
+        def update_speed_profile_status(btn_start, btn_stop, dir, profile_contents, selected_profile, confirm, calib_contents, selected_calib, n, num_repeat, dir_state, profile_filename, calibration_filename):
             """Update single speed layout"""
             display_confirm_dialog = False
             confirm_dialog_message = ""
-
-            if not profile_filename:
-                profile_filename = "No File Selected"
 
             ctx = dash.callback_context
             if ctx.triggered:
@@ -354,24 +353,29 @@ class NewHarvestCallbacks():
                 if prop_id == "btn-start-sp":
                     self.btn_click = "START"
                     display_confirm_dialog = True
-                    confirm_dialog_message = "Press OK to start stepper motor"
+                    confirm_dialog_message = "Press OK to start motor"
                     
                 if prop_id == "btn-stop-sp":
                     self.btn_click = "STOP"
                     display_confirm_dialog = True
-                    confirm_dialog_message = "Press OK to stop stepper motor"
+                    confirm_dialog_message = "Press OK to stop motor"
 
                 if prop_id == "confirm-dialog-sp" and confirm:
                     if self.btn_click == "START":
-                        self.new_harvest.run_thread(target=self.new_harvest.run_speed_profile, args=(dir_state, ))
+                        self.new_harvest.run_thread(target=self.new_harvest.run_speed_profile, args=(dir_state, num_repeat, ))
                         self.btn_click = None
                     if self.btn_click == "STOP":
                         self.new_harvest.stop_thread()
                         self.btn_click = None
 
                 if prop_id == "upload-speed-profile":
-                    if contents is not None and ".json" in profile_filename:
-                        self.new_harvest.load_speed_profile(parse_json_contents(contents))
+                    print(f"Uploaded: {profile_contents}")
+                    if profile_contents is not None and ".json" in profile_filename:
+                        self.new_harvest.load_speed_profile(speed_profile_json=parse_json_contents(profile_contents), profile_filename=profile_filename)
+
+                if prop_id == "select-speed-profile-dropdown":
+                    self.new_harvest.load_speed_profile(profile_filename=selected_profile)
+                    # print(selected_profile)
                 
                 if prop_id == "upload-calibration-sp":
                     if calib_contents is not None and ".json" in calibration_filename:
@@ -388,9 +392,14 @@ class NewHarvestCallbacks():
 
             flow = round(self.new_harvest.get_flow(), 2)
             set_calibration_file = self.new_harvest.get_calibration_filename()
+            set_profile_filename = self.new_harvest.get_profile_filename()
+            if set_profile_filename is None:
+                set_profile_filename = "No File Selected"
+            else:
+                set_profile_filename = set_profile_filename.split("/")[-1]
             # print(f"Set calibration file: {set_calibration_file}")
             slope = round(self.new_harvest.get_slope(), 3)
-            return [], profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope
+            return [], set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope
 
     def postep_config_callbacks(self):
 

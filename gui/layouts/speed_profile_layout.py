@@ -3,7 +3,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 from ..components.flow_graph import generate_graph_section
 from ..components.custom_toggle import custom_toggle
-from ..components.input_fields import dropdown
+from ..components.input_fields import dropdown, text_field
 
 def generate_speed_profile_layout(calibs, profiles):
     """
@@ -61,7 +61,13 @@ def generate_speed_profile_layout(calibs, profiles):
                         ]
                     ),
                     html.Div(
-                        className="d-flex flex-column mt-5",
+                        className="d-flex flex-column mt-3",
+                        children=[
+                            text_field(id="num-repeat", label="Repeat:", type="number", default_value=1)
+                        ]
+                    ),
+                    html.Div(
+                        className="d-flex flex-column mt-3",
                         children=[
                             html.Span("Slope (mL/min)/pwm:", style={"font-size": "20px", "font-weight": "bold"}),
                             html.Span(id="slope-sp", children="0")
