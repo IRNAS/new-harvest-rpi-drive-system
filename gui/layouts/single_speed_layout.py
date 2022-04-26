@@ -68,9 +68,9 @@ def generate_single_speed_layout(calibs, measurements):
                                 id="accel-pwm-input",
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
-                                value=10,
-                                # max=90,
-                                # min=10,
+                                value=100,
+                                max=100,
+                                min=1,
                                 style={"width": "50%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
                             )
                         ]

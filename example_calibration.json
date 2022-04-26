@@ -1,0 +1,7 @@
+{
+    "low_pwm": 10,
+    "high_pwm": 100,
+    "low_pwm_vol": 1.255,
+    "high_pwm_vol": 6.46,
+    "duration": 10
+}
