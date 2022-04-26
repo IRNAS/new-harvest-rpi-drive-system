@@ -226,6 +226,7 @@ class NewHarvestCallbacks():
                     self.motor_running = True
                     self.new_harvest.stop_motor()
                     self.new_harvest.set_flow(dir_state, speed, new_log=True, type="single_speed", pwm_per_sec=pwm_per_sec)
+                    print(f"Pwm per sec: {pwm_per_sec}")
                     self.prev_direction = dir_state
                     
                 if prop_id == "btn-stop":
@@ -241,6 +242,7 @@ class NewHarvestCallbacks():
                             self.new_harvest.stop_motor()
                             self.prev_direction = dir_state
                         self.new_harvest.set_flow(dir_state, speed, pwm_per_sec=pwm_per_sec)
+                        print(f"Pwm per sec: {pwm_per_sec}")
 
                 if prop_id == "upload-calibration":
                     if calib_contents is not None and ".json" in calibration_filename:

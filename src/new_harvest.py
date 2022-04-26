@@ -51,8 +51,6 @@ class NewHarvest():
         self.current_set_flow = 0
         self.current_set_pwm = 0
 
-        self.stop_motor_flag = False
-
         self.state = {
             "flow": [],
             "pwm": [],
@@ -148,7 +146,6 @@ class NewHarvest():
 
     def stop_thread(self):
         self.stop_current_thread = True
-        self.stop_motor_flag = True
         self.csv_logging = False
         if self.thread is not None:
             self.thread.join()
@@ -299,8 +296,6 @@ class NewHarvest():
             self.csv_writer.start_new_log(type)
             self.csv_logging = True
 
-        self.stop_motor_flag = False
-
         pwm_per_tick = pwm_per_sec * 0.1
         print(f"pwm per tick: {pwm_per_tick}")
 
@@ -345,7 +340,7 @@ class NewHarvest():
             #     current_pwm = current_pwm * -1
             slope = target_pwm - current_pwm  # the slope of pwm change
 
-            while True and not self.stop_motor_flag:
+            while True:
                 current_pwm = self.get_current_mapped_pwm()
                 speed_diff = abs(current_pwm - target_pwm)  # the difference in speed we need to change for, [0, 200] - we decrease this variable, when 0 is hit we are done
 
@@ -354,7 +349,7 @@ class NewHarvest():
                 print(f"Target pwm: {target_pwm}, current_pwm: {current_pwm}")
 
                 tick_multiplier = 1.0
-                if pwm_per_tick > 2 * speed_diff:
+                if pwm_per_tick >= 2 * speed_diff:
                     tick_multiplier = 0.1
 
         
@@ -477,17 +472,18 @@ class NewHarvest():
         print(f"Running speed profile {num_repeat} times")
         for _ in range(0, num_repeat):
             for speed_setting in self.speed_profile["profile"]:
-                print(f"Running speed setting: {speed_setting} with direction: {direction}")
-                duration = speed_setting.get("duration", 0)
-                flow = speed_setting.get("flow", 0)
-                pwm_per_second = speed_setting.get("pwm_per_second", 100)
-                ret = self.set_flow(direction, flow, pwm_per_second)
-                print(f"Ret in run_speed_profile: {ret}")
-                if ret:
-                    start_time = time.time()
-                    # print(f"Running flow: {flow} for duration: {duration}")
-                    while not self.stop_current_thread and time.time() - start_time < duration:
-                        time.sleep(0.01)
+                if not self.stop_current_thread:
+                    print(f"Running speed setting: {speed_setting} with direction: {direction}")
+                    duration = speed_setting.get("duration", 0)
+                    flow = speed_setting.get("flow", 0)
+                    pwm_per_second = speed_setting.get("pwm_per_second", 100)
+                    ret = self.set_flow(direction, flow, pwm_per_sec=pwm_per_second)
+                    print(f"Ret in run_speed_profile: {ret}")
+                    if ret:
+                        start_time = time.time()
+                        # print(f"Running flow: {flow} for duration: {duration}")
+                        while not self.stop_current_thread and time.time() - start_time < duration:
+                            time.sleep(0.01)
 
             ret = self.stop_motor()
 
