@@ -9,6 +9,7 @@ from dash.dependencies import Input, Output, State
 from src.new_harvest import CalibrationStep
 from src.calibration import Calibration
 from .components.functions import map_calibration_step, generate_figure_data, map_title, map_color, parse_json_contents
+from .components.speed_profile_plot import generate_speed_profile
 
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
@@ -31,6 +32,8 @@ class NewHarvestCallbacks():
 
         self.calibration_start_time = None
         self.calibration_percent_done = 0
+
+        self.set_speed_profile_plot = {}
 
         self.motor_running = None
 
@@ -331,7 +334,8 @@ class NewHarvestCallbacks():
                 Output("confirm-dialog-sp", "displayed"),
                 Output("confirm-dialog-sp", "message"),
                 Output("calibration-filename-sp", "children"),
-                Output("slope-sp", "children")
+                Output("slope-sp", "children"),
+                Output("speed-profile-plot", "figure")
             ],
             [
                 Input("btn-start-sp", "n_clicks"),
@@ -383,10 +387,17 @@ class NewHarvestCallbacks():
                 if prop_id == "upload-speed-profile":
                     print(f"Uploaded: {profile_contents}")
                     if profile_contents is not None and ".json" in profile_filename:
-                        self.new_harvest.load_speed_profile(speed_profile_json=parse_json_contents(profile_contents), profile_filename=profile_filename)
+                        json_profile = parse_json_contents(profile_contents)
+                        profile = self.new_harvest.load_speed_profile(speed_profile_json=json_profile, profile_filename=profile_filename)
+                        calibration = self.new_harvest.calibration
+                        speed_profile_plot = generate_speed_profile(profile, calibration)
+                        self.set_speed_profile_plot = speed_profile_plot
 
                 if prop_id == "select-speed-profile-dropdown":
-                    self.new_harvest.load_speed_profile(profile_filename=selected_profile)
+                    profile = self.new_harvest.load_speed_profile(profile_filename=selected_profile)
+                    calibration = self.new_harvest.calibration
+                    speed_profile_plot = generate_speed_profile(profile, calibration)
+                    self.set_speed_profile_plot = speed_profile_plot
                     # print(selected_profile)
                 
                 if prop_id == "upload-calibration-sp":
@@ -411,7 +422,7 @@ class NewHarvestCallbacks():
                 set_profile_filename = set_profile_filename.split("/")[-1]
             # print(f"Set calibration file: {set_calibration_file}")
             slope = round(self.new_harvest.get_slope(), 3)
-            return [], set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope
+            return [], set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, self.set_speed_profile_plot
 
     def postep_config_callbacks(self):
 

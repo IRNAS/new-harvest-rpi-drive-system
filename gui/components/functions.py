@@ -49,8 +49,8 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
             },
             "yaxis": {
                 "title": "<b>" + y_axis_label + "</b>",
-                # "range": y_range,
-                # "fixedrange": fixed_y,
+                "range": y_range,
+                "fixedrange": fixed_y,
                 "gridcolor": "rgb(50, 50, 50)"
             }
         }
@@ -138,7 +138,7 @@ def map_title(variable):
     if variable == "flow":
         title = "Flow (mL/min)"
     if variable == "pwm":
-        title = "Speed (PWM)"
+        title = "Speed (PWM (%))"
     if variable == "temp":
         title = "Temperature (°C)"
     return title
@@ -147,7 +147,7 @@ def map_color(variable):
     color = "rgb(0,0,255)"
     if variable == "flow":
         color = "rgb(50,160,235)"
-    if variable == "PWM":
+    if variable == "pwm":
         color = "rgb(250,185,50)"
     if variable == "temp":
         color = "rgb(250,50,80)"
@@ -159,7 +159,7 @@ def shutdown_pi():
 
 def restart_service():
     """Restarts service on button click"""
-    os.system("systemctl --user restart rh_micro")
+    os.system("systemctl --user restart new_harvest")
 
 def restart_pi():
     """Restarts service on button click"""
@@ -168,4 +168,4 @@ def restart_pi():
 def update_device():
     """Restart service and update device"""
     os.system("systemctl --user restart git_pull")
-    os.system("systemctl --user restart rh_micro")
+    os.system("systemctl --user restart new_harvest")

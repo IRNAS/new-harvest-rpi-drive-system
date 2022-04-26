@@ -231,6 +231,8 @@ class NewHarvest():
                 self.speed_profile = speed_profile_json
                 self.profile_filename = profile_filename
 
+        return self.speed_profile
+
     def set_flow(self, direction, flow, new_log=False, type="", pwm_per_sec=100):
         """convert flow to pwm and set speed"""
         if self.action_in_progress:
