@@ -4,7 +4,7 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 from ..components.input_fields import text_field, dropdown
 
-def generate_postep_config_layout(postep_settings, acc):
+def generate_postep_config_layout(postep_settings):
     """
     Postep config layout generation with all widgets (buttons, sliders, and input windows).
     """
@@ -64,17 +64,6 @@ def generate_postep_config_layout(postep_settings, acc):
                                 width=4,
                                 children=[
                                     text_field(id="overheat-current", label="Overheat current (A)", type="text", default_value=postep_settings["overheat_current"])
-                                ]
-                            )
-                        ]
-                    ),
-                    dbc.Row(
-                        className="input-row mt-2",
-                        children=[
-                            dbc.Col(
-                                width=4,
-                                children=[
-                                    text_field(id="acceleration", label="Acceleration (pwm)", type="text", default_value=acc)
                                 ]
                             )
                         ]

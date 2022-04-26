@@ -92,14 +92,17 @@ class NewHarvest():
             log.warning(f"Failed to create profiles folder")
 
         # load last saved calibration
-        temp_c = Calibration()
-        with open("/home/pi/last_calibration.json", "r") as f:
-            calib_obj = json.load(f)
+        try:
+            temp_c = Calibration()
+            with open("/home/pi/last_calibration.json", "r") as f:
+                calib_obj = json.load(f)
+            filepath = calib_obj["calib_filename"]
+            if filepath != "":
+                temp_c.load_calibration(filepath)
+                self.set_calibration(temp_c)
+        except Exception as e:
+            print(f"Failed to load calibration: {e}")
 
-        filepath = calib_obj["calib_filename"]
-        if filepath != "":
-            temp_c.load_calibration(filepath)
-            self.set_calibration(temp_c)
 
         self.state_loop_running = True
 
@@ -223,7 +226,7 @@ class NewHarvest():
         if speed_profile_json is not None and profile_filename is not None:
             self.speed_profile = speed_profile_json
             self.profile_filename = profile_filename
-            return
+            return self.speed_profile
 
         if profile_filename is not None:
             with open(profile_filename, "r") as f:

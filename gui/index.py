@@ -72,11 +72,11 @@ def display_page(pathname):
         return layout_speed_profile(calibs, profiles)
     if pathname == "/postep-config":
         current_postep_config = new_harvest.get_postep_config()
-        current_accel = new_harvest.get_acceleration()
+        # current_accel = new_harvest.get_acceleration()
         print(f"Current postep settings: {current_postep_config}")
         # stop motor before changing settings
         new_harvest.stop_motor()
-        return generate_postep_config_layout(current_postep_config, current_accel)
+        return generate_postep_config_layout(current_postep_config)
     else:
         return no_page
 

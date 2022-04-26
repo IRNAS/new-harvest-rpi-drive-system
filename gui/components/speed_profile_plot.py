@@ -48,6 +48,8 @@ def generate_speed_profile(speed_profile_json, calibration=None):
     """Generates figure for given speed_profile_json"""
     pwm_list = []  # we're storing flow data
     flow_list = []
+    # print(speed_profile_json)
+    # print(calibration)
     if speed_profile_json is not None and calibration is not None:
         pwm_list.append(0)  # first value is 0 as the motor is stopped
         flow_list.append(0)

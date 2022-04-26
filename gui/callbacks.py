@@ -388,13 +388,18 @@ class NewHarvestCallbacks():
                     print(f"Uploaded: {profile_contents}")
                     if profile_contents is not None and ".json" in profile_filename:
                         json_profile = parse_json_contents(profile_contents)
+                        with open(f"/mnt/storage/profiles/{profile_filename}", "w") as f:
+                            json.dump(parse_json_contents(profile_contents), f)
+                                                        
                         profile = self.new_harvest.load_speed_profile(speed_profile_json=json_profile, profile_filename=profile_filename)
+                        print(f"Loaded speed profile: {profile}")
                         calibration = self.new_harvest.calibration
                         speed_profile_plot = generate_speed_profile(profile, calibration)
                         self.set_speed_profile_plot = speed_profile_plot
 
                 if prop_id == "select-speed-profile-dropdown":
                     profile = self.new_harvest.load_speed_profile(profile_filename=selected_profile)
+                    print(f"Loaded speed profile: {profile}")
                     calibration = self.new_harvest.calibration
                     speed_profile_plot = generate_speed_profile(profile, calibration)
                     self.set_speed_profile_plot = speed_profile_plot
@@ -404,6 +409,8 @@ class NewHarvestCallbacks():
                     if calib_contents is not None and ".json" in calibration_filename:
                         calib = Calibration()
                         calib.set_calibration(parse_json_contents(calib_contents), calibration_filename)
+                        with open(f"/mnt/storage/calibrations/{calibration_filename}", "w") as f:
+                            json.dump(parse_json_contents(calib_contents), f)
                         self.new_harvest.set_calibration(calib)
 
                 if prop_id == "select-calibration-sp-dropdown":
