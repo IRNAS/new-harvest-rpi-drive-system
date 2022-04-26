@@ -134,7 +134,7 @@ class NewHarvest():
                 self.state["flow"].append(self.current_set_flow)
                 self.state["pwm"].append(int(pwm))
                 if self.csv_logging:
-                    self.csv_writer.append_row([self.current_set_flow, pwm, current_temp])
+                    self.csv_writer.append_row([self.current_set_flow, int(pwm), current_temp])
 
                 self.state["temp"] = self.state["temp"][-600:] 
                 self.state["flow"] = self.state["flow"][-600:]
@@ -151,18 +151,20 @@ class NewHarvest():
 
     def stop_thread(self):
         self.stop_current_thread = True
-        self.csv_logging = False
         if self.thread is not None:
             self.thread.join()
         print(f"Stopping thread")
+        # time.sleep(2)
+        self.csv_logging = False
         self.thread = None
 
     def stop_manual_execution(self):
         self.stop_moving_motor = True
-        self.csv_logging = False
         if self.thread is not None:
             self.thread.join()
         print(f"Stopping thread")
+        # time.sleep(2)
+        self.csv_logging = False
         self.thread = None
 
     def get_postep_config(self):
@@ -463,7 +465,7 @@ class NewHarvest():
         if len(self.speed_profile["profile"]) < 1:
             print(f"Speed profile set incorrectly. Returning!")
 
-        self.csv_writer.start_new_log("speed_profile")
+        self.csv_writer.start_new_log("profile")
         self.csv_logging = True
 
         if num_repeat is None:

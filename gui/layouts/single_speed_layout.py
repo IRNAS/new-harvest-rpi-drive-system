@@ -5,7 +5,7 @@ from ..components.flow_graph import generate_graph_section
 from ..components.custom_toggle import custom_toggle
 from ..components.input_fields import dropdown
 
-def generate_single_speed_layout(calibs):
+def generate_single_speed_layout(calibs, measurements):
     """
     Control layout generation with all widgets (buttons, sliders, and input windows).
     """
@@ -106,7 +106,7 @@ def generate_single_speed_layout(calibs):
                 style={"width": "80%"},
                 className="d-flex flex-row mt-4",
                 children=[
-                    generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", y_range=[0,500])
+                    generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", y_range=[-105, 105], fixed_y=True, measurements=measurements)
                 ]
             )
         ]
@@ -114,7 +114,7 @@ def generate_single_speed_layout(calibs):
 
     return control_layout
 
-def layout_single_speed(calibs):
+def layout_single_speed(calibs, measurements):
     return dbc.Container(
         id="main-layout",
         style={"padding-right": "0px", "padding-left": "0px"},
@@ -124,7 +124,7 @@ def layout_single_speed(calibs):
                 message=""
             ),
             dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
-            dcc.Interval(id="check-dir-interval", interval=500, n_intervals=0),
-            generate_single_speed_layout(calibs)
+            # dcc.Interval(id="check-dir-interval", interval=500, n_intervals=0),
+            generate_single_speed_layout(calibs, measurements)
         ]
     )

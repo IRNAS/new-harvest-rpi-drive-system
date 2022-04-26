@@ -6,7 +6,7 @@ from ..components.custom_toggle import custom_toggle
 from ..components.input_fields import dropdown, text_field
 from ..components.speed_profile_plot import generate_speed_profile_plot_container
 
-def generate_speed_profile_layout(calibs, profiles):
+def generate_speed_profile_layout(calibs, profiles, measurements):
     """
     Control layout generation with all widgets (buttons, sliders, and input windows).
     """
@@ -105,7 +105,7 @@ def generate_speed_profile_layout(calibs, profiles):
                         style={"width": "80%"},
                         className="d-flex flex-column mt-4",
                         children=[
-                            generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", y_range=[-100,100], fixed_y=True, remove_buttons=False),
+                            generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", y_range=[-105, 105], fixed_y=True, remove_buttons=False, measurements=measurements),
                             generate_speed_profile_plot_container(id="speed-profile-plot", speed_profile_json=None, calibration=None)
                         ]
                     )
@@ -117,7 +117,7 @@ def generate_speed_profile_layout(calibs, profiles):
 
     return speed_profile_layout
 
-def layout_speed_profile(calibs, profiles):
+def layout_speed_profile(calibs, profiles, measurements):
     return dbc.Container(
         id="main-layout",
         style={"padding-right": "0px", "padding-left": "0px"},
@@ -129,6 +129,6 @@ def layout_speed_profile(calibs, profiles):
             ),
             dcc.Interval(id="flow-update-interval", interval=1000, n_intervals=0),
             dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
-            generate_speed_profile_layout(calibs, profiles)
+            generate_speed_profile_layout(calibs, profiles, measurements)
         ]
     )

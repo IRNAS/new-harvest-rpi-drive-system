@@ -41,5 +41,5 @@ class CsvWriter():
             logging.error("An exception occured when trying to append row to csv file")
 
     def start_new_log(self, type):
-        self.set_filename(f"/mnt/storage/measurements/measure_{datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}_{type}.csv")
+        self.set_filename(f"/mnt/storage/measurements/{datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')}_{type}.csv")
         self.write_header()

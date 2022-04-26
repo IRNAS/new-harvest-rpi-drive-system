@@ -5,11 +5,12 @@ import logging
 import datetime
 
 from gui.app import app
-from dash.dependencies import Input, Output, State
-from src.new_harvest import CalibrationStep
+import dash_core_components as dcc
 from src.calibration import Calibration
-from .components.functions import map_calibration_step, generate_figure_data, map_title, map_color, parse_json_contents
+from src.new_harvest import CalibrationStep
+from dash.dependencies import Input, Output, State
 from .components.speed_profile_plot import generate_speed_profile
+from .components.functions import map_calibration_step, generate_figure_data, map_title, map_color, parse_json_contents
 
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
@@ -231,7 +232,7 @@ class NewHarvestCallbacks():
                     self.new_harvest.stop_moving_motor = False
                     time.sleep(0.25)  # wait for motor to stop moving
                     self.new_harvest.stop_motor(pwm_per_sec=pwm_per_sec)
-                    self.new_harvest.run_thread(target=self.new_harvest.set_flow, args=(dir_state, speed, True, "single_speed", pwm_per_sec, ))
+                    self.new_harvest.run_thread(target=self.new_harvest.set_flow, args=(dir_state, speed, True, "single", pwm_per_sec, ))
                     print(f"Pwm per sec: {pwm_per_sec}")
                     self.prev_direction = dir_state
                     
@@ -470,3 +471,13 @@ class NewHarvestCallbacks():
                     js = "location.reload();"
 
             return display_confirm_dialog, confirm_dialog_message, js
+
+    def download_logs_callbacks(self):
+        @app.callback(
+            Output("download-log", "data"),
+            Input("btn-download-log", "n_clicks"),
+            State("select-logfile-dropdown", "value"),
+            prevent_initial_call=True,
+        )
+        def download(n_clicks, filename):
+            return dcc.send_file(filename)

@@ -1,7 +1,7 @@
 import dash_html_components as html
 import dash_core_components as dcc
 
-def dropdown(id, label, fields, value=""):
+def dropdown(id, label, fields, value="", dd_style={"width": "83%", "height": "30px"}):
     """
     Return div with label and dropdown fields.
     Fields has to be a list of dicts in the for of [{"label": dd_label, "value": dd_value}, {"label": dd_label, "value": dd_value}]
@@ -18,7 +18,7 @@ def dropdown(id, label, fields, value=""):
             dcc.Dropdown(
                 id=f"{id}-dropdown",
                 options=fields,
-                style={"width": "83%", "height": "30px"},
+                style=dd_style,
                 className="mt-1",
                 value=value
             ),

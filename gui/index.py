@@ -28,6 +28,7 @@ NewHarvestCallbacks(new_harvest).single_speed_callbacks()
 NewHarvestCallbacks(new_harvest).graph_update_callbacks()
 NewHarvestCallbacks(new_harvest).speed_profile_callbacks()
 NewHarvestCallbacks(new_harvest).postep_config_callbacks()
+NewHarvestCallbacks(new_harvest).download_logs_callbacks()
 
 # see https://dash.plot.ly/external-resources to alter header, footer and favicon
 app.index_string = ''' 
@@ -61,15 +62,18 @@ app.layout = html.Div([
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
+
     if pathname == "/calibration":
         return layout_calibration
     if pathname == "/single-speed-control":
         calibs = load_filenames("/mnt/storage/calibrations")
-        return layout_single_speed(calibs)
+        measurements = load_filenames("/mnt/storage/measurements")
+        return layout_single_speed(calibs, measurements)
     if pathname == "/speed-profile":
         calibs = load_filenames("/mnt/storage/calibrations")
+        measurements = load_filenames("/mnt/storage/measurements")
         profiles = load_filenames("/mnt/storage/profiles")
-        return layout_speed_profile(calibs, profiles)
+        return layout_speed_profile(calibs, profiles, measurements)
     if pathname == "/postep-config":
         current_postep_config = new_harvest.get_postep_config()
         # current_accel = new_harvest.get_acceleration()

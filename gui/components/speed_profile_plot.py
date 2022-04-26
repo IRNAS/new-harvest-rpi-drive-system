@@ -31,8 +31,7 @@ def generate_speed_profile_plot_container(id, speed_profile_json, calibration):
                             "editable": False,
                             "displayModeBar": True,
                             "displaylogo": False,
-                            "modeBarButtonsToRemove": ["toImage", "autoScale2d", "toggleSpikelines", "hoverCompareCartesian", "hoverClosestCartesian"],
-                            
+                            "modeBarButtonsToRemove": ["autoScale2d", "toggleSpikelines", "hoverCompareCartesian", "hoverClosestCartesian"],
                         },
                         style={"margin-left": "12px", "width": "1000px", "height": "360px"}
                     )
@@ -148,7 +147,7 @@ def generate_speed_profile(speed_profile_json, calibration=None):
             "xaxis": {
                 "title": "<b>Time (s)</b>",
                 "range": [-10, data_count+5],
-                "fixedrange": True,
+                "fixedrange": False,
                 # "zeroline": False,
                 "gridcolor": "rgb(50, 50, 50)",
                 "showticklabels": True
@@ -156,7 +155,7 @@ def generate_speed_profile(speed_profile_json, calibration=None):
             "yaxis": {
                 "title": "<b> PWM (%) </b>",
                 "range": [0, 100],
-                "fixedrange": True,
+                "fixedrange": False,
                 "gridcolor": "rgb(50, 50, 50)"
             }
         }

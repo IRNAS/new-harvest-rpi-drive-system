@@ -42,7 +42,7 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
             "xaxis": {
                 "title": "<b>Time (s)</b>",
                 "range": [-data_count, 0],
-                "fixedrange": fixed_x,
+                # "fixedrange": fixed_x,
                 # "zeroline": False,
                 "gridcolor": "rgb(50, 50, 50)",
                 "showticklabels": True
@@ -50,7 +50,7 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
             "yaxis": {
                 "title": "<b>" + y_axis_label + "</b>",
                 "range": y_range,
-                "fixedrange": fixed_y,
+                # "fixedrange": fixed_y,
                 "gridcolor": "rgb(50, 50, 50)"
             }
         }
