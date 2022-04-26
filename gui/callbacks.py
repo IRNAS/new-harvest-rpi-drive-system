@@ -224,24 +224,33 @@ class NewHarvestCallbacks():
 
                 if prop_id == "btn-start":
                     self.motor_running = True
-                    self.new_harvest.stop_motor()
-                    self.new_harvest.set_flow(dir_state, speed, new_log=True, type="single_speed", pwm_per_sec=pwm_per_sec)
+                    self.new_harvest.stop_manual_execution()
+                    self.new_harvest.stop_moving_motor = False
+                    time.sleep(0.25)  # wait for motor to stop moving
+                    self.new_harvest.stop_motor(pwm_per_sec=pwm_per_sec)
+                    self.new_harvest.run_thread(target=self.new_harvest.set_flow, args=(dir_state, speed, True, "single_speed", pwm_per_sec, ))
                     print(f"Pwm per sec: {pwm_per_sec}")
                     self.prev_direction = dir_state
                     
                 if prop_id == "btn-stop":
                     self.motor_running = False
-                    self.new_harvest.stop_motor()
+                    self.new_harvest.stop_manual_execution()
+                    self.new_harvest.stop_moving_motor = False
+                    time.sleep(0.25)  # wait for motor to stop moving
+                    self.new_harvest.stop_motor(pwm_per_sec=pwm_per_sec)
                     self.prev_direction = dir_state
                     
                 if prop_id == "btn-set":
                     if self.motor_running:
                         print(f"Current direction setting: {dir_state}")
                         print(f"Prev direction: {self.prev_direction}")
+                        self.new_harvest.stop_manual_execution()
+                        self.new_harvest.stop_moving_motor = False
+                        time.sleep(0.25)  # wait for motor to stop moving
                         if dir_state != self.prev_direction:
-                            self.new_harvest.stop_motor()
+                            self.new_harvest.stop_motor(pwm_per_sec=pwm_per_sec)
                             self.prev_direction = dir_state
-                        self.new_harvest.set_flow(dir_state, speed, pwm_per_sec=pwm_per_sec)
+                        self.new_harvest.run_thread(target=self.new_harvest.set_flow, args=(dir_state, speed, False, "none", pwm_per_sec, ))
                         print(f"Pwm per sec: {pwm_per_sec}")
 
                 if prop_id == "upload-calibration":

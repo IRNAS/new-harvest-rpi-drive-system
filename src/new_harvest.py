@@ -43,6 +43,7 @@ class NewHarvest():
         # run all motor commands threaded so nothing is blocked
         self.thread = None
         self.stop_current_thread = False
+        self.stop_moving_motor = False
 
         self.calibration = None
         self.speed_profile = None
@@ -141,11 +142,20 @@ class NewHarvest():
 
     def run_thread(self, target, args):
         self.stop_current_thread = False
+        self.stop_moving_motor = False
         self.thread = Thread(target=target, args=args)
         self.thread.start()
 
     def stop_thread(self):
         self.stop_current_thread = True
+        self.csv_logging = False
+        if self.thread is not None:
+            self.thread.join()
+        print(f"Stopping thread")
+        self.thread = None
+
+    def stop_manual_execution(self):
+        self.stop_moving_motor = True
         self.csv_logging = False
         if self.thread is not None:
             self.thread.join()
@@ -244,37 +254,19 @@ class NewHarvest():
         """Get current set flow"""
         return self.current_set_flow
 
-    def stop_motor(self, conditional_stop=False):
+    def stop_motor(self, pwm_per_sec=100):
         """Stop motor"""
         print(F"STOPPING MOTOR")
         # self.csv_logging = False
         direction = self.motor.get_direction()
         # print(f"Current set direction: {direction}")
-        ret = self.run_motor(direction, 0)  # set speed to 0
+        ret = self.run_motor(direction, 0, pwm_per_sec=pwm_per_sec)  # set speed to 0
         if ret:
             ret = self.motor.stop_motor()
             if ret:
                 self.current_set_flow = 0
                 self.current_set_pwm = 0
         return ret
-
-    def change_direction(self, direction):
-        if self.action_in_progress:
-            return
-        self.action_in_progress = True
-
-        if self.direction == "cw" and direction:
-            pass
-        elif self.direction == "acw" and not direction:
-            pass
-        else:
-            current_speed = self.current_set_pwm
-            current_flow = self.current_set_flow
-            # self.stop_motor()
-            self.run_motor(direction, current_speed)
-            self.current_set_flow = current_flow
-
-        self.action_in_progress = False
 
     def get_current_mapped_pwm(self):
         current_direction = self.motor.get_direction()
@@ -341,12 +333,15 @@ class NewHarvest():
             slope = target_pwm - current_pwm  # the slope of pwm change
 
             while True:
+                if self.stop_moving_motor:
+                    print(f"Stopping motor in run_motor")
+                    return None
                 current_pwm = self.get_current_mapped_pwm()
                 speed_diff = abs(current_pwm - target_pwm)  # the difference in speed we need to change for, [0, 200] - we decrease this variable, when 0 is hit we are done
 
                 slope = target_pwm - current_pwm  # the slope of pwm change
-                print(f"Speed diff: {speed_diff}")
-                print(f"Target pwm: {target_pwm}, current_pwm: {current_pwm}")
+                # print(f"Speed diff: {speed_diff}")
+                # print(f"Target pwm: {target_pwm}, current_pwm: {current_pwm}")
 
                 tick_multiplier = 1.0
                 if pwm_per_tick >= 2 * speed_diff:
@@ -382,7 +377,7 @@ class NewHarvest():
                 if speed_diff <= 1:  # once speed diff is 0 exit out
                     print("Speed set. Exiting")
                     break
-         
+        
 
         return ret
 
