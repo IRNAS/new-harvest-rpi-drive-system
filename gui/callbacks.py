@@ -55,7 +55,10 @@ class NewHarvestCallbacks():
                 Output("calib-dialog", "displayed"),
                 Output("confirm-dialog", "message"),
                 Output("confirm-dialog", "displayed"),
-                Output("calib-progress", "value")
+                Output("calib-progress", "value"),
+                Output("btn-start-calib", "disabled"),
+                Output("btn-save-calib", "disabled"),
+                Output("btn-stop-calib", "disabled")
             ],
             [
                 Input("check-state-interval", "n_intervals"),
@@ -74,9 +77,12 @@ class NewHarvestCallbacks():
                 State("filename-input", "value"),
                 State("current-step-span", "children"),
                 # State("calib-progress", "value")
+                State("btn-start-calib", "disabled"),
+                State("btn-save-calib", "disabled"),
+                State("btn-stop-calib", "disabled")
             ]
         )
-        def update_calib_status(n, btn_start, btn_stop, btn_cont, btn_save, confirm, low_pwm_in, low_pwm_vol, high_pwm_in, high_pwm_vol, set_time, filename, current_step):
+        def update_calib_status(n, btn_start, btn_stop, btn_cont, btn_save, confirm, low_pwm_in, low_pwm_vol, high_pwm_in, high_pwm_vol, set_time, filename, current_step, start_disabled, save_disabled, stop_disabled):
             """Update calib status and display dialogs"""
 
             display_calib_dialog = False
@@ -92,6 +98,7 @@ class NewHarvestCallbacks():
             calib_progress = self.calibration_percent_done
 
             ctx = dash.callback_context
+            
             if ctx.triggered and ctx.triggered[0]['value'] > 0:
                 split = ctx.triggered[0]["prop_id"].split(".")
                 prop_id = split[0]
@@ -123,27 +130,45 @@ class NewHarvestCallbacks():
 
                     if self.current_calibration_step == CalibrationStep.LOW_PWM_RUNNING:
                         self.calibration_percent_done = min((((time.time() - self.calibration_start_time) / set_time) * 49), 49)
+                        start_disabled = True
+                        save_disabled = True
+                        stop_disabled = False
                     if self.current_calibration_step == CalibrationStep.LOW_PWM_DONE:
                         self.calibration_percent_done = 49
+                        start_disabled = True
+                        save_disabled = True
+                        stop_disabled = False
                     if self.current_calibration_step == CalibrationStep.HIGH_PWM_RUNNING:
                         self.calibration_percent_done = 49 + min((((time.time() - self.calibration_start_time) / set_time) * 49), 49)
+                        start_disabled = True
+                        save_disabled = True
+                        stop_disabled = False
                     if self.current_calibration_step == CalibrationStep.HIGH_PWM_DONE:
                         self.calibration_percent_done = 98
+                        start_disabled = True
+                        save_disabled = False
+                        stop_disabled = False
                     if self.current_calibration_step == CalibrationStep.COMPLETED:
                         self.calibration_percent_done = 100
+                        start_disabled = False
+                        save_disabled = True
+                        stop_disabled = True
                     if self.current_calibration_step == CalibrationStep.IDLE:
                         self.calibration_percent_done = 0
+                        start_disabled = False
+                        save_disabled = True
+                        stop_disabled = True
 
                     current_step_text = map_calibration_step(self.current_calibration_step)
 
-                if prop_id == "btn-start-calib":
+                elif prop_id == "btn-start-calib":
                     if self.current_calibration_step == CalibrationStep.IDLE or self.current_calibration_step == CalibrationStep.COMPLETED:
                         self.btn_click = "START"
                         self.calibration_start_time = time.time()
                         display_confirm_dialog = True
                         confirm_dialog_message = "Press OK to start calibration process with low pwm"
 
-                if prop_id == "btn-stop-calib":
+                elif prop_id == "btn-stop-calib":
                     if self.current_calibration_step != CalibrationStep.IDLE and self.current_calibration_step != CalibrationStep.COMPLETED:
                         self.abort = True
                         self.btn_click = "STOP"
@@ -151,14 +176,14 @@ class NewHarvestCallbacks():
                         display_confirm_dialog = True
                         confirm_dialog_message = "Press OK to abort calibration"
 
-                if prop_id == "btn-continue-calib":
+                elif prop_id == "btn-continue-calib":
                     if self.current_calibration_step == CalibrationStep.LOW_PWM_DONE:
                         self.btn_click = "CNT"
                         self.calibration_start_time = time.time()
                         display_confirm_dialog = True
                         confirm_dialog_message = "Press OK to start calibration process with high pwm"
 
-                if prop_id == "confirm-dialog" and confirm:
+                elif prop_id == "confirm-dialog" and confirm:
                     if self.abort:
                         self.new_harvest.abort_calibration()
                         self.abort = False
@@ -172,13 +197,13 @@ class NewHarvestCallbacks():
                         self.new_harvest.save_calibration_data(filename, low_pwm_in, high_pwm_in, low_pwm_vol, high_pwm_vol, set_time)
                         self.btn_click = None
 
-                if prop_id == "btn-save-calib":
+                elif prop_id == "btn-save-calib":
                     if self.current_calibration_step == CalibrationStep.HIGH_PWM_DONE or self.current_calibration_step == CalibrationStep.COMPLETED:
                         self.btn_click = "SAVE"
                         display_confirm_dialog = True
                         confirm_dialog_message = "Press OK to confirm saving to file"
 
-            return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress
+            return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress, start_disabled, save_disabled, stop_disabled
                     
     def single_speed_callbacks(self):
 

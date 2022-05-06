@@ -20,7 +20,8 @@ def dropdown(id, label, fields, value="", dd_style={"width": "83%", "height": "3
                 options=fields,
                 style=dd_style,
                 className="mt-1",
-                value=value
+                value=value,
+                persistence=True
             ),
         ]
     )
@@ -37,7 +38,8 @@ def text_field(id, label, type, default_value, min=None, max=None, step=None):
         debounce=True,  # must be set to true for onscreen keyboard to work
         value=default_value,
         style={"width": "70%", "height": "30px", "font-size": "20px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
-        className="mt-1"
+        className="mt-1",
+        persistence=True
     )
     if type == "number" and min is not None and max is not None and step is not None:
         dcc_input = dcc.Input(
@@ -49,7 +51,8 @@ def text_field(id, label, type, default_value, min=None, max=None, step=None):
             max=max,
             step=step,
             style={"width": "70%", "height": "30px", "font-size": "20px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
-            className="mt-1"
+            className="mt-1",
+            persistence=True
         )
 
     text_input_div = html.Div(

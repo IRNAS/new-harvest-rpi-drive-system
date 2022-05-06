@@ -24,6 +24,7 @@ def generate_calibration_layout():
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 value=10,
+                                persistence=True,
                                 # max=90,
                                 # min=10,
                                 style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
@@ -41,6 +42,7 @@ def generate_calibration_layout():
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 value=0,
+                                persistence=True,
                                 # max=90,
                                 # min=10,
                                 style={"width": "25%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
@@ -64,6 +66,7 @@ def generate_calibration_layout():
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 value=100,
+                                persistence=True,
                                 # max=90,
                                 # min=10,
                                 style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},                                
@@ -81,6 +84,7 @@ def generate_calibration_layout():
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 value=0,
+                                persistence=True,
                                 # max=90,
                                 # min=10,
                                 style={"width": "25%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},                                
@@ -104,6 +108,7 @@ def generate_calibration_layout():
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 value=10,
+                                persistence=True,
                                 # max=90,
                                 # min=10,
                                 style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
@@ -121,6 +126,7 @@ def generate_calibration_layout():
                                 type="text",
                                 value="calibration-test",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
+                                persistence=True,
                                 style={"width": "60%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
                             )
                         ]
@@ -172,7 +178,7 @@ def generate_calibration_layout():
                         style={"width": "50%"},
                         children=[
                             dbc.Button("NEXT", id="btn-continue-calib", n_clicks=0, style={"width": "100px"}, className="mr-4"),
-                            dbc.Button("SAVE", id="btn-save-calib", n_clicks=0, style={"width": "100px"}, className="mr-2")
+                            dbc.Button("SAVE", id="btn-save-calib", n_clicks=0, style={"width": "100px"}, className="mr-2", disabled=True)
                         ]
                     )
                 ]
