@@ -105,7 +105,7 @@ class NewHarvestCallbacks():
                     if self.prev_calibration_step != self.current_calibration_step:
                         if self.current_calibration_step == CalibrationStep.LOW_PWM_DONE:
                             display_calib_dialog = True
-                            calib_dialog_message = "Enter low pwm calibration volume (mL) and press continue"
+                            calib_dialog_message = "Enter low pwm calibration volume (mL) and press next"
                     
                         if self.current_calibration_step == CalibrationStep.HIGH_PWM_DONE:
                             display_calib_dialog = True

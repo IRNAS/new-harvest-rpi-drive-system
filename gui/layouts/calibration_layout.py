@@ -10,7 +10,7 @@ def generate_calibration_layout():
         id="calibration-control-display",
         children=[
             html.Div(
-                style={"width": "40%"},
+                style={"width": "50%"},
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
@@ -50,7 +50,7 @@ def generate_calibration_layout():
                 ]
             ),
             html.Div(
-                style={"width": "40%"},
+                style={"width": "50%"},
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
@@ -90,7 +90,7 @@ def generate_calibration_layout():
                 ]
             ),
             html.Div(
-                style={"width": "40%"},
+                style={"width": "50%"},
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
@@ -128,7 +128,7 @@ def generate_calibration_layout():
                 ]
             ),
             html.Div(
-                style={"width": "40%"},
+                style={"width": "50%"},
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
@@ -137,7 +137,7 @@ def generate_calibration_layout():
                         children=[
                             html.Span(
                                 "Current step: ", className="h4 font-weight-bold"),
-                            html.Span(id="current-step-span", children="Idle", className="h4 font-weight-bold")
+                            html.Span(id="current-step-span", children="0/5 Idle", className="h4 font-weight-bold")
                         ]
                     ),
                     html.Div(
@@ -156,7 +156,7 @@ def generate_calibration_layout():
                 ]
             ),
             html.Div(
-                style={"width": "40%"},
+                style={"width": "50%"},
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
@@ -171,7 +171,7 @@ def generate_calibration_layout():
                         className="d-flex justify-content-left",
                         style={"width": "50%"},
                         children=[
-                            dbc.Button("CONTINUE", id="btn-continue-calib", n_clicks=0, style={"width": "100px"}, className="mr-4"),
+                            dbc.Button("NEXT", id="btn-continue-calib", n_clicks=0, style={"width": "100px"}, className="mr-4"),
                             dbc.Button("SAVE", id="btn-save-calib", n_clicks=0, style={"width": "100px"}, className="mr-2")
                         ]
                     )

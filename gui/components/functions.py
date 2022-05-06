@@ -119,17 +119,17 @@ def map_calibration_step(step):
     """Map calibration step to text"""
     text = ""
     if step == CalibrationStep.IDLE:
-        text = "Idle"
+        text = "Idle 0/5"
     if step == CalibrationStep.COMPLETED:
-        text = "Completed"
+        text = "Completed 5/5"
     if step == CalibrationStep.LOW_PWM_RUNNING:
-        text = "Low PWM"
+        text = "Low PWM 1/5"
     if step == CalibrationStep.LOW_PWM_DONE:
-        text = "Low PWM Done"
+        text = "Low PWM Done 2/5"
     if step == CalibrationStep.HIGH_PWM_RUNNING:
-        text = "High PWM"
+        text = "High PWM 3/5"
     if step == CalibrationStep.HIGH_PWM_DONE:
-        text = "High PWM Done"
+        text = "High PWM Done 4/5"
 
     return text
 
