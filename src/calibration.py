@@ -49,3 +49,7 @@ class Calibration():
         """Return required pwm to get desired flow"""
         print(f"Calculating pwm from selected flow: {flow} and slope: {self.slope}")
         return flow / self.slope
+
+    def get_max_flow(self, pwm):
+        """Return max possible flow with given slope"""
+        return self.slope * 100

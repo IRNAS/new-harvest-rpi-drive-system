@@ -249,7 +249,8 @@ class NewHarvest():
             ret = self.run_motor(direction, pwm, new_log=new_log, type=type, pwm_per_sec=pwm_per_sec)
             print(f"Ret in set flow: {ret}")
             if ret:
-                self.current_set_flow = flow
+                max_flow = int(self.calibration.get_max_flow(flow))
+                self.current_set_flow = min(flow, max_flow)
             self.action_in_progress = False
             return ret
         except Exception as e:
