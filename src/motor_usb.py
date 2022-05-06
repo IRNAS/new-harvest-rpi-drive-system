@@ -1,4 +1,5 @@
 import sys
+import time
 import logging
 from hardware.postep256usb import PoStep256USB, DRIVER_RUN, DRIVER_SLEEP
 
@@ -84,14 +85,29 @@ class Motor():
 
     def fullscale_current_to_torque(self, fsc, is_gain):
         """Convert fullscale current to torque value"""
-        torque = min(int(fsc * (256 * self.map_gain(is_gain) * 0.033) / 2.75), 255)
+        torque = min(int((256 * self.map_gain(is_gain) * 0.033 * fsc) / 2.75), 255)
         print(f"Calculated torque: {torque}")
         return torque
 
     def current_to_reg_val(self, curr):
         """Convert current to register value"""
-        reg_val = int(curr * 123)
-        return reg_val
+        reg_0 = int(curr * 123)
+        reg_1 = 3
+        while reg_0 > 255:
+            reg_1 -= 1
+            reg_0 = reg_0 >> 1
+            # print(reg_0)
+            # time.sleep(1)
+        # print(f"Reg 0: {reg_0}, reg_1: {reg_1}")
+        return reg_0, reg_1
+
+    def reg_val_to_current(self, reg_0, reg_1):
+        # print(current)
+        while reg_1 < 3:
+            reg_0 = reg_0 << 1
+            reg_1 += 1
+        current = reg_0 / 123
+        return current
 
     def get_driver_settings(self):
         received = self.postep.read_driver_settings()
@@ -115,43 +131,45 @@ class Motor():
 
         fsc = (2.75 * torque[0]) / (256 * self.map_gain(is_gain) * 0.033)
         print(f"Calculated full scale current: {fsc}")
-        settings["fullscale_current"] = round(fsc, 2)
+        settings["fullscale_current"] = round(fsc, 1)
 
         idle_current_reg = received[57:59]
         print(f"Set idle current: {idle_current_reg}")
 
-        idle_current = idle_current_reg[0] / 123
+        idle_current = self.reg_val_to_current(idle_current_reg[0], idle_current_reg[1])
         print(f"Calculated current: {idle_current}")
-        settings["idle_current"] = round(idle_current, 2)
+        settings["idle_current"] = round(idle_current, 1)
 
         overheat_current_reg = received[59:61]
         print(f"overheat current: {overheat_current_reg}")  # works
 
-        overheat_current = overheat_current_reg[0] / 123
+        overheat_current = self.reg_val_to_current(overheat_current_reg[0], overheat_current_reg[1])
         print(f"Calculated current: {overheat_current}")  # works
-        settings["overheat_current"] = round(overheat_current, 2)
+        settings["overheat_current"] = round(overheat_current, 1)
 
         self.current_settings = received
 
         return settings
 
-    def set_driver_settings(self, fsc=None, idlec=None, overheatc=None, step_mode=None):
+    def set_driver_settings(self, fsc=None, idlec=None, overheatc=None):
 
-        print(f"fsc: {fsc}, idlec: {idlec}, overheatc: {overheatc}, step_mode: {step_mode}")
+        # print(f"fsc: {fsc}, idlec: {idlec}, overheatc: {overheatc}, step_mode: {step_mode}")
         if fsc is not None:
             torque = self.fullscale_current_to_torque(float(fsc), self.is_gain)
             self.current_settings[42] = torque
         if idlec is not None:
-            idle_current = self.current_to_reg_val(float(idlec))
-            self.current_settings[57] = idle_current
+            idle_current_0, idle_current_1 = self.current_to_reg_val(float(idlec))
+            self.current_settings[57] = idle_current_0
+            self.current_settings[58] = idle_current_1
         if overheatc is not None:
-            overheat_current = self.current_to_reg_val(float(overheatc))
-            self.current_settings[59] = overheat_current
-        if step_mode is not None:
-            current_ctrl_reg = self.current_settings[40]
-            current_ctrl_reg &= 0x87
-            new_ctrl_reg = current_ctrl_reg | (int(step_mode) << 3)
-            self.current_settings[40] = new_ctrl_reg
+            overheat_current_0, overheat_current_1 = self.current_to_reg_val(float(overheatc))
+            self.current_settings[59] = overheat_current_0
+            self.current_settings[60] = overheat_current_1
+        # if step_mode is not None:
+        #     current_ctrl_reg = self.current_settings[40]
+        #     current_ctrl_reg &= 0x87
+        #     new_ctrl_reg = current_ctrl_reg | (int(step_mode) << 3)
+        #     self.current_settings[40] = new_ctrl_reg
 
         self.postep.write_driver_settings(self.current_settings)
 
@@ -191,3 +209,6 @@ class Motor():
         except Exception as e:
             log.error(f"An exception occured when trying to stop stepper motor: {e}")
             return None
+
+# motor = Motor(DC_MODE)
+# motor.get_driver_settings()

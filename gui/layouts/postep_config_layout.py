@@ -41,7 +41,7 @@ def generate_postep_config_layout(postep_settings):
                             dbc.Col(
                                 width=4,
                                 children=[
-                                    text_field(id="fs-current", label="Full-scale current (A)", type="text", default_value=postep_settings["fullscale_current"])
+                                    text_field(id="fs-current", label="Full-scale current (A)", type="number", default_value=postep_settings["fullscale_current"], min=0, max=6, step=0.1)
                                 ]
                             )
                         ]
@@ -52,7 +52,7 @@ def generate_postep_config_layout(postep_settings):
                             dbc.Col(
                                 width=4,
                                 children=[
-                                    text_field(id="idle-current", label="Idle current (A)", type="text", default_value=postep_settings["idle_current"])
+                                    text_field(id="idle-current", label="Idle current (A)", type="number", default_value=postep_settings["idle_current"], min=0, max=6, step=0.1)
                                 ]
                             )
                         ]
@@ -63,7 +63,7 @@ def generate_postep_config_layout(postep_settings):
                             dbc.Col(
                                 width=4,
                                 children=[
-                                    text_field(id="overheat-current", label="Overheat current (A)", type="text", default_value=postep_settings["overheat_current"])
+                                    text_field(id="overheat-current", label="Overheat current (A)", type="number", default_value=postep_settings["overheat_current"], min=0, max=6, step=0.1)
                                 ]
                             )
                         ]

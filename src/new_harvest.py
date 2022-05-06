@@ -173,8 +173,8 @@ class NewHarvest():
         return settings_json
         # microstepping = config[36]
 
-    def set_postep_config(self, fsc=None, idlec=None, overheatc=None, step_mode=None):
-        self.motor.set_driver_settings(fsc, idlec, overheatc, step_mode)
+    def set_postep_config(self, fsc=None, idlec=None, overheatc=None):
+        self.motor.set_driver_settings(fsc, idlec, overheatc)
 
     def get_state(self):
         return self.state

@@ -448,11 +448,11 @@ class NewHarvestCallbacks():
                 State("fs-current-input", "value"),
                 State("idle-current-input", "value"),
                 State("overheat-current-input", "value"),
-                State("acceleration-input", "value"),
-                State("step-mode-dropdown", "value")
+                # State("acceleration-input", "value"),
+                # State("step-mode-dropdown", "value")
             ]
         )
-        def update_postep_config_page(btn, confirm, fsc, idlec, occ, acc, step):
+        def update_postep_config_page(btn, confirm, fsc, idlec, occ):
             display_confirm_dialog = False
             confirm_dialog_message = ""
             js = ""
@@ -466,8 +466,8 @@ class NewHarvestCallbacks():
                     display_confirm_dialog = True
                     confirm_dialog_message = "Press OK to confirm settings. Page will refresh after confirmation"
                 if prop_id == "confirm-settings-dialog":
-                    self.new_harvest.set_postep_config(fsc=fsc, idlec=idlec, overheatc=occ, step_mode=step)
-                    self.new_harvest.set_acceleration(int(acc))
+                    self.new_harvest.set_postep_config(fsc=str(fsc), idlec=str(idlec), overheatc=str(occ))
+                    # self.new_harvest.set_acceleration(int(acc))
                     js = "location.reload();"
 
             return display_confirm_dialog, confirm_dialog_message, js

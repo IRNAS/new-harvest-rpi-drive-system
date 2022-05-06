@@ -244,7 +244,7 @@ class PoStep256USB(object):
 
     def read_driver_settings(self):
         data_list = [0] * 64
-        data_list[1] = 0x85
+        data_list[1] = 0x81
 
         self.write_to_postep(data_list)
         received = self.read_from_postep(500)
