@@ -141,9 +141,8 @@ def generate_calibration_layout():
                         className="d-flex justify-content-between",
                         style={"width": "50%", "padding-right": "50px"},
                         children=[
-                            html.Span(
-                                "Current step: ", className="h4 font-weight-bold"),
-                            html.Span(id="current-step-span", children="0/5 Idle", className="h4 font-weight-bold")
+                            html.Span(id="current-step-num-span", children="Current step (0/5): ", className="h4 font-weight-bold"),
+                            html.Span(id="current-step-span", children="Idle", className="h4 font-weight-bold")
                         ]
                     ),
                     html.Div(
@@ -170,15 +169,15 @@ def generate_calibration_layout():
                         style={"width": "50%", "padding-right": "50px"},
                         children=[
                             dbc.Button("START", id="btn-start-calib", n_clicks=0, style={"width": "100px"}, className="mr-4"),
-                            dbc.Button("STOP", id="btn-stop-calib", n_clicks=0, style={"width": "100px"}, className="mr-2")
+                            dbc.Button("STOP", id="btn-stop-calib", n_clicks=0, style={"width": "100px"}, className="mr-2", disabled=True)
                         ]
                     ),
                     html.Div(
                         className="d-flex justify-content-left",
                         style={"width": "50%"},
                         children=[
-                            dbc.Button("NEXT", id="btn-continue-calib", n_clicks=0, style={"width": "100px"}, className="mr-4"),
-                            dbc.Button("SAVE", id="btn-save-calib", n_clicks=0, style={"width": "100px"}, className="mr-2", disabled=True)
+                            dbc.Button("NEXT", id="btn-continue-calib", n_clicks=0, style={"width": "100px"}, className="mr-4", disabled=True),
+                            # dbc.Button("SAVE", id="btn-save-calib", n_clicks=0, style={"width": "100px"}, className="mr-2", disabled=True)
                         ]
                     )
                 ]
@@ -192,7 +191,7 @@ layout_calibration = dbc.Container(
     id="main-layout",
     style={"padding-right": "0px", "padding-left": "0px"},
     children=[
-        dcc.Interval(id="check-state-interval", interval=500, n_intervals=0),
+        dcc.Interval(id="check-state-interval", interval=1000, n_intervals=0),
         dcc.ConfirmDialog(
             id="calib-dialog",
             message=""

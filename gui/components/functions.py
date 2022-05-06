@@ -118,20 +118,27 @@ def load_filenames(file_root):
 def map_calibration_step(step):
     """Map calibration step to text"""
     text = ""
+    num = "Current step"
     if step == CalibrationStep.IDLE:
-        text = "Idle 0/5"
+        text = "Idle"
+        num = num + " (0/5)" + ": "
     if step == CalibrationStep.COMPLETED:
-        text = "Completed 5/5"
+        text = "Completed"
+        num = num + " (5/5)" + ": "
     if step == CalibrationStep.LOW_PWM_RUNNING:
-        text = "Low PWM 1/5"
+        text = "Low PWM"
+        num = num + " (1/5)" + ": "
     if step == CalibrationStep.LOW_PWM_DONE:
-        text = "Low PWM Done 2/5"
+        text = "Low PWM Done"
+        num = num + " (2/5)" + ": "
     if step == CalibrationStep.HIGH_PWM_RUNNING:
-        text = "High PWM 3/5"
+        text = "High PWM"
+        num = num + " (3/5)" + ": "
     if step == CalibrationStep.HIGH_PWM_DONE:
-        text = "High PWM Done 4/5"
+        text = "High PWM Done"
+        num = num + " (4/5)" + ": "
 
-    return text
+    return num, text
 
 def map_title(variable):
     title = ""
