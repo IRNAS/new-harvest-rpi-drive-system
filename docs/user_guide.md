@@ -6,10 +6,10 @@ The workflow consits of **9** steps:
 3. Set `Time` in seconds.
 4. Press the `Start` button and then press OK to start the calibration process.
 5. Once the `Low PWM` calibration has finished measure the volume of the liquid and enter it into the corresponding box.
-6. Press the `Continue` button and confirm with OK.
+6. Press the `Next` button and confirm with OK.
 7. Once the `High PWM` calibration has finished measure the volume of the liquid and enter it into the `High PWM` box.
 8. Enter the `Filename`.
-9. Save the calibration with a confirmation on the `Save` button.
+9. Save the calibration with a confirmation on the `Next` button.
 
 # Single Flow Speed
 This screen is used to manually set the Flow. This is done by first loading or uploading a calibration file. If you want to upload a calibration file from your computer press the `Browse` button and select one.
@@ -28,7 +28,17 @@ Below is a sample calibration file.
 After the calibration file has been set you will see the calculated `Slope` in `mL/revolution`. Then you can set the `Flow` in `mL/min` and the desired `Acceleration` in `pwm/sec`. The default value is 100, which means the motor will accelerate from stand-still to full speed in a second. Set the desired `Direction` using the dropdown.
 
 # Speed Profile
-Aditionally to the calibration, this screen allows to select or upload a predefined `speed profile`. After the speed profile has been selected you will see a plot of it to the right, below the real time plot of the data.
+Aditionally to the calibration, this screen allows to select or upload a predefined `speed profile`.
+
+### Workflow
+1. Load `calibration` file by either selecting it from the dropdown or uploading it.
+2. Load `speed profile` file by either selecting it from the dropdown or uploading it.
+3. Set the number of `Repeats`.
+4. Select the direction.
+5. Press the `Start` button and the uploaded `speed profile` will start to run.
+
+### Speed Profile File
+After the speed profile has been selected you will see a plot of it to the right, below the real time plot of the data.
 
 The `speed profile` consists of several json objects, seperated with commas. The settings you can adjust are the `flow`, `duration` and `pwm_per_second`.
 
