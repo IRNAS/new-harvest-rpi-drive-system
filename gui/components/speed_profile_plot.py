@@ -75,11 +75,12 @@ def generate_speed_profile(speed_profile_json, calibration=None):
                 # print(f"Number of stops: {num_stops}")
                 for i in range(1, math.ceil(num_stops) + 1):
                     middle_pwm = int((((stop - start) / num_stops)  * i) + start)
+                    middle_pwm = min(middle_pwm, 100)  # cap pwm to 100
                     # print(f"Calculated pwm: {middle_pwm}")
                     pwm_list.append(middle_pwm)
                     flow_list.append(flow)
             else:
-                pwm_list.append(int(pwm))
+                pwm_list.append(min(int(pwm), 100))
                 flow_list.append(flow)
 
             last_pwm = pwm_list[-1]
@@ -154,7 +155,7 @@ def generate_speed_profile(speed_profile_json, calibration=None):
             },
             "yaxis": {
                 "title": "<b> PWM (%) </b>",
-                "range": [0, 100],
+                "range": [-5, 105],
                 "fixedrange": False,
                 "gridcolor": "rgb(50, 50, 50)"
             }
