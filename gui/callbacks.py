@@ -485,7 +485,7 @@ class NewHarvestCallbacks():
             if ctx.triggered:
                 split = ctx.triggered[0]["prop_id"].split(".")
                 prop_id = split[0]
-                print(split)
+                # print(split)
                 if prop_id == "save-btn":
                     display_confirm_dialog = True
                     confirm_dialog_message = "Press OK to confirm settings. Page will refresh after confirmation"

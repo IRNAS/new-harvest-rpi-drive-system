@@ -25,6 +25,8 @@ def generate_calibration_layout():
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 value=10,
                                 persistence=True,
+                                min=45,
+                                max=100,
                                 # max=90,
                                 # min=10,
                                 style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
@@ -67,6 +69,8 @@ def generate_calibration_layout():
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 value=100,
                                 persistence=True,
+                                min=45,
+                                max=100,
                                 # max=90,
                                 # min=10,
                                 style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},                                
