@@ -84,7 +84,7 @@ def generate_single_speed_layout(calibs, measurements):
                     html.Div(
                         className="d-flex flex-row mt-4 justify-content-between",
                         children=[
-                            dropdown(id="select-direction", label="Select Direction", fields=[{"label": "ACW", "value": "acw"}, {"label": "CW", "value": "cw"}], value="acw")
+                            dropdown(id="select-direction", label="Select Direction", fields=[{"label": "CCW", "value": "acw"}, {"label": "CW", "value": "cw"}], value="acw")
                         ]
                         # style={"width": "50%"},
                         # children=[
@@ -106,7 +106,7 @@ def generate_single_speed_layout(calibs, measurements):
                 style={"width": "80%"},
                 className="d-flex flex-row mt-4",
                 children=[
-                    generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", y_range=[-105, 105], fixed_y=True, measurements=measurements)
+                    generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", measurements=measurements)
                 ]
             )
         ]

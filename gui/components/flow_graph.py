@@ -3,7 +3,7 @@ import dash_html_components as html
 from .functions import generate_figure
 from .input_fields import dropdown
 
-def generate_graph_section(id, x_axis_label, y_axis_label, y_range, h=250, remove_buttons=False, mt=50, mb=40, fixed_x=True, fixed_y=True, show_x_labels=False, measurements={}):
+def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, remove_buttons=False, mt=50, mb=40, fixed_x=True, fixed_y=True, show_x_labels=False, measurements={}):
     """
     Generate graph section of GUI
     """

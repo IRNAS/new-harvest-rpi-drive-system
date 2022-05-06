@@ -87,7 +87,7 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
                                 className="d-flex flex-row mt-4 justify-content-between",
                                 style={"width": "50%"},
                                 children=[
-                                    html.Span("ACW"),
+                                    html.Span("CCW"),
                                     custom_toggle(id="direction-toggle-sp"),
                                     html.Span("CW")
                                 ]
