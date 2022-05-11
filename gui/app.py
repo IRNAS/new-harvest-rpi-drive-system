@@ -12,11 +12,11 @@ log.setLevel(logging.ERROR)
 
 # flask config
 # bootstrap theme url
-
 app = dash.Dash(
     __name__,
-    external_stylesheets=[dbc.themes.MATERIA],
-    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}]
+    # external_stylesheets=[dbc.themes.MATERIA],
+    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
+    serve_locally=True
 )
 server = app.server
 app.config["suppress_callback_exceptions"] = True

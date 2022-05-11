@@ -23,9 +23,9 @@ def generate_calibration_layout():
                                 id="low-pwm-input",
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
-                                value=10,
+                                value=35,
                                 persistence=True,
-                                min=45,
+                                min=35,
                                 max=100,
                                 # max=90,
                                 # min=10,
@@ -69,7 +69,7 @@ def generate_calibration_layout():
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 value=100,
                                 persistence=True,
-                                min=45,
+                                min=35,
                                 max=100,
                                 # max=90,
                                 # min=10,

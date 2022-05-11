@@ -276,21 +276,21 @@ class PoStep256USB(object):
         print(list(received))
         print(f"Byte at 15: {received[15]}")
 
-    def set_pwm(self, duty1_ccw, duty2_ccw, duty1_acw, duty2_acw,):
+    def set_pwm(self, duty1_ccw, duty2_ccw, duty1_acw, duty2_acw, frequency=20000):
 
         data_list = [0] * 64
         data_list[1] = 0xB0
         data_list[20] = 0
         data_list[21] = 0
         data_list[22] = 0
-        data_list[23] = 24
+        data_list[23] = int(480000 / frequency)  # 480000 / 24 = 20000 -> 20kHz when the setting is 24
 
         data_list[24] = duty1_ccw
         data_list[25] = duty1_acw
         data_list[26] = duty2_ccw
         data_list[27] = duty2_acw
 
-        # print(f"Writing list: {data_list}")
+        print(f"Writing list: {data_list}")
         self.write_to_postep(data_list)
 
         received = self.read_from_postep(500)
