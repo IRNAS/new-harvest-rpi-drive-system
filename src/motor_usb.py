@@ -61,7 +61,7 @@ class Motor():
                     duty1_acw = 0
                     duty2_acw = int(speed)
 
-                ret = self.postep.set_pwm(duty1_acw, duty2_acw, duty1_ccw, duty2_ccw, 20000)
+                ret = self.postep.set_pwm(duty1_ccw, duty2_ccw, duty1_acw, duty2_acw, 20000)
                 return ret
                 
             if self.mode == STEPPER_MODE:        
