@@ -4,7 +4,7 @@ import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 from ..components.input_fields import text_field, dropdown
 
-def generate_postep_config_layout(postep_settings):
+def generate_config_layout(postep_settings):
     """
     Postep config layout generation with all widgets (buttons, sliders, and input windows).
     """
@@ -23,6 +23,7 @@ def generate_postep_config_layout(postep_settings):
     layout = dbc.Container(
         id="main-layout",
         style={"padding-right": "0px", "padding-left": "0px"},
+        className="d-flex flex-row",
         children=[
             visdcc.Run_js("javascript"),  # run javascript to refresh page on demand
             dcc.ConfirmDialog(
@@ -31,15 +32,15 @@ def generate_postep_config_layout(postep_settings):
             ),
             html.Div(
                 id="postep-config-layout",
-                className="mt-3",
-                # style={"margin-top": "12px"},
+                className="mt-3 d-flex flex-column",
+                style={"width": "20%"},
                 children=[
                     #Header(),
                     dbc.Row(
                         className="input-row mt-2",
                         children=[
                             dbc.Col(
-                                width=4,
+                                # width=4,
                                 children=[
                                     text_field(id="fs-current", label="Full-scale current (A)", type="number", default_value=postep_settings["fullscale_current"], min=0, max=6, step=0.1)
                                 ]
@@ -50,7 +51,7 @@ def generate_postep_config_layout(postep_settings):
                         className="input-row mt-2",
                         children=[
                             dbc.Col(
-                                width=4,
+                                # width=4,
                                 children=[
                                     text_field(id="idle-current", label="Idle current (A)", type="number", default_value=postep_settings["idle_current"], min=0, max=6, step=0.1)
                                 ]
@@ -61,7 +62,7 @@ def generate_postep_config_layout(postep_settings):
                         className="input-row mt-2",
                         children=[
                             dbc.Col(
-                                width=4,
+                                # width=4,
                                 children=[
                                     text_field(id="overheat-current", label="Overheat current (A)", type="number", default_value=postep_settings["overheat_current"], min=0, max=6, step=0.1)
                                 ]
@@ -83,9 +84,48 @@ def generate_postep_config_layout(postep_settings):
                         className="input-row mt-4",
                         children=[
                             dbc.Col(
-                                width=4,
+                                # width=4,
                                 children=[
                                     dbc.Button("Save", id="save-btn", style={"width": "100px"}, n_clicks=0)
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            ),
+            html.Div(
+                style={"width": "20%"},
+                className="mt-3 d-flex flex-column",
+                children=[
+                    dbc.Row(
+                        className="input-row mt-2",
+                        children=[
+                            dbc.Col(
+                                # width=4,
+                                children=[
+                                    html.Span("WiFi Settings", className="h3", style={"font-weight": "bold"})
+                                ]
+                            )
+                        ]
+                    ),
+                    dbc.Row(
+                        className="input-row mt-2",
+                        children=[
+                            dbc.Col(
+                                # width=4,
+                                children=[
+                                    text_field(id="wifi-ssid", label="SSID", type="text", default_value="", persistence=False)
+                                ]
+                            )
+                        ]
+                    ),
+                    dbc.Row(
+                        className="input-row mt-2",
+                        children=[
+                            dbc.Col(
+                                # width=4,
+                                children=[
+                                    text_field(id="wifi-password", label="Password", type="text", default_value="", persistence=False)
                                 ]
                             )
                         ]

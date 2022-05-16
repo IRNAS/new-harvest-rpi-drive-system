@@ -10,7 +10,7 @@ from src.calibration import Calibration
 from src.new_harvest import CalibrationStep
 from dash.dependencies import Input, Output, State
 from .components.speed_profile_plot import generate_speed_profile
-from .components.functions import map_calibration_step, generate_figure_data, map_title, map_color, parse_json_contents
+from .components.functions import map_calibration_step, generate_figure_data, map_title, map_color, parse_json_contents, add_wifi_network
 
 log = logging.getLogger("werkzeug")
 log.setLevel(logging.ERROR)
@@ -456,7 +456,7 @@ class NewHarvestCallbacks():
             slope = round(self.new_harvest.get_slope(), 3)
             return [], set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, self.set_speed_profile_plot
 
-    def postep_config_callbacks(self):
+    def config_callbacks(self):
 
         @app.callback(
             [
@@ -472,11 +472,13 @@ class NewHarvestCallbacks():
                 State("fs-current-input", "value"),
                 State("idle-current-input", "value"),
                 State("overheat-current-input", "value"),
+                State("wifi-ssid-input", "value"),
+                State("wifi-password-input", "value")
                 # State("acceleration-input", "value"),
                 # State("step-mode-dropdown", "value")
             ]
         )
-        def update_postep_config_page(btn, confirm, fsc, idlec, occ):
+        def update_config_page(btn, confirm, fsc, idlec, occ, wifi_ssid, wifi_psk):
             display_confirm_dialog = False
             confirm_dialog_message = ""
             js = ""
@@ -491,6 +493,7 @@ class NewHarvestCallbacks():
                     confirm_dialog_message = "Press OK to confirm settings. Page will refresh after confirmation"
                 if prop_id == "confirm-settings-dialog":
                     self.new_harvest.set_postep_config(fsc=str(fsc), idlec=str(idlec), overheatc=str(occ))
+                    add_wifi_network(wifi_ssid, wifi_psk)
                     # self.new_harvest.set_acceleration(int(acc))
                     js = "location.reload();"
 

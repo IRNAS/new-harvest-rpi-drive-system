@@ -160,6 +160,58 @@ def map_color(variable):
         color = "rgb(250,50,80)"
     return color
 
+def add_wifi_network(ssid="", password=""):
+    """Adds wifi network to wpa_supplicant.conf file"""
+    if ssid == "" or password == "":
+        return False
+
+    wpa_supp_file = None
+    with open("/etc/wpa_supplicant/wpa_supplicant.conf", "r") as file:
+        wpa_supp_file = file.read().strip()
+    
+    # save backup of current settings file
+    with open("/etc/wpa_supplicant/wpa_supplicant_bak.conf", "w") as file:
+        file.write(wpa_supp_file)
+
+    wpa_supp_lines = wpa_supp_file.split("\n")
+
+    existing_ssid_line = -1
+    for idx, string in enumerate(wpa_supp_lines):
+        if f'ssid="{ssid}"' in string:
+            existing_ssid_line = idx
+            break
+    print(f"SSID exists on index: {existing_ssid_line}")
+    if existing_ssid_line != -1:
+        existing_psk_line = -1
+        for idx, string in enumerate(wpa_supp_lines):
+            if idx >= existing_ssid_line:
+                if "psk" in string:
+                    existing_psk_line = idx
+                    break
+        print(f"psk exists on index: {existing_psk_line}")
+
+        # if already exists replace the password
+        if existing_psk_line - existing_ssid_line == 1:
+            old_psk_idx = wpa_supp_lines[existing_psk_line].find("=")
+            old_psk = wpa_supp_lines[existing_psk_line][old_psk_idx+1:]
+            print(f"Old psk: {old_psk}")
+            curr_psk_line = wpa_supp_lines[existing_psk_line]
+            print(f"Curr psk line: {curr_psk_line}")
+            wpa_supp_lines[existing_psk_line] = curr_psk_line.replace(old_psk, f'"{password}"')
+            print(f"New psk: {password}")
+            print(f"Replaced old password with new password")
+
+            with open("/etc/wpa_supplicant/wpa_supplicant.conf", "w") as f:
+                f.writelines(s + '\n' for s in wpa_supp_lines)
+                return True
+
+    # if ssid does not exist yet, add it
+    if existing_ssid_line == -1:
+        with open("/etc/wpa_supplicant/wpa_supplicant.conf", "a") as file:
+            file.write('\nnetwork={\n\tssid="' + ssid + '"\n\tpsk="' + password + '"\n}\n')
+            return True
+    print(wpa_supp_lines)
+
 def shutdown_pi():
     """Shuts pi down on button click"""
     os.system("sudo shutdown now")

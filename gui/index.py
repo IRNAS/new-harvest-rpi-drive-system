@@ -9,7 +9,7 @@ from gui.app import server
 from gui.app import app
 from gui.layouts.no_page import no_page
 from gui.layouts.calibration_layout import layout_calibration
-from gui.layouts.postep_config_layout import generate_postep_config_layout
+from gui.layouts.config_layout import generate_config_layout
 from gui.layouts.single_speed_layout import layout_single_speed
 from gui.layouts.speed_profile_layout import layout_speed_profile
 from gui.components.header import Header
@@ -27,7 +27,7 @@ NewHarvestCallbacks(new_harvest).calibration_callbacks()
 NewHarvestCallbacks(new_harvest).single_speed_callbacks()
 NewHarvestCallbacks(new_harvest).graph_update_callbacks()
 NewHarvestCallbacks(new_harvest).speed_profile_callbacks()
-NewHarvestCallbacks(new_harvest).postep_config_callbacks()
+NewHarvestCallbacks(new_harvest).config_callbacks()
 NewHarvestCallbacks(new_harvest).download_logs_callbacks()
 
 # see https://dash.plot.ly/external-resources to alter header, footer and favicon
@@ -75,12 +75,15 @@ def display_page(pathname):
         profiles = load_filenames("/mnt/storage/profiles")
         return layout_speed_profile(calibs, profiles, measurements)
     if pathname == "/postep-config":
-        current_postep_config = new_harvest.get_postep_config()
+        try:
+            current_postep_config = new_harvest.get_postep_config()
+        except Exception as e:
+            current_postep_config = {}
         # current_accel = new_harvest.get_acceleration()
         print(f"Current postep settings: {current_postep_config}")
         # stop motor before changing settings
         new_harvest.stop_motor()
-        return generate_postep_config_layout(current_postep_config)
+        return generate_config_layout(current_postep_config)
     else:
         return no_page
 
