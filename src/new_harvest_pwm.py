@@ -206,8 +206,11 @@ class NewHarvest():
         # write last used calibration filename to json file
         filename = self.calibration.get_filename()
         file_obj = {}
-        with open("/home/pi/last_calibration.json", "r") as f:
-            file_obj = json.load(f)
+        try:
+            with open("/home/pi/last_calibration.json", "r") as f:
+                file_obj = json.load(f)
+        except Exception as e:
+            print(e)
             
         file_obj["calib_filename"] = f"/mnt/storage/calibrations/{filename}"
         with open("/home/pi/last_calibration.json", "w") as f:
