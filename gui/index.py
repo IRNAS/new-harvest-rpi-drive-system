@@ -13,7 +13,7 @@ from gui.layouts.config_layout import generate_config_layout
 from gui.layouts.single_speed_layout import layout_single_speed
 from gui.layouts.speed_profile_layout import layout_speed_profile
 from gui.components.header import Header
-from src.new_harvest import NewHarvest
+from src.new_harvest_stepper import NewHarvest
 from gui.callbacks import NewHarvestCallbacks
 from gui.components.functions import load_filenames
 

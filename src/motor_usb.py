@@ -47,6 +47,7 @@ class Motor():
         """Set speed to stepper motor"""
         # print(f"Setting motor speed: {speed}")
         self.current_speed = speed
+        # print(f"self.mode: {self.mode}")
         try:
             if self.mode == DC_MODE:
                 duty1_acw = 0
@@ -64,8 +65,11 @@ class Motor():
                 ret = self.postep.set_pwm(duty1_ccw, duty2_ccw, duty1_acw, duty2_acw, 20000)
                 return ret
                 
-            if self.mode == STEPPER_MODE:        
-                ret = self.postep.set_requested_speed(self.current_speed, self.current_direction)  # set speed
+            if self.mode == STEPPER_MODE:
+                for _ in range(0, 3):   
+                    ret = self.postep.set_requested_speed(self.current_speed, self.current_direction)  # set speed
+                    if ret:
+                        break
                 return ret
         
         except Exception as e:
@@ -107,10 +111,16 @@ class Motor():
             reg_0 = reg_0 << 1
             reg_1 += 1
         current = reg_0 / 123
+        print(f"Reg 0: {reg_0}, reg 1: {reg_1}")
         return current
 
     def get_driver_settings(self):
-        received = self.postep.read_driver_settings()
+        for _ in range(0, 3):
+            received = self.postep.read_driver_settings()
+            if received[15] == 0x81:
+                break
+        
+        # print(received)
         settings = {}
 
         ctrl_reg = received[40:42]
@@ -151,7 +161,7 @@ class Motor():
 
         return settings
 
-    def set_driver_settings(self, fsc=None, idlec=None, overheatc=None):
+    def set_driver_settings(self, fsc=None, idlec=None, overheatc=None, step_mode=None):
 
         # print(f"fsc: {fsc}, idlec: {idlec}, overheatc: {overheatc}, step_mode: {step_mode}")
         if fsc is not None:
@@ -165,11 +175,11 @@ class Motor():
             overheat_current_0, overheat_current_1 = self.current_to_reg_val(float(overheatc))
             self.current_settings[59] = overheat_current_0
             self.current_settings[60] = overheat_current_1
-        # if step_mode is not None:
-        #     current_ctrl_reg = self.current_settings[40]
-        #     current_ctrl_reg &= 0x87
-        #     new_ctrl_reg = current_ctrl_reg | (int(step_mode) << 3)
-        #     self.current_settings[40] = new_ctrl_reg
+        if step_mode is not None:
+            current_ctrl_reg = self.current_settings[40]
+            current_ctrl_reg &= 0x87
+            new_ctrl_reg = current_ctrl_reg | (int(step_mode) << 3)
+            self.current_settings[40] = new_ctrl_reg
 
         self.postep.write_driver_settings(self.current_settings)
 

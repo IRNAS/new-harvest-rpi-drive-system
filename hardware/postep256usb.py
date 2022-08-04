@@ -152,6 +152,7 @@ class PoStep256USB(object):
         # write to driver
         logging.info("postep_run_sleep {}".format(run))
         self.write_to_postep(data_list)
+        # self.write_to_postep(data_list)
         # request data
         received = self.read_from_postep(500)
         # check if response is valid
@@ -165,6 +166,7 @@ class PoStep256USB(object):
 
     def set_requested_speed(self,speed,direction="cw"):
 
+        # print(f"Setting requested speed: {speed} with direction {direction}")
         data_list = [0] * 64
         # request data streaming
         data_list[1] = 0x90
@@ -174,6 +176,7 @@ class PoStep256USB(object):
         else:
             step_values=480000
         data_list[20:24]=struct.pack('<I', int(step_values))
+        # print(data_list[20:24])
         if direction == "acw":
             data_list[24]=0x01
         # write to driver
@@ -183,6 +186,7 @@ class PoStep256USB(object):
         self.write_to_postep(data_list)
         # request data
         received = self.read_from_postep(500)
+        # print(received)
         # check if response is valid
         if(received[15]!=0x90):
             logging.error("Bad response: {}".format(received[15]))

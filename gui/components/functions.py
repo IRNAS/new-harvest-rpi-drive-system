@@ -2,7 +2,7 @@ import os
 import json
 import base64
 
-from src.new_harvest import CalibrationStep
+from src.new_harvest_stepper import CalibrationStep
 
 def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_count=600, mt=50, mb=40, fixed_x=True, fixed_y=True):
     """Generates figure for given data"""
@@ -125,17 +125,17 @@ def map_calibration_step(step):
     if step == CalibrationStep.COMPLETED:
         text = "Completed"
         num = num + " (5/5)" + ": "
-    if step == CalibrationStep.LOW_PWM_RUNNING:
-        text = "Low PWM"
+    if step == CalibrationStep.LOW_RPM_RUNNING:
+        text = "Low RPM"
         num = num + " (1/5)" + ": "
-    if step == CalibrationStep.LOW_PWM_DONE:
-        text = "Low PWM Done"
+    if step == CalibrationStep.LOW_RPM_DONE:
+        text = "Low RPM Done"
         num = num + " (2/5)" + ": "
-    if step == CalibrationStep.HIGH_PWM_RUNNING:
-        text = "High PWM"
+    if step == CalibrationStep.HIGH_RPM_RUNNING:
+        text = "High RPM"
         num = num + " (3/5)" + ": "
-    if step == CalibrationStep.HIGH_PWM_DONE:
-        text = "High PWM Done"
+    if step == CalibrationStep.HIGH_RPM_DONE:
+        text = "High RPM Done"
         num = num + " (4/5)" + ": "
 
     return num, text
@@ -144,8 +144,8 @@ def map_title(variable):
     title = ""
     if variable == "flow":
         title = "Flow (mL/min)"
-    if variable == "pwm":
-        title = "Speed (PWM (%))"
+    if variable == "rpm":
+        title = "Speed (RPM)"
     if variable == "temp":
         title = "Temperature (°C)"
     return title
@@ -154,7 +154,7 @@ def map_color(variable):
     color = "rgb(0,0,255)"
     if variable == "flow":
         color = "rgb(50,160,235)"
-    if variable == "pwm":
+    if variable == "rpm":
         color = "rgb(250,185,50)"
     if variable == "temp":
         color = "rgb(250,50,80)"

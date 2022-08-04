@@ -72,7 +72,7 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
                             html.Div(
                                 className="d-flex flex-column mt-3",
                                 children=[
-                                    html.Span("Slope (mL/min)/pwm:", style={"font-size": "20px", "font-weight": "bold"}),
+                                    html.Span("Slope (mL/min)/rpm:", style={"font-size": "20px", "font-weight": "bold"}),
                                     html.Span(id="slope-sp", children="0")
                                 ]
                             ),
@@ -105,7 +105,7 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
                         style={"width": "80%"},
                         className="d-flex flex-column mt-4",
                         children=[
-                            generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", y_range=[-105, 105], fixed_y=True, remove_buttons=False, measurements=measurements),
+                            generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", remove_buttons=False, measurements=measurements),
                             generate_speed_profile_plot_container(id="speed-profile-plot", speed_profile_json=None, calibration=None)
                         ]
                     )

@@ -18,15 +18,15 @@ def generate_calibration_layout():
                         style={"width": "50%", "padding-right": "50px"},
                         children=[
                             html.Span(
-                                "Low pwm (%): ", className="h4 font-weight-bold"),
+                                "Low rpm: ", className="h4 font-weight-bold"),
                             dcc.Input(
-                                id="low-pwm-input",
+                                id="low-rpm-input",
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
-                                value=35,
+                                value=1000,
                                 persistence=True,
-                                min=35,
-                                max=100,
+                                min=0,
+                                max=10000,
                                 # max=90,
                                 # min=10,
                                 style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
@@ -38,9 +38,9 @@ def generate_calibration_layout():
                         style={"width": "50%"},
                         children=[
                             html.Span(
-                                "Low pwm Volume (mL): ", className="h4 font-weight-bold"),
+                                "Low rpm Volume (mL): ", className="h4 font-weight-bold"),
                             dcc.Input(
-                                id="low-pwm-volume-input",
+                                id="low-rpm-volume-input",
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 value=0,
@@ -62,15 +62,15 @@ def generate_calibration_layout():
                         style={"width": "50%", "padding-right": "50px"},
                         children=[
                             html.Span(
-                                "High pwm (%): ", className="h4 font-weight-bold"),
+                                "High rpm: ", className="h4 font-weight-bold"),
                             dcc.Input(
-                                id="high-pwm-input",
+                                id="high-rpm-input",
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
-                                value=100,
+                                value=3000,
                                 persistence=True,
-                                min=35,
-                                max=100,
+                                min=0,
+                                max=100000,
                                 # max=90,
                                 # min=10,
                                 style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},                                
@@ -82,9 +82,9 @@ def generate_calibration_layout():
                         style={"width": "50%"},
                         children=[
                             html.Span(
-                                "High pwm Volume (mL): ", className="h4 font-weight-bold"),
+                                "High rpm Volume (mL): ", className="h4 font-weight-bold"),
                             dcc.Input(
-                                id="high-pwm-volume-input",
+                                id="high-rpm-volume-input",
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 value=0,

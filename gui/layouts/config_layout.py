@@ -69,17 +69,17 @@ def generate_config_layout(postep_settings):
                             )
                         ]
                     ),
-                    # dbc.Row(
-                    #     className="input-row mt-2",
-                    #     children=[
-                    #         dbc.Col(
-                    #             width=4,
-                    #             children=[
-                    #                 dropdown(id="step-mode", label="Step Mode", fields=step_mode, value=postep_settings["microstepping"])
-                    #             ]
-                    #         )
-                    #     ]
-                    # ),
+                    dbc.Row(
+                        className="input-row mt-2",
+                        children=[
+                            dbc.Col(
+                                # width=4,
+                                children=[
+                                    dropdown(id="step-mode", label="Step Mode", fields=step_mode, value=postep_settings["microstepping"])
+                                ]
+                            )
+                        ]
+                    ),
                     dbc.Row(
                         className="input-row mt-4",
                         children=[

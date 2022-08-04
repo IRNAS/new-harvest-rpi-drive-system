@@ -39,8 +39,8 @@ def generate_single_speed_layout(calibs, measurements):
                             ),
                             html.Span("Slope (mL/revol):", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
                             html.Span(id="slope", children="0"),
-                            html.Span("Set pwm (%):", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
-                            html.Span(id="set-pwm", children="0")
+                            html.Span("Set rpm:", style={"font-size": "20px", "font-weight": "bold", "margin-top": "20px"}),
+                            html.Span(id="set-rpm", children="0")
                         ]
                     ),
                     html.Div(
@@ -64,14 +64,14 @@ def generate_single_speed_layout(calibs, measurements):
                         className="d-flex flex-column mt-3",
                         children=[
                             html.Span(
-                                "Set Acceleration (pwm/sec): ", className="h4 font-weight-bold"),
+                                "Set Acceleration (rpm/sec): ", className="h4 font-weight-bold"),
                             dcc.Input(
-                                id="accel-pwm-input",
+                                id="accel-rpm-input",
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
-                                value=100,
+                                value=10000,
                                 persistence=True,
-                                max=100,
+                                max=100000,
                                 min=1,
                                 style={"width": "50%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
                             )
@@ -122,7 +122,7 @@ def layout_single_speed(calibs, measurements):
         style={"padding-right": "0px", "padding-left": "0px"},
         children=[
             dcc.ConfirmDialog(
-                id="confirm-dialog-pwm-alert",
+                id="confirm-dialog-rpm-alert",
                 message=""
             ),
             dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),

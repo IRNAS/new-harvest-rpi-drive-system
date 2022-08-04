@@ -1,8 +1,10 @@
 {
     "profile": [
-        {"flow": 300, "duration": 60},
-        {"flow": 500, "duration": 10},
-        {"flow": 0, "duration": 20},
-        {"flow": 1000, "duration": 10}
+        {"flow": 30, "duration": 30, "rpm_per_second": 5000},
+        {"flow": 14, "duration": 30, "rpm_per_second": 7000},
+        {"flow": 46, "duration": 30, "rpm_per_second": 10000},
+        {"flow": 21, "duration": 30, "rpm_per_second": 2500},
+        {"flow": 27, "duration": 30, "rpm_per_second": 5000},
+        {"flow": 43, "duration": 30, "rpm_per_second": 1500}
     ]
 }

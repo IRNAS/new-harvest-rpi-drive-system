@@ -2,9 +2,9 @@
 import math
 import dash_html_components as html
 import dash_core_components as dcc
-# def get_pwm(flow, calibration):
-#     """Return required pwm to get desired flow"""
-#     # print(f"Calculating pwm from selected flow: {flow} and slope: {self.slope}")
+# def get_rpm(flow, calibration):
+#     """Return required rpm to get desired flow"""
+#     # print(f"Calculating rpm from selected flow: {flow} and slope: {self.slope}")
 #     return flow / 0.058
 
 def generate_speed_profile_plot_container(id, speed_profile_json, calibration):
@@ -45,56 +45,56 @@ def generate_speed_profile_plot_container(id, speed_profile_json, calibration):
 
 def generate_speed_profile(speed_profile_json, calibration=None):
     """Generates figure for given speed_profile_json"""
-    pwm_list = []  # we're storing flow data
+    rpm_list = []  # we're storing flow data
     flow_list = []
     # print(speed_profile_json)
     # print(calibration)
     if speed_profile_json is not None and calibration is not None:
-        pwm_list.append(0)  # first value is 0 as the motor is stopped
+        rpm_list.append(0)  # first value is 0 as the motor is stopped
         flow_list.append(0)
         for speed_setting in speed_profile_json["profile"]:
             # read data from the json speed_profile settings
             duration = speed_setting.get("duration", 0)
             flow = speed_setting.get("flow", 0)
-            pwm_per_second = speed_setting.get("pwm_per_second", 100)
+            rpm_per_second = speed_setting.get("rpm_per_second", 100)
 
-            pwm = int(calibration.get_pwm(flow))
-            # print(f"Target pwm: {pwm}")
-            start = pwm_list[-1]
-            stop = pwm
-            # print(f"Start pwm: {start}, stop pwm: {stop}")
-            if stop > pwm_list[-1]:
-                step = pwm_per_second
+            rpm = int(calibration.get_rpm(flow))
+            # print(f"Target rpm: {rpm}")
+            start = rpm_list[-1]
+            stop = rpm
+            # print(f"Start rpm: {start}, stop rpm: {stop}")
+            if stop > rpm_list[-1]:
+                step = rpm_per_second
             else:
-                step = -pwm_per_second
+                step = -rpm_per_second
 
-            if pwm_per_second < abs(start-stop):
+            if rpm_per_second < abs(start-stop):
                 # print(f"ABS START - STOP: {abs(start-stop)}")
-                # print(f"PWM PER SECOND: {pwm_per_second}")
-                num_stops = math.ceil(abs(start-stop) / pwm_per_second)
+                # print(f"rpm PER SECOND: {rpm_per_second}")
+                num_stops = math.ceil(abs(start-stop) / rpm_per_second)
                 # print(f"Number of stops: {num_stops}")
                 for i in range(1, math.ceil(num_stops) + 1):
-                    middle_pwm = int((((stop - start) / num_stops)  * i) + start)
-                    middle_pwm = min(middle_pwm, 100)  # cap pwm to 100
-                    # print(f"Calculated pwm: {middle_pwm}")
-                    pwm_list.append(middle_pwm)
+                    middle_rpm = int((((stop - start) / num_stops)  * i) + start)
+                    # middle_rpm = min(middle_rpm, 100)  # cap rpm to 100
+                    # print(f"Calculated rpm: {middle_rpm}")
+                    rpm_list.append(middle_rpm)
                     flow_list.append(flow)
             else:
-                pwm_list.append(min(int(pwm), 100))
+                rpm_list.append(rpm)
                 flow_list.append(flow)
 
-            last_pwm = pwm_list[-1]
+            last_rpm = rpm_list[-1]
             for _ in range(0, duration):
-                pwm_list.append(last_pwm)
+                rpm_list.append(last_rpm)
                 flow_list.append(flow)
 
-        pwm_list.append(0)  # last value is 0
+        rpm_list.append(0)  # last value is 0
         flow_list.append(0)
         # plt.plot(data)
         # plt.savefig("test.jpg")
-        # print(pwm_list)
+        # print(rpm_list)
 
-    data_count = len(pwm_list)
+    data_count = len(rpm_list)
     ## generate figure
     fig = {
         # https://plotly.com/javascript/reference/index/
@@ -118,11 +118,11 @@ def generate_speed_profile(speed_profile_json, calibration=None):
             },
             {
                 "type": "scatter",
-                "name": "Speed(PWM (%))",
+                "name": "Speed(RPM)",
                 # "x": df["Time"].tolist(),
                 "x": list(range(0, data_count)),  # take first 300 data points
                 # "y": df[item].tolist(),
-                "y": pwm_list,
+                "y": rpm_list,
                 "mode": "lines",
                 "marker": {
                     # more about "marker.color": #scatter-marker-color
@@ -154,8 +154,8 @@ def generate_speed_profile(speed_profile_json, calibration=None):
                 "showticklabels": True
             },
             "yaxis": {
-                "title": "<b> PWM (%) </b>",
-                "range": [-5, 105],
+                "title": "<b> RPM </b>",
+                # "range": [-5, 105],
                 "fixedrange": False,
                 "gridcolor": "rgb(50, 50, 50)"
             }
@@ -168,12 +168,12 @@ def generate_speed_profile(speed_profile_json, calibration=None):
 
 speed_profile_json = {
     "profile": [
-        {"flow": 3.0, "duration": 30, "pwm_per_second": 50},
-        {"flow": 3.4, "duration": 30, "pwm_per_second": 70},
-        {"flow": 3.6, "duration": 30, "pwm_per_second": 100},
-        {"flow": 3.1, "duration": 30, "pwm_per_second": 25},
-        {"flow": 2.7, "duration": 30, "pwm_per_second": 50},
-        {"flow": 4.3, "duration": 30, "pwm_per_second": 15}
+        {"flow": 3.0, "duration": 30, "rpm_per_second": 50},
+        {"flow": 3.4, "duration": 30, "rpm_per_second": 70},
+        {"flow": 3.6, "duration": 30, "rpm_per_second": 100},
+        {"flow": 3.1, "duration": 30, "rpm_per_second": 25},
+        {"flow": 2.7, "duration": 30, "rpm_per_second": 50},
+        {"flow": 4.3, "duration": 30, "rpm_per_second": 15}
     ]
 }
 
