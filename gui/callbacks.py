@@ -43,6 +43,8 @@ class NewHarvestCallbacks():
 
         self.prev_direction = self.direction
 
+        self.action_in_progress = False
+
         print(f"INITING CALLBACKS")
 
     def calibration_callbacks(self):
@@ -223,7 +225,7 @@ class NewHarvestCallbacks():
             ],
             [
                 Input("btn-start", "n_clicks"),
-                Input("btn-set", "n_clicks"),
+                # Input("btn-set", "n_clicks"),
                 Input("btn-stop", "n_clicks"),
                 Input("select-direction-dropdown", "value"),
                 Input("upload-calibration", "contents"),
@@ -237,7 +239,7 @@ class NewHarvestCallbacks():
                 State("upload-calibration", "filename")
             ]
         )
-        def update_single_speed_status(btn_start, btn_set, btn_stop, dir, calib_contents, selected_calib, dir_state, speed, rpm_per_sec, calibration_filename):
+        def update_single_speed_status(btn_start, btn_stop, dir, calib_contents, selected_calib, dir_state, speed, rpm_per_sec, calibration_filename):
             """Update single speed layout"""
 
             dir_toggle = self.new_harvest.get_direction()
@@ -257,31 +259,39 @@ class NewHarvestCallbacks():
                     self.new_harvest.stop_manual_execution()
                     self.new_harvest.stop_moving_motor = False
                     time.sleep(0.25)  # wait for motor to stop moving
-                    self.new_harvest.stop_motor(rpm_per_sec=rpm_per_sec)
+                    # ret = self.new_harvest.stop_motor(rpm_per_sec=rpm_per_sec)
+                    # if ret:
+                    if dir_state != self.prev_direction:
+                        ret = self.new_harvest.stop_motor(rpm_per_sec=rpm_per_sec)
+                        # self.prev_direction = dir_state
                     self.new_harvest.run_thread(target=self.new_harvest.set_flow, args=(dir_state, speed, True, "single", rpm_per_sec, ))
                     print(f"RPM per sec: {rpm_per_sec}")
                     self.prev_direction = dir_state
                     
                 if prop_id == "btn-stop":
-                    self.motor_running = False
-                    self.new_harvest.stop_manual_execution()
-                    self.new_harvest.stop_moving_motor = False
-                    time.sleep(0.25)  # wait for motor to stop moving
-                    self.new_harvest.stop_motor(rpm_per_sec=rpm_per_sec)
-                    self.prev_direction = dir_state
-                    
-                if prop_id == "btn-set":
-                    if self.motor_running:
-                        print(f"Current direction setting: {dir_state}")
-                        print(f"Prev direction: {self.prev_direction}")
+                    if not self.new_harvest.stopping_motor:
+                        self.motor_running = False
                         self.new_harvest.stop_manual_execution()
                         self.new_harvest.stop_moving_motor = False
                         time.sleep(0.25)  # wait for motor to stop moving
-                        if dir_state != self.prev_direction:
-                            self.new_harvest.stop_motor(rpm_per_sec=rpm_per_sec)
-                            self.prev_direction = dir_state
-                        self.new_harvest.run_thread(target=self.new_harvest.set_flow, args=(dir_state, speed, False, "none", rpm_per_sec, ))
-                        print(f"RPM per sec: {rpm_per_sec}")
+                        self.new_harvest.stop_motor(rpm_per_sec=rpm_per_sec)
+                        self.prev_direction = dir_state
+                    
+                # if prop_id == "btn-set":
+                #     if self.motor_running:
+                #         if not self.new_harvest.action_in_progress:
+                #             print(f"Current direction setting: {dir_state}")
+                #             print(f"Prev direction: {self.prev_direction}")
+                #             self.new_harvest.stop_manual_execution()
+                #             self.new_harvest.stop_moving_motor = False
+                #             time.sleep(0.25)  # wait for motor to stop moving
+                #             ret = True
+                #             if dir_state != self.prev_direction:
+                #                 ret = self.new_harvest.stop_motor(rpm_per_sec=rpm_per_sec)
+                #                 self.prev_direction = dir_state
+                #             if ret:
+                #                 self.new_harvest.run_thread(target=self.new_harvest.set_flow, args=(dir_state, speed, False, "none", rpm_per_sec, ))
+                #             print(f"RPM per sec: {rpm_per_sec}")
 
                 if prop_id == "upload-calibration":
                     if calib_contents is not None and ".json" in calibration_filename:

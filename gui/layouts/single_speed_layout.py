@@ -77,12 +77,12 @@ def generate_single_speed_layout(calibs, measurements):
                             )
                         ]
                     ),
-                    html.Div(
-                        className="mt-4",
-                        children=[
-                            dbc.Button("SET", id="btn-set", style={"width": "100px"}, n_clicks=0)
-                        ]
-                    ),
+                    # html.Div(
+                    #     className="mt-4",
+                    #     children=[
+                    #         dbc.Button("SET", id="btn-set", style={"width": "100px"}, n_clicks=0)
+                    #     ]
+                    # ),
                     html.Div(
                         className="d-flex flex-row mt-4 justify-content-between",
                         children=[

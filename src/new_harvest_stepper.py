@@ -110,6 +110,8 @@ class NewHarvest():
 
 
         self.state_loop_running = True
+        self.stop_moving_motor = False
+        self.stopping_motor = False
 
         self.profile_filename = None
         self.state_loop = Thread(target=self.state_update_loop, daemon=True)
@@ -155,6 +157,7 @@ class NewHarvest():
         self.stop_current_thread = True
         if self.thread is not None:
             self.thread.join()
+            time.sleep(1)
         print(f"Stopping thread")
         self.csv_logging = False
         self.thread = None
@@ -163,6 +166,7 @@ class NewHarvest():
         self.stop_moving_motor = True
         if self.thread is not None:
             self.thread.join()
+            time.sleep(1)
         print(f"Stopping thread")
         self.csv_logging = False
         self.thread = None
@@ -247,7 +251,6 @@ class NewHarvest():
         if self.action_in_progress:
             return
 
-        self.action_in_progress = True
         try:
             rpm = self.calibration.get_rpm(flow)
             ret = self.run_motor(direction, rpm, new_log=new_log, type=type, rpm_per_sec=rpm_per_sec)
@@ -269,6 +272,9 @@ class NewHarvest():
 
     def stop_motor(self, rpm_per_sec=10000):
         """Stop stepper motor"""
+        # self.action_in_progress = True
+
+        self.stopping_motor = True
         self.csv_logging = False
         print(f"Stopping motor")
         ret = self.run_motor(self.direction, 0, rpm_per_sec=rpm_per_sec)  # set speed to 0
@@ -278,10 +284,17 @@ class NewHarvest():
             if ret:
                 self.current_set_flow = 0
                 self.current_set_rpm = 0
+
+        self.stopping_motor = False
+        self.action_in_progress = False
+
         return ret
 
     def run_motor(self, direction, speed, new_log=False, type="", rpm_per_sec=10000):
         # dir_str = "cw"
+        if self.action_in_progress:
+            return
+        self.action_in_progress = True
         print(f"Trying to run motor with direction: {direction} speed: {speed}")
         self.set_direction(direction)
         tick_interval = 0.1  # 100 ms is a tick
@@ -296,6 +309,7 @@ class NewHarvest():
             ret = self.motor.set_speed(accel_speed)
             while accel_speed - speed != 0:
                 # print(f"While loop")
+                print(f"Set speed: {accel_speed}")
                 if speed > start_speed:
                     accel_speed += rpm_per_tick
                     accel_speed = min(accel_speed, speed)
@@ -310,14 +324,15 @@ class NewHarvest():
                 else:
                     mult = -1
                 self.converted_rpm = mult * accel_speed
+                self.current_set_rpm = accel_speed
                 time.sleep(tick_interval)
-
 
                 if self.stop_moving_motor:
                     break
+
         print(f"Duration to speed change: {time.time() - start_time}")
-        if ret:
-            self.current_set_rpm = speed
+        # if ret and not self.stop_moving_motor:
+        #     self.current_set_rpm = speed
 
         if new_log:
             self.csv_writer.start_new_log(type)
