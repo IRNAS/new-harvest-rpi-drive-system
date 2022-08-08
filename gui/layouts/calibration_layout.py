@@ -10,12 +10,12 @@ def generate_calibration_layout():
         id="calibration-control-display",
         children=[
             html.Div(
-                style={"width": "50%"},
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
-                        className="d-flex justify-content-between",
-                        style={"width": "50%", "padding-right": "50px"},
+                        className="d-flex dropdown-entry",
+                        style={"padding-right": "64px"},
+                        # style={"justify-content": "space-between", "width": "260px", "margin-right": "40px"},
                         children=[
                             html.Span(
                                 "Low rpm: ", className="h4 font-weight-bold"),
@@ -27,15 +27,13 @@ def generate_calibration_layout():
                                 persistence=True,
                                 min=0,
                                 max=10000,
-                                # max=90,
-                                # min=10,
-                                style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
+                                className="bold-input"
                             )
                         ]
                     ),
                     html.Div(
-                        className="d-flex justify-content-between",
-                        style={"width": "50%"},
+                        className="d-flex dropdown-entry ",
+                        # style={"justify-content": "space-between", "width": "260px", "margin-right": "40px"},
                         children=[
                             html.Span(
                                 "Low rpm Volume (mL): ", className="h4 font-weight-bold"),
@@ -47,19 +45,19 @@ def generate_calibration_layout():
                                 persistence=True,
                                 # max=90,
                                 # min=10,
-                                style={"width": "25%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
+                                className="bold-input"
+                                # style={"width": "25%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
                             )
                         ]
                     ),
                 ]
             ),
             html.Div(
-                style={"width": "50%"},
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
-                        className="d-flex justify-content-between",
-                        style={"width": "50%", "padding-right": "50px"},
+                        className="d-flex dropdown-entry",
+                        style={"padding-right": "64px"},
                         children=[
                             html.Span(
                                 "High rpm: ", className="h4 font-weight-bold"),
@@ -73,13 +71,14 @@ def generate_calibration_layout():
                                 max=100000,
                                 # max=90,
                                 # min=10,
-                                style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},                                
+                                className="bold-input"
+                                # style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},                                
                             )
                         ]
                     ),
                     html.Div(
-                        className="d-flex justify-content-between",
-                        style={"width": "50%"},
+                        className="d-flex dropdown-entry",
+                        # style={"width": "50%"},
                         children=[
                             html.Span(
                                 "High rpm Volume (mL): ", className="h4 font-weight-bold"),
@@ -91,19 +90,19 @@ def generate_calibration_layout():
                                 persistence=True,
                                 # max=90,
                                 # min=10,
-                                style={"width": "25%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},                                
+                                className="bold-input"
+                                # style={"width": "25%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},                                
                             )
                         ]
                     ),
                 ]
             ),
             html.Div(
-                style={"width": "50%"},
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
-                        className="d-flex justify-content-between",
-                        style={"width": "50%", "padding-right": "50px"},
+                        className="d-flex dropdown-entry",
+                        style={"padding-right": "64px"},
                         children=[
                             html.Span(
                                 "Set time (s): ", className="h4 font-weight-bold"),
@@ -115,13 +114,14 @@ def generate_calibration_layout():
                                 persistence=True,
                                 # max=90,
                                 # min=10,
-                                style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
+                                className="bold-input"
+                                # style={"width": "40%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
                             )
                         ]
                     ),
                     html.Div(
-                        className="d-flex justify-content-between",
-                        style={"width": "50%"},
+                        className="d-flex dropdown-entry",
+                        # style={"width": "50%"},
                         children=[
                             html.Span(
                                 "Filename: ", className="h4 font-weight-bold"),
@@ -131,46 +131,46 @@ def generate_calibration_layout():
                                 value="calibration-test",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
                                 persistence=True,
-                                style={"width": "60%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
+                                className="bold-input",
+                                style={"width": "65%"}
+                                # style={"width": "60%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
                             )
                         ]
                     )
                 ]
             ),
             html.Div(
-                style={"width": "50%"},
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
-                        className="d-flex justify-content-between",
-                        style={"width": "50%", "padding-right": "50px"},
+                        className="d-flex  ",
+                        # style={"width": "50%", "padding-right": "50px"},
                         children=[
                             html.Span(id="current-step-num-span", children="Current step (0/5): ", className="h4 font-weight-bold"),
-                            html.Span(id="current-step-span", children="Idle", className="h4 font-weight-bold")
+                            html.Span(id="current-step-span", children="Idle", className="h4 font-weight-bold", style={"margin-left": "34px"})
                         ]
                     ),
-                    html.Div(
-                        className="d-flex justify-content-left",
-                        style={"width": "50%"},
-                        children=[
-                            dbc.Progress(
-                                id="calib-progress",
-                                value=0, 
-                                style={"width": "100%", "height": "24px", "border-radius": "4px"},
-                                striped=True,
-                                animated=True
-                            )
-                        ]
+                ]
+            ),
+            html.Div(
+                className="d-flex justify-content-left",
+                children=[
+                    dbc.Progress(
+                        id="calib-progress",
+                        value=0, 
+                        style={"width": "334px", "height": "24px", "border-radius": "4px"},
+                        striped=True,
+                        animated=True
                     )
                 ]
             ),
             html.Div(
-                style={"width": "50%"},
+                style={"width": "80%"},
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
-                        className="d-flex justify-content-left",
-                        style={"width": "50%", "padding-right": "50px"},
+                        className="d-flex justify-content-left ",
+                        # style={"width": "50%", "padding-right": "50px"},
                         children=[
                             dbc.Button("START", id="btn-start-calib", n_clicks=0, style={"width": "100px"}, className="mr-4"),
                             dbc.Button("STOP", id="btn-stop-calib", n_clicks=0, style={"width": "100px"}, className="mr-2", disabled=True)

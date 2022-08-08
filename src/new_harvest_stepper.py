@@ -113,6 +113,8 @@ class NewHarvest():
         self.stop_moving_motor = False
         self.stopping_motor = False
 
+        self.state_loop = None
+
         self.profile_filename = None
         self.state_loop = Thread(target=self.state_update_loop, daemon=True)
         self.state_loop.start()

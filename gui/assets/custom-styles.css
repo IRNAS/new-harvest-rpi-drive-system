@@ -221,6 +221,21 @@ input:checked+.slider-toggle:before {
     /* margin-top: 2px; */
 }
 
+.bold-input {
+    width: 28%;
+    height: 100%;
+    padding-left: 5px;
+    font-weight: bold;
+    background: aliceblue;
+    border-radius: 5px;
+    margin-left: 30px;
+}
+
+.dropdown-entry {
+    justify-content: space-between;
+    width: 360px;
+}
+
 /* BODY */
 body {
     font-size: 16px; /* currently ems cause chrome bug misinterpreting rems on body element */

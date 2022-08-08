@@ -31,8 +31,8 @@ class Motor():
         try:
             self.postep = PoStep256USB(logging.INFO)
             if self.postep.device is None:
-                print("Driver not found, exiting.")
-                sys.exit(0)
+                raise Exception("Driver not found, exiting.")
+                # sys.exit(0)
 
             self.postep.read_configuration()
             self.postep.set_run_sleep_mode(DRIVER_SLEEP)
