@@ -1,10 +1,9 @@
 import visdcc
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import dcc, html
 import dash_bootstrap_components as dbc
 from ..components.input_fields import text_field, dropdown
 
-def generate_config_layout(postep_settings):
+def generate_config_layout(postep_settings, measurements):
     """
     Postep config layout generation with all widgets (buttons, sliders, and input windows).
     """
@@ -21,7 +20,7 @@ def generate_config_layout(postep_settings):
     ]
 
     layout = dbc.Container(
-        id="main-layout",
+        # id="main-layout",
         style={"padding-right": "0px", "padding-left": "0px"},
         className="d-flex flex-row",
         children=[
@@ -33,7 +32,7 @@ def generate_config_layout(postep_settings):
             html.Div(
                 id="postep-config-layout",
                 className="mt-2 d-flex flex-column",
-                style={"width": "50%"},
+                style={"width": "210px", "margin-right": "20px"},
                 children=[
                     #Header(),
                     dbc.Row(
@@ -105,7 +104,7 @@ def generate_config_layout(postep_settings):
                 ]
             ),
             html.Div(
-                style={"width": "50%"},
+                style={"width": "260px", "margin-right": "20px"},
                 className="mt-2 d-flex flex-column",
                 children=[
                     dbc.Row(
@@ -142,7 +141,25 @@ def generate_config_layout(postep_settings):
                         ]
                     )
                 ]
-            )
+            ),
+            html.Div(
+                style={"width": "260px"},
+                className="mt-2",
+                children=[
+                    html.Span("Select Logfile:", style={"font-size": "20px", "font-weight": "bold"}),
+                    dcc.Dropdown(
+                        id=f"select-logfile-dropdown",
+                        className="mt-1",
+                        style={"width": "100%"},
+                        options=measurements,
+                        persistence=True
+                    ),
+                    # dropdown(id="select-logfile", label="Select Logfile", fields=measurements, dd_style={"width": "100%", "height": "30px"}),
+                    html.Br(),
+                    html.Button("Download Log", id="btn-download-log"),
+                    dcc.Download(id="download-log")
+                ]
+            ),
         ]
     )
 

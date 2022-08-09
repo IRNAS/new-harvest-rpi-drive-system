@@ -5,7 +5,8 @@ import logging
 import datetime
 
 from gui.app import app
-import dash_core_components as dcc
+# import dash_core_components as dcc
+from dash import dcc
 from src.calibration import Calibration
 from src.new_harvest_stepper import CalibrationStep
 from dash.dependencies import Input, Output, State
@@ -215,7 +216,7 @@ class NewHarvestCallbacks():
 
         @app.callback(
             [
-                Output("hidden-div", "children"),
+                # Output("hidden-div", "children"),
                 Output("calibration-filename", "children"),
                 # Output("direction-toggle", "checked"),
                 Output("slope", "children"),
@@ -324,7 +325,7 @@ class NewHarvestCallbacks():
 
             
 
-            return [], set_calibration_file, slope, current_set_rpm, rpm_dialog_message, display_rpm_warning
+            return set_calibration_file, slope, current_set_rpm, rpm_dialog_message, display_rpm_warning
 
     def graph_update_callbacks(self):
 
@@ -365,7 +366,6 @@ class NewHarvestCallbacks():
 
         @app.callback(
             [
-                Output("hidden-div-sp", "children"),
                 Output("speed-profile-filename", "children"),
                 Output("current-flow-span", "children"),
                 Output("confirm-dialog-sp", "displayed"),
@@ -466,7 +466,7 @@ class NewHarvestCallbacks():
                 set_profile_filename = set_profile_filename.split("/")[-1]
             # print(f"Set calibration file: {set_calibration_file}")
             slope = round(self.new_harvest.get_slope(), 3)
-            return [], set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, self.set_speed_profile_plot
+            return set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, self.set_speed_profile_plot
 
     def config_callbacks(self):
 

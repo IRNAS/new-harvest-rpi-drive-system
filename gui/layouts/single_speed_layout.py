@@ -1,7 +1,6 @@
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 import dash_bootstrap_components as dbc
-from ..components.flow_graph import generate_graph_section
+# from ..components.flow_graph import generate_graph_section
 from ..components.custom_toggle import custom_toggle
 from ..components.input_fields import dropdown
 
@@ -14,7 +13,7 @@ def generate_single_speed_layout(calibs, measurements):
         id="singles-speed-display",
         className="d-flex flex-column",
         children=[
-            html.Div(id="hidden-div", style={"visibility":"hidden"}),
+            # html.Div(id="hidden-div", style={"visibility":"hidden"}),
             html.Div(
                 # style={"width": "20%"},
                 className="d-flex flex-row",
@@ -146,13 +145,13 @@ def generate_single_speed_layout(calibs, measurements):
                     dbc.Button("STOP", id="btn-stop", style={"width": "110px", "margin-left": "20px"}, n_clicks=0, className="mt-2")
                 ]
             ),
-            html.Div(
-                style={"width": "80%"},
-                className="d-flex flex-row mt-4",
-                children=[
-                    generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", measurements=measurements)
-                ]
-            )
+            # html.Div(
+            #     style={"width": "80%"},
+            #     className="d-flex flex-row mt-4",
+            #     children=[
+            #         generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", measurements=measurements)
+            #     ]
+            # )
         ]
     )
 

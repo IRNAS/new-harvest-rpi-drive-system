@@ -1,7 +1,6 @@
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import dcc, html
 
-def dropdown(id, label, fields, value="", dd_style={"width": "83%", "height": "30px"}):
+def dropdown(id, label, fields, value="", dd_style={"width": "100%", "height": "30px"}):
     """
     Return div with label and dropdown fields.
     Fields has to be a list of dicts in the for of [{"label": dd_label, "value": dd_value}, {"label": dd_label, "value": dd_value}]
@@ -37,7 +36,7 @@ def text_field(id, label, type, default_value, min=None, max=None, step=None, pe
         type=type,
         debounce=True,  # must be set to true for onscreen keyboard to work
         value=default_value,
-        style={"width": "70%", "height": "30px", "font-size": "20px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
+        style={"width": "100%", "height": "30px", "font-size": "20px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
         className="mt-1",
         persistence=persistence
     )
@@ -50,7 +49,7 @@ def text_field(id, label, type, default_value, min=None, max=None, step=None, pe
             min=min,
             max=max,
             step=step,
-            style={"width": "70%", "height": "30px", "font-size": "20px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
+            style={"width": "100%", "height": "30px", "font-size": "20px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
             className="mt-1",
             persistence=persistence
         )

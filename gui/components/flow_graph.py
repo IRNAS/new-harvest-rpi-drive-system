@@ -1,7 +1,7 @@
-import dash_core_components as dcc
-import dash_html_components as html
+# import dash_core_components as dcc
+# import dash_html_components as html
+from dash import dcc, html
 from .functions import generate_figure
-from .input_fields import dropdown
 
 def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, remove_buttons=False, mt=50, mb=40, fixed_x=True, fixed_y=True, show_x_labels=False, measurements={}):
     """
@@ -10,8 +10,22 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, re
     fig = generate_figure(x_axis_label, y_axis_label, [], y_range, h=h, mt=mt, mb=mb, fixed_x=fixed_x, fixed_y=fixed_y)
 
     graph_container = html.Div(
-        className="d-flex flex-direction-column",
+        # className="d-flex flex-direction-column",
         children=[
+            
+            dcc.Checklist(
+                id="variable-checklist",
+                inline=True,
+                # style={"width": "340px"},
+                # className="d-flex flex-direction-column",
+                # style={"display":"block"},
+                options=[
+                    {"label": html.Span([" Flow (mL/min)"], style={"margin-right": "20px"}), "value": "flow"},
+                    {"label": html.Span([" Speed (rpm)"], style={"margin-right": "20px"}), "value": "rpm"},
+                    {"label": " Temperature (°C)", "value": "temp"}
+                ],
+                value=["flow", "rpm", "temp"]
+            ),
             html.Div(
                 # style={"width": "85%"},
                 children=[
@@ -28,41 +42,7 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, re
                             "displaylogo": False,
                             "modeBarButtonsToRemove": ["autoScale2d", "toggleSpikelines", "hoverCompareCartesian", "hoverClosestCartesian"],
                         },
-                        style={"margin-left": "-6px", "width": "560px", "height": "240px"}
-                    )
-                ]
-            ),
-            html.Div(
-                children=[
-                    html.Div(
-                        children=[
-                            html.Div("Select variables to plot", style={"margin-left": "20px", "font-size": "20px"}),
-                            html.Div(
-                                style={"width": "170px", "margin-left": "20px", "margin-top": "10px"},
-                                children=[
-                                    dcc.Checklist(
-                                        id="variable-checklist",
-                                        # className="d-flex flex-direction-column",
-                                        style={"display":"block"},
-                                        options=[
-                                            {"label": " Flow (mL/min)", "value": "flow"},
-                                            {"label": " Speed (rpm)", "value": "rpm"},
-                                            {"label": " Temperature (°C)", "value": "temp"}
-                                        ],
-                                        value=["flow", "rpm", "temp"]
-                                    )
-                                ]
-                            )
-                        ]
-                    ),
-                    html.Div(
-                        style={"width": "110%", "margin-left": "20px"},
-                        children=[
-                            dropdown(id="select-logfile", label="Select Logfile", fields=measurements, dd_style={"width": "90%", "height": "30px"}),
-                            html.Br(),
-                            html.Button("Download Log", id="btn-download-log"),
-                            dcc.Download(id="download-log")
-                        ]
+                        style={"width": "760px", "height": "340px"}
                     )
                 ]
             )

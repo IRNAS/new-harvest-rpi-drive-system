@@ -1,9 +1,8 @@
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 import dash_bootstrap_components as dbc
-from ..components.flow_graph import generate_graph_section
+# from ..components.flow_graph import generate_graph_section
 from ..components.custom_toggle import custom_toggle
-from ..components.input_fields import dropdown, text_field
+from ..components.input_fields import dropdown
 from ..components.speed_profile_plot import generate_speed_profile_plot_container
 
 def generate_speed_profile_layout(calibs, profiles, measurements):
@@ -157,13 +156,13 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
                     )
                 ]
             ),
-            html.Div(
-                style={"width": "80%"},
-                className="d-flex flex-column mt-4",
-                children=[
-                    generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", remove_buttons=False, measurements=measurements),
-                ]
-            )
+            # html.Div(
+            #     style={"width": "80%"},
+            #     className="d-flex flex-column mt-4",
+            #     children=[
+            #         generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", remove_buttons=False, measurements=measurements),
+            #     ]
+            # )
         ]
     )
     
@@ -175,7 +174,7 @@ def layout_speed_profile(calibs, profiles, measurements):
         id="main-layout",
         style={"padding-right": "0px", "padding-left": "0px"},
         children=[
-            html.Div(id="hidden-div-sp", style={"visibility":"hidden"}),
+            # html.Div(id="hidden-div-sp", style={"visibility":"hidden"}),
             dcc.ConfirmDialog(
                 id="confirm-dialog-sp",
                 message=""

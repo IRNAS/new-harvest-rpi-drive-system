@@ -1,7 +1,6 @@
 # import matplotlib.pyplot as plt
 import math
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import dcc, html
 # def get_rpm(flow, calibration):
 #     """Return required rpm to get desired flow"""
 #     # print(f"Calculating rpm from selected flow: {flow} and slope: {self.slope}")
@@ -33,7 +32,7 @@ def generate_speed_profile_plot_container(id, speed_profile_json, calibration):
                             "displaylogo": False,
                             "modeBarButtonsToRemove": ["autoScale2d", "toggleSpikelines", "hoverCompareCartesian", "hoverClosestCartesian"],
                         },
-                        style={"margin-left": "12px", "width": "500px", "height": "190px"}
+                        style={"margin-left": "12px", "width": "500px", "height": "180px"}
                     )
                 ]
             )

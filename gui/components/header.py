@@ -1,5 +1,4 @@
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import dcc, html
 import dash_bootstrap_components as dbc
 
 def Header():
@@ -68,7 +67,7 @@ navbar = dbc.Navbar(
                         html.Li(
                             # style={"width": "25%"},
                             children=[
-                                dbc.NavItem(dbc.NavLink(id="calibration-input-navlink", children="Flow Speed Calibration", href="/calibration", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px"}))
+                                dbc.NavItem(dbc.NavLink(id="calibration-input-navlink", children="Calibration", href="/calibration", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px"}))
                             ]
                         ),
                         html.Li(
@@ -86,7 +85,13 @@ navbar = dbc.Navbar(
                         html.Li(
                             # style={"width": "25%"},
                             children=[
-                                dbc.NavItem(dbc.NavLink(id="postep-config-navlink", children="Config", href="/postep-config", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px"}))
+                                dbc.NavItem(dbc.NavLink(id="flow-plot-navlink", children="Plot", href="/flow-plot", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px", "width": "70px"}))
+                            ]
+                        ),
+                        html.Li(
+                            # style={"width": "25%"},
+                            children=[
+                                dbc.NavItem(dbc.NavLink(id="postep-config-navlink", children="Config", href="/postep-config", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px", "width": "70px"}))
                             ]
                         )
                     ]

@@ -1,5 +1,6 @@
-import dash_html_components as html
-import dash_core_components as dcc
+# import dash_html_components as html
+# import dash_core_components as dcc
+from dash import dcc, html
 
 def custom_slider(id, min, max, step, initial_value, user_marks=None):
     """Create and return custom slider"""

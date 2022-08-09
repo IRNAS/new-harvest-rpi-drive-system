@@ -1,7 +1,8 @@
 import logging
 
-import dash_core_components as dcc
-import dash_html_components as html
+# import dash_core_components as dcc
+# import dash_html_components as html
+from dash import dcc, html
 from dash.dependencies import Input, Output
 
 # see https://community.plot.ly/t/nolayoutexception-on-deployment-of-multi-page-dash-app-example-code/12463/2?u=dcomfort
@@ -12,6 +13,7 @@ from gui.layouts.calibration_layout import layout_calibration
 from gui.layouts.config_layout import generate_config_layout
 from gui.layouts.single_speed_layout import layout_single_speed
 from gui.layouts.speed_profile_layout import layout_speed_profile
+from gui.layouts.plot_layout import layout_plot
 from gui.components.header import Header
 from src.new_harvest_stepper import NewHarvest
 from gui.callbacks import NewHarvestCallbacks
@@ -63,18 +65,19 @@ app.layout = html.Div([
               [Input('url', 'pathname')])
 def display_page(pathname):
 
+    measurements = load_filenames("/mnt/storage/measurements")
+    calibs = load_filenames("/mnt/storage/calibrations")
+    
     if pathname == "/calibration":
         return layout_calibration
-    if pathname == "/single-speed-control":
-        calibs = load_filenames("/mnt/storage/calibrations")
-        measurements = load_filenames("/mnt/storage/measurements")
+    elif pathname == "/single-speed-control":
+        
         return layout_single_speed(calibs, measurements)
-    if pathname == "/speed-profile":
-        calibs = load_filenames("/mnt/storage/calibrations")
-        measurements = load_filenames("/mnt/storage/measurements")
+    elif pathname == "/speed-profile":
+        
         profiles = load_filenames("/mnt/storage/profiles")
         return layout_speed_profile(calibs, profiles, measurements)
-    if pathname == "/postep-config":
+    elif pathname == "/postep-config":
         try:
             current_postep_config = new_harvest.get_postep_config()
         except Exception as e:
@@ -83,7 +86,9 @@ def display_page(pathname):
         print(f"Current postep settings: {current_postep_config}")
         # stop motor before changing settings
         new_harvest.stop_motor()
-        return generate_config_layout(current_postep_config)
+        return generate_config_layout(current_postep_config, measurements)
+    elif pathname == "/flow-plot":
+        return layout_plot(measurements)
     else:
         return no_page
 
