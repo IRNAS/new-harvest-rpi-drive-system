@@ -15,7 +15,7 @@ def generate_speed_profile_plot_container(id, speed_profile_json, calibration):
     # print(f"Figure: {fig}")
 
     graph_container = html.Div(
-        className="d-flex flex-direction-row mt-5",
+        className="d-flex flex-direction-row mt-3",
         children=[
             html.Div(
                 # style={"width": "85%"},
@@ -27,13 +27,13 @@ def generate_speed_profile_plot_container(id, speed_profile_json, calibration):
                         id=id,
                         figure=fig,
                         config={
-                            "staticPlot": False,
+                            "staticPlot": True,
                             "editable": False,
-                            "displayModeBar": True,
+                            "displayModeBar": False,
                             "displaylogo": False,
                             "modeBarButtonsToRemove": ["autoScale2d", "toggleSpikelines", "hoverCompareCartesian", "hoverClosestCartesian"],
                         },
-                        style={"margin-left": "12px", "width": "1000px", "height": "360px"}
+                        style={"margin-left": "12px", "width": "500px", "height": "190px"}
                     )
                 ]
             )
@@ -101,7 +101,7 @@ def generate_speed_profile(speed_profile_json, calibration=None):
         "data": [
             {
                 "type": "scatter",
-                "name": "Flow (mL/min))",
+                "name": "Flow",
                 # "name": name,
                 # "x": df["Time"].tolist(),
                 "x": list(range(0, data_count)),  # take first 300 data points
@@ -118,7 +118,7 @@ def generate_speed_profile(speed_profile_json, calibration=None):
             },
             {
                 "type": "scatter",
-                "name": "Speed(RPM)",
+                "name": "Speed",
                 # "x": df["Time"].tolist(),
                 "x": list(range(0, data_count)),  # take first 300 data points
                 # "y": df[item].tolist(),
@@ -140,10 +140,10 @@ def generate_speed_profile(speed_profile_json, calibration=None):
             # "height": h,
             "showlegend": True,
             "margin": {
-                "t": 40,
-                "b": 40,
-                "l": 50,
-                "r": 40
+                "t": 35,
+                "b": 30,
+                "l": 46,
+                "r": -5
             },
             "xaxis": {
                 "title": "<b>Time (s)</b>",

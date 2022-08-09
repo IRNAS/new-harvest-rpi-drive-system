@@ -12,38 +12,122 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
     """
     
     speed_profile_layout = html.Div(
+        className="d-flex flex-column",
+        id="singles-speed-display",
         children=[
             html.Div(
-                id="singles-speed-display",
                 className="d-flex flex-row",
                 children=[
                     html.Div(
-                        style={"width": "20%"},
-                        className="d-flex flex-column mt-3",
+                        className="d-flex flex-column",
+                        style={"width": "420px"},
                         children=[
                             html.Div(
-                                className="d-flex flex-column",                        
+                                className="d-flex flex-column mt-2",
                                 children=[
                                     html.Span("Loaded Calibration:", style={"font-size": "20px", "font-weight": "bold"}),
                                     html.Div(
-                                    className="mt-1",
-                                    children=[
-                                            dbc.Label("No Calibration Loaded", className="wrap", id="calibration-filename-sp", html_for="upload-calibration-sp"),
+                                        className="mt-1",
+                                        children=[
+                                            dbc.Label("No Calibration Loaded", className="wrap", id="calibration-filename-sp", html_for="upload-calibration", style={"font-size": "18px"}),
                                             dcc.Upload(
                                                 id="upload-calibration-sp",
                                                 accept=".json",
-                                                #style={"display": "flex", "height": "100%", "width": "100%"},
                                                 children=[
                                                     dbc.Button("Browse", style={"width": "100px"})
                                                 ]
-                                            ),
-                                            dropdown(id="select-calibration-sp", label="Select Calibration", fields=calibs)
-                                    ] 
+                                            )
+                                        ]
+                                    ),
+
+                                ]
+                            ),
+                            html.Div(
+                                className="d-flex flex-column mt-2",
+                                children=[
+                                    html.Span("Select Calibration:", style={"font-size": "20px", "font-weight": "bold"}),
+                                    dcc.Dropdown(
+                                        id=f"select-calibration-sp-dropdown",
+                                        className="mt-1",
+                                        style={"width": "240px"},
+                                        options=calibs,
+                                        persistence=True
+                                    ),
+                                ]
+                            ),
+                            
+                        ],
+                    ),
+                    html.Div(
+                        className="d-flex flex-column",
+                        children=[
+                            
+                            html.Div(
+                                className="d-flex flex-row mt-2",
+                                children=[
+                                    html.Span("Slope (mL/min)/rpm:", className="sfs-title"),
+                                    html.Span(id="slope-sp", children="0", className="sfs-value", style={"margin-left": "115px"})
+                                ]
+                            ),
+                            html.Div(
+                                className="d-flex flex-row mt-2",                        
+                                children=[
+                                    html.Span("Set Flow (mL/min):", className="sfs-title"),
+                                    html.Span(id="current-flow-span", children="0", className="sfs-value", style={"margin-left": "135px"})
+                                ]
+                            ),
+                            html.Div(
+                                className="d-flex flex-row",
+                                children=[
+                                    html.Div("Direction", className="sfs-title", style={"width": "100px", "padding-top": "6px"}),
+                                    html.Div(
+                                        className="d-flex flex-row mt-2 justify-content-between",
+                                        style={"width": "30%", "margin-left": "230px"},
+                                        children=[
+                                            html.Span("CCW", style={"font-size": "16px"}),
+                                            custom_toggle(id="direction-toggle-sp"),
+                                            html.Span("CW", style={"font-size": "16px"})
+                                        ]
                                     )
                                 ]
                             ),
                             html.Div(
-                                className="mt-4",
+                                className="d-flex flex-row mt-2",
+                                children=[
+                                    html.Span(
+                                        "Repeat: ", className="sfs-title", style={"width": "325px"}),
+                                    dcc.Input(
+                                        id="num-repeat-input",
+                                        type="number",
+                                        debounce=True,  # must be set to true for onscreen keyboard to work
+                                        value=1,
+                                        persistence=True,
+                                        style={"width": "26%", "height": "100%", "padding-left": "5px", "font-weight": "bold", "background": "aliceblue", "border-radius": "5px"},
+                                    )
+                                ]
+                            ),
+                            html.Div(
+                                className="mt-2 d-flex flex-row justify-content-end",
+                                style={"width": "438px"},
+                                children=[
+                                    html.Div("Control", className="h4 font-weight-bold", style={"width": "100px", "padding-top": "14px"}),
+                                    dbc.Button("START", id="btn-start-sp", style={"width": "110px", "margin-left": "98px"}, n_clicks=0, className="mt-2"),
+                                    dbc.Button("STOP", id="btn-stop-sp", style={"width": "110px", "margin-left": "20px"}, n_clicks=0, className="mt-2")
+                                ]
+                            ),
+                        ]
+                    ),
+                ]
+            ),
+            html.Div(
+                className="d-flex flex-row",
+                children=[
+                    html.Div(
+                        className="d-flex flex-column",
+                        style={"width": "420px"},
+                        children=[
+                            html.Div(
+                                className="mt-2",
                                 children=[
                                     html.Span("Loaded Speed Profile:", style={"font-size": "20px", "font-weight": "bold"}),
                                     html.Div(
@@ -63,52 +147,21 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
                                     )
                                 ]
                             ),
-                            html.Div(
-                                className="d-flex flex-column mt-3",
-                                children=[
-                                    text_field(id="num-repeat", label="Repeat:", type="number", default_value=1)
-                                ]
-                            ),
-                            html.Div(
-                                className="d-flex flex-column mt-3",
-                                children=[
-                                    html.Span("Slope (mL/min)/rpm:", style={"font-size": "20px", "font-weight": "bold"}),
-                                    html.Span(id="slope-sp", children="0")
-                                ]
-                            ),
-                            html.Div(
-                                className="d-flex flex-column mt-3",                        
-                                children=[
-                                    html.Span("Set Flow (mL/min):", style={"font-size": "20px", "font-weight": "bold"}),
-                                    html.Span(id="current-flow-span", children="0")
-                                ]
-                            ),
-                            html.Div(
-                                className="d-flex flex-row mt-4 justify-content-between",
-                                style={"width": "50%"},
-                                children=[
-                                    html.Span("CCW"),
-                                    custom_toggle(id="direction-toggle-sp"),
-                                    html.Span("CW")
-                                ]
-                            ),
-                            html.Div(
-                                className="mt-4",
-                                children=[
-                                    dbc.Button("START", id="btn-start-sp", style={"width": "100px"}, n_clicks=0, className="mr-4"),
-                                    dbc.Button("STOP", id="btn-stop-sp", style={"width": "100px"}, n_clicks=0, className="mr-2")
-                                ]
-                            )
                         ]
                     ),
                     html.Div(
-                        style={"width": "80%"},
-                        className="d-flex flex-column mt-4",
+                        className="d-flex flex-column",
                         children=[
-                            generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", remove_buttons=False, measurements=measurements),
                             generate_speed_profile_plot_container(id="speed-profile-plot", speed_profile_json=None, calibration=None)
                         ]
                     )
+                ]
+            ),
+            html.Div(
+                style={"width": "80%"},
+                className="d-flex flex-column mt-4",
+                children=[
+                    generate_graph_section(id="flow-speed-graph", x_axis_label="Time (s)", y_axis_label="", remove_buttons=False, measurements=measurements),
                 ]
             )
         ]
