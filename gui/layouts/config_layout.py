@@ -32,10 +32,21 @@ def generate_config_layout(postep_settings):
             ),
             html.Div(
                 id="postep-config-layout",
-                className="mt-3 d-flex flex-column",
-                style={"width": "20%"},
+                className="mt-2 d-flex flex-column",
+                style={"width": "50%"},
                 children=[
                     #Header(),
+                    dbc.Row(
+                        # className="input-row",
+                        children=[
+                            dbc.Col(
+                                # width=4,
+                                children=[
+                                    html.Span("PoStep Settings", className="h3", style={"font-weight": "bold"})
+                                ]
+                            )
+                        ]
+                    ),
                     dbc.Row(
                         className="input-row mt-2",
                         children=[
@@ -94,11 +105,11 @@ def generate_config_layout(postep_settings):
                 ]
             ),
             html.Div(
-                style={"width": "20%"},
-                className="mt-3 d-flex flex-column",
+                style={"width": "50%"},
+                className="mt-2 d-flex flex-column",
                 children=[
                     dbc.Row(
-                        className="input-row mt-2",
+                        # className="input-row",
                         children=[
                             dbc.Col(
                                 # width=4,
