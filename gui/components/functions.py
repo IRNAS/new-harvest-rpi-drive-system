@@ -143,11 +143,11 @@ def map_calibration_step(step):
 def map_title(variable):
     title = ""
     if variable == "flow":
-        title = "Flow (mL/min)"
+        title = "Flow"
     if variable == "rpm":
-        title = "Speed (RPM)"
+        title = "Speed"
     if variable == "temp":
-        title = "Temperature (°C)"
+        title = "Temp"
     return title
 
 def map_color(variable):

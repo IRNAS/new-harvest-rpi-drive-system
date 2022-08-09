@@ -138,11 +138,12 @@ def generate_single_speed_layout(calibs, measurements):
                 ]
             ),
             html.Div(
-                className="mt-2 d-flex flex-row justify-content-between",
-                style={"width": "238px"},
+                className="mt-2 d-flex flex-row justify-content-end",
+                style={"width": "438px", "margin-left": "42.6%"},
                 children=[
-                    dbc.Button("START", id="btn-start", style={"width": "110px"}, n_clicks=0, className="mt-2"),
-                    dbc.Button("STOP", id="btn-stop", style={"width": "110px"}, n_clicks=0, className="mt-2")
+                    html.Div("Control", className="h4 font-weight-bold", style={"width": "100px", "padding-top": "14px"}),
+                    dbc.Button("START", id="btn-start", style={"width": "110px", "margin-left": "98px"}, n_clicks=0, className="mt-2"),
+                    dbc.Button("STOP", id="btn-stop", style={"width": "110px", "margin-left": "20px"}, n_clicks=0, className="mt-2")
                 ]
             ),
             html.Div(

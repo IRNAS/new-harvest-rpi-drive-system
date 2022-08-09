@@ -28,7 +28,7 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, re
                             "displaylogo": False,
                             "modeBarButtonsToRemove": ["autoScale2d", "toggleSpikelines", "hoverCompareCartesian", "hoverClosestCartesian"],
                         },
-                        style={"margin-left": "-6px", "width": "540px", "height": "240px"}
+                        style={"margin-left": "-6px", "width": "560px", "height": "240px"}
                     )
                 ]
             ),
@@ -56,7 +56,7 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, re
                         ]
                     ),
                     html.Div(
-                        style={"width": "100%", "margin-left": "20px"},
+                        style={"width": "110%", "margin-left": "20px"},
                         children=[
                             dropdown(id="select-logfile", label="Select Logfile", fields=measurements, dd_style={"width": "90%", "height": "30px"}),
                             html.Br(),
