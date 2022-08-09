@@ -10,7 +10,7 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, re
     fig = generate_figure(x_axis_label, y_axis_label, [], y_range, h=h, mt=mt, mb=mb, fixed_x=fixed_x, fixed_y=fixed_y)
 
     graph_container = html.Div(
-        className="d-flex flex-direction-row",
+        className="d-flex flex-direction-column",
         children=[
             html.Div(
                 # style={"width": "85%"},
@@ -28,7 +28,7 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, re
                             "displaylogo": False,
                             "modeBarButtonsToRemove": ["autoScale2d", "toggleSpikelines", "hoverCompareCartesian", "hoverClosestCartesian"],
                         },
-                        style={"margin-left": "12px", "width": "1000px", "height": "360px"}
+                        style={"margin-left": "-6px", "width": "540px", "height": "240px"}
                     )
                 ]
             ),
@@ -36,7 +36,7 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, re
                 children=[
                     html.Div(
                         children=[
-                            html.Span("Select variables to plot", style={"margin-left": "20px", "font-size": "20px"}),
+                            html.Div("Select variables to plot", style={"margin-left": "20px", "font-size": "20px"}),
                             html.Div(
                                 style={"width": "170px", "margin-left": "20px", "margin-top": "10px"},
                                 children=[
@@ -58,7 +58,7 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, re
                     html.Div(
                         style={"width": "100%", "margin-left": "20px"},
                         children=[
-                            dropdown(id="select-logfile", label="Select Logfile", fields=measurements, dd_style={"width": "120%", "height": "30px"}),
+                            dropdown(id="select-logfile", label="Select Logfile", fields=measurements, dd_style={"width": "90%", "height": "30px"}),
                             html.Br(),
                             html.Button("Download Log", id="btn-download-log"),
                             dcc.Download(id="download-log")

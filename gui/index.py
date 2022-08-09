@@ -93,7 +93,7 @@ if __name__ == '__main__':
 
     app.run_server(
         port=port,
-        debug=False,
+        debug=True,
         host=hostname,
         #dev_tools_ui=False,
         #dev_tools_props_check=False

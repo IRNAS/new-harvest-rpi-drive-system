@@ -236,6 +236,16 @@ input:checked+.slider-toggle:before {
     width: 360px;
 }
 
+.sfs-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.sfs-value {
+    font-size: 20px;
+    margin-left: 20px;
+}
+
 /* BODY */
 body {
     font-size: 16px; /* currently ems cause chrome bug misinterpreting rems on body element */
