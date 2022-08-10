@@ -51,7 +51,8 @@ def generate_single_speed_layout(calibs, measurements):
                                         className="mt-1",
                                         style={"width": "240px"},
                                         options=calibs,
-                                        persistence=True
+                                        persistence=True,
+                                        searchable=False
                                     ),
                                 ]
                             ),

@@ -25,7 +25,7 @@ def generate_calibration_layout():
                                 value=1000,
                                 persistence=True,
                                 min=0,
-                                max=10000,
+                                max=100000,
                                 className="bold-input"
                             )
                         ]

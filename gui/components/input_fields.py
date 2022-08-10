@@ -19,8 +19,9 @@ def dropdown(id, label, fields, value="", dd_style={"width": "100%", "height": "
                 options=fields,
                 style=dd_style,
                 className="mt-1",
-                value=value,
-                persistence=True
+                # value=value,
+                persistence=True,
+                searchable=False
             ),
         ]
     )

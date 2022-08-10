@@ -277,10 +277,11 @@ class NewHarvest():
         # self.action_in_progress = True
 
         self.stopping_motor = True
-        self.csv_logging = False
+        # self.csv_logging = False
         print(f"Stopping motor")
         ret = self.run_motor(self.direction, 0, rpm_per_sec=rpm_per_sec)  # set speed to 0
         if ret:
+            print(f"Calling stop motor from motor")
             ret = self.motor.stop_motor()
             print(f"Ret of stop motor: {ret}")
             if ret:
@@ -357,9 +358,9 @@ class NewHarvest():
             start_time = time.time()
             while not self.stop_current_thread and time.time() - start_time < duration:
                 time.sleep(0.01)
-            
+            self.action_in_progress = False
+            ret = self.stop_motor()
             if self.current_calibration_step == CalibrationStep.LOW_RPM_RUNNING:
-                ret = self.stop_motor()
                 if self.stop_current_thread:
                     self.current_calibration_step = CalibrationStep.IDLE
                 else:
@@ -379,9 +380,9 @@ class NewHarvest():
             start_time = time.time()
             while not self.stop_current_thread and time.time() - start_time < duration:
                 time.sleep(0.01)
-            
+            self.action_in_progress = False
+            ret = self.stop_motor()
             if self.current_calibration_step == CalibrationStep.HIGH_RPM_RUNNING:
-                ret = self.stop_motor()
                 if self.stop_current_thread:
                     self.current_calibration_step = CalibrationStep.IDLE
                 else:
