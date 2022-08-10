@@ -68,14 +68,14 @@ def generate_single_speed_layout(calibs, measurements):
                                 className="d-flex flex-row mt-2",
                                 children=[
                                     html.Span("Slope (mL/revol):", className="sfs-title"),
-                                    html.Span(id="slope", children="0", className="sfs-value", style={"margin-left": "153px"}),
+                                    html.Span(id="slope", children="0", className="sfs-value", style={"margin-left": "160px"}),
                                 ]
                             ),
                             html.Div(
                                 className="d-flex flex-row mt-2",
                                 children=[
                                     html.Span("Set rpm:", className="sfs-title"),
-                                    html.Span(id="set-rpm", children="0", className="sfs-value", style={"margin-left": "238px"}),
+                                    html.Span(id="set-rpm", children="0", className="sfs-value", style={"margin-left": "244px"}),
                                 ]
                             ),
                             html.Div(
@@ -115,14 +115,16 @@ def generate_single_speed_layout(calibs, measurements):
                             html.Div(
                                 className="d-flex flex-row mt-2",
                                 children=[
-                                    html.Span("Select Direction", style={"width": "325px"}, className="h4 font-weight-bold"),
-                                    dcc.Dropdown(
-                                        id=f"select-direction-dropdown",
-                                        options=[{"label": "CCW", "value": "acw"}, {"label": "CW", "value": "cw"}],
-                                        value="acw",
-                                        style={"width": "112px"},
-                                        persistence=True
-                                    ),
+                                    html.Span("Set Direction", style={"width": "325px"}, className="h4 font-weight-bold"),
+                                    html.Div(
+                                        className="d-flex flex-row mt-2 justify-content-between",
+                                        style={"width": "30%"},
+                                        children=[
+                                            html.Span("CCW", style={"font-size": "16px", "margin-top": "3px"}),
+                                            custom_toggle(id="direction-toggle"),
+                                            html.Span("CW", style={"font-size": "16px", "margin-top": "3px"})
+                                        ]
+                                    )
                                 ]
                                 # style={"width": "50%"},
                                 # children=[

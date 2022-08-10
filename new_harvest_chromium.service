@@ -1,0 +1,14 @@
+[Unit]
+Description=New Harvest Chromium Service
+After=default.target new_harvest.service
+
+[Service]
+user=pi
+WorkingDirectory=/home/pi/new-harvest-rpi-drive-system
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/pi/.Xauthority
+ExecStart=/home/pi/new-harvest-rpi-drive-system/start_chromium.sh
+Type=simple
+
+[Install]
+WantedBy=default.target

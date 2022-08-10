@@ -65,27 +65,27 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
                                 className="d-flex flex-row mt-2",
                                 children=[
                                     html.Span("Slope (mL/min)/rpm:", className="sfs-title"),
-                                    html.Span(id="slope-sp", children="0", className="sfs-value", style={"margin-left": "115px"})
+                                    html.Span(id="slope-sp", children="0", className="sfs-value", style={"margin-left": "128px"})
                                 ]
                             ),
                             html.Div(
                                 className="d-flex flex-row mt-2",                        
                                 children=[
                                     html.Span("Set Flow (mL/min):", className="sfs-title"),
-                                    html.Span(id="current-flow-span", children="0", className="sfs-value", style={"margin-left": "135px"})
+                                    html.Span(id="current-flow-span", children="0", className="sfs-value", style={"margin-left": "144px"})
                                 ]
                             ),
                             html.Div(
                                 className="d-flex flex-row",
                                 children=[
-                                    html.Div("Direction", className="sfs-title", style={"width": "100px", "padding-top": "6px"}),
+                                    html.Div("Set Direction", className="sfs-title", style={"width": "206px", "padding-top": "6px"}),
                                     html.Div(
                                         className="d-flex flex-row mt-2 justify-content-between",
-                                        style={"width": "30%", "margin-left": "230px"},
+                                        style={"width": "30%", "margin-left": "124px"},
                                         children=[
-                                            html.Span("CCW", style={"font-size": "16px"}),
+                                            html.Span("CCW", style={"font-size": "16px", "margin-top": "3px"}),
                                             custom_toggle(id="direction-toggle-sp"),
-                                            html.Span("CW", style={"font-size": "16px"})
+                                            html.Span("CW", style={"font-size": "16px", "margin-top": "3px"})
                                         ]
                                     )
                                 ]

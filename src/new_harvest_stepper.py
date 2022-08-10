@@ -296,6 +296,7 @@ class NewHarvest():
         # dir_str = "cw"
         if self.action_in_progress:
             return
+
         self.action_in_progress = True
         print(f"Trying to run motor with direction: {direction} speed: {speed}")
         self.set_direction(direction)

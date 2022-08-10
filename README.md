@@ -21,3 +21,17 @@ Available controls:
 * Set Speed - text input in interval [0, 10000], to set speed click the `Set` button
 * Direction Setting - slider with "ACW" and "CW" values, `on change` of slider value the motor changes direction
 * Motor Control - Start, Stop, Set - buttons, appropriate action is triggered on the `click` of a button
+
+## Unit File Setup
+Copy the included unit files to the `/etc/systemd/system/` directory with:
+```
+sudo cp new_harvest.service /etc/systemd/system/new_harvest.service
+sudo cp new_harvest_chromium.service /etc/systemd/system/new_harvest_chromium.service
+sudo cp mount_usb.service /etc/systemd/system/mount_usb.service
+```
+Reload the systemctl daemon and enable service start on boot with:
+```
+sudo systemctl daemon-reload
+sudo systemctl enable new_harvest.service new_harvest_chromium.service mount_usb.service
+sudo systemctl start new_harvest.service new_harvest_chromium.service mount_usb.service
+```

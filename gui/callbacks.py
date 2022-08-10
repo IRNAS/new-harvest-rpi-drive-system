@@ -228,19 +228,19 @@ class NewHarvestCallbacks():
                 Input("btn-start", "n_clicks"),
                 # Input("btn-set", "n_clicks"),
                 Input("btn-stop", "n_clicks"),
-                Input("select-direction-dropdown", "value"),
+                # Input("select-direction-dropdown", "value"),
                 Input("upload-calibration", "contents"),
                 # Input("check-dir-interval", "n_intervals"),
                 Input("select-calibration-dropdown", "value")
             ],
             [
-                State("select-direction-dropdown", "value"),
+                State("direction-toggle", "checked"),
                 State("flow-speed-input", "value"),
                 State("accel-rpm-input", "value"),
                 State("upload-calibration", "filename")
             ]
         )
-        def update_single_speed_status(btn_start, btn_stop, dir, calib_contents, selected_calib, dir_state, speed, rpm_per_sec, calibration_filename):
+        def update_single_speed_status(btn_start, btn_stop, calib_contents, selected_calib, dir_state, speed, rpm_per_sec, calibration_filename):
             """Update single speed layout"""
 
             dir_toggle = self.new_harvest.get_direction()
