@@ -41,7 +41,7 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
             },
             "xaxis": {
                 "title": "<b>Time (s)</b>",
-                "range": [-data_count, 0],
+                "range": [-data_count, 30],
                 # "fixedrange": fixed_x,
                 # "zeroline": False,
                 "gridcolor": "rgb(50, 50, 50)",
@@ -50,6 +50,8 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
             "yaxis": {
                 "title": "<b>" + y_axis_label + "</b>",
                 "range": y_range,
+                "showgrid": False,
+                "zeroline": False,
                 # "fixedrange": fixed_y,
                 "gridcolor": "rgb(50, 50, 50)"
             }
@@ -65,8 +67,12 @@ def generate_figure_data(y, x_names, trace_colors, y_range=None, data_count=2000
     data = []
     if len(trace_colors) == 0:
         color = 'rgb(10, 100, 200)'
+
+    annotations = []
+
     for y_data, name, color in zip(y, x_names, trace_colors):
     
+        # print(y_data)
         trace = {
             "type": "scatter",
             "name": name,
@@ -74,7 +80,7 @@ def generate_figure_data(y, x_names, trace_colors, y_range=None, data_count=2000
             "x": time[-len(y_data):],  # take first 300 data points
             # "y": df[item].tolist(),
             "y": y_data,
-            "mode": "lines",
+            "mode": "lines+text",
             "marker": {
                 # more about "marker.color": #scatter-marker-color
                 "color": 'rgb(55, 0, 255)'
@@ -83,9 +89,23 @@ def generate_figure_data(y, x_names, trace_colors, y_range=None, data_count=2000
                 "color": color
             }
         }
+
+        if len(y_data) != 0:
+            annotation = {
+                "x": 6,
+                "y": y_data[-1],
+                "text": "<b>" + str(y_data[-1]) + "</b>",
+                "showarrow": False,
+                "xanchor": "left",
+                "xref": 0,
+                "font": {
+                    "color": color
+                }
+            }
+            annotations.append(annotation)
         data.append(trace)
 
-    return data
+    return data, annotations
 
 def parse_json_contents(contents):
     """Parse procedure file contents"""

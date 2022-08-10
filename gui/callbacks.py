@@ -195,6 +195,7 @@ class NewHarvestCallbacks():
 
                 elif prop_id == "confirm-dialog" and confirm:
                     if self.abort:
+                        self.new_harvest.stop_motor()
                         self.new_harvest.abort_calibration()
                         self.abort = False
                     if self.btn_click == "START":
@@ -351,9 +352,10 @@ class NewHarvestCallbacks():
                     data.append(state[v])
                     titles.append(map_title(v))
                     colors.append(map_color(v))
-                new_data = generate_figure_data(data, titles, colors)
+                new_data, annotations = generate_figure_data(data, titles, colors)
 
                 flow_figure["data"] = new_data
+                flow_figure["layout"]["annotations"] = annotations
             else:
                 flow_figure["data"] = []
                 
@@ -456,6 +458,12 @@ class NewHarvestCallbacks():
                         calib = Calibration()
                         calib.load_calibration(selected_calib)
                         self.new_harvest.set_calibration(calib)
+
+                    profile = self.new_harvest.load_speed_profile(profile_filename=selected_profile)
+                    print(f"Loaded speed profile: {profile}")
+                    calibration = self.new_harvest.calibration
+                    speed_profile_plot = generate_speed_profile(profile, calibration)
+                    self.set_speed_profile_plot = speed_profile_plot
 
             flow = round(self.new_harvest.get_flow(), 2)
             set_calibration_file = self.new_harvest.get_calibration_filename()

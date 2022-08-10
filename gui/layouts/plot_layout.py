@@ -11,7 +11,9 @@ def generate_plot_layout(measurements):
                 # style={"width": "80%"},
                 className="d-flex flex-row mt-2",
                 children=[
-                    generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", measurements=measurements)
+                    generate_graph_section(id="flow-speed-graph", x_axis_label="", y_axis_label="", measurements=measurements),
+                    # html.Span("Flow: ", style={"position": "absolute", "top": "300px", "right": "75px", "font-size": "16px", "font-weight": "bold"})
+                    # html.Span("Rpm: ", style={"position": "absolute", "top": "230px", "right": "75px", "font-size": "16px", "font-weight": "bold"}),
                 ]
             )
         ]
