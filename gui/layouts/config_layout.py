@@ -19,6 +19,9 @@ def generate_config_layout(postep_settings, measurements):
         {"label": "1/256 step", "value": 8}
     ]
 
+    microstep_setting = postep_settings.get("microstepping")
+    print(f"Microstep setting: {microstep_setting}")
+
     layout = dbc.Container(
         # id="main-layout",
         style={"padding-right": "0px", "padding-left": "0px"},
@@ -83,9 +86,21 @@ def generate_config_layout(postep_settings, measurements):
                         className="input-row mt-2",
                         children=[
                             dbc.Col(
-                                # width=4,
                                 children=[
-                                    dropdown(id="step-mode", label="Step Mode", fields=step_mode, value=postep_settings.get("microstepping"))
+                                    html.Span(
+                                        style={"font-size": "16px", "font-weight": "bold"},
+                                        children=[
+                                            "Step Mode"
+                                        ]
+                                    ),
+                                    dcc.Dropdown(
+                                        id=f"step-mode-dropdown",
+                                        options=step_mode,
+                                        className="mt-1",
+                                        value=microstep_setting,
+                                        persistence=True,
+                                        searchable=False
+                                    )
                                 ]
                             )
                         ]
@@ -152,7 +167,8 @@ def generate_config_layout(postep_settings, measurements):
                         className="mt-1",
                         style={"width": "100%"},
                         options=measurements,
-                        persistence=True
+                        persistence=True,
+                        searchable=False
                     ),
                     # dropdown(id="select-logfile", label="Select Logfile", fields=measurements, dd_style={"width": "100%", "height": "30px"}),
                     html.Br(),

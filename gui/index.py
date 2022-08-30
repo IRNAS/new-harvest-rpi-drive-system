@@ -31,6 +31,7 @@ NewHarvestCallbacks(new_harvest).graph_update_callbacks()
 NewHarvestCallbacks(new_harvest).speed_profile_callbacks()
 NewHarvestCallbacks(new_harvest).config_callbacks()
 NewHarvestCallbacks(new_harvest).download_logs_callbacks()
+NewHarvestCallbacks(new_harvest).stop_app_button_callback()
 
 # see https://dash.plot.ly/external-resources to alter header, footer and favicon
 app.index_string = ''' 
