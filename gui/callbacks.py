@@ -364,7 +364,7 @@ class NewHarvestCallbacks():
     def speed_profile_callbacks(self):
 
         # stop motor when loading new layout
-        self.new_harvest.stop_motor()
+        # self.new_harvest.stop_motor()
 
         @app.callback(
             [

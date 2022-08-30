@@ -65,7 +65,7 @@ class NewHarvest():
         try:
             self.motor = Motor(STEPPER_MODE)
             self.direction = self.motor.get_direction()
-            self.motor.stop_motor()
+            # self.motor.stop_motor()
             # time.sleep(1)
             # self.motor.set_speed(0)
             # time.sleep(1)
@@ -273,21 +273,21 @@ class NewHarvest():
         """Get current set flow"""
         return self.current_set_flow
 
-    def stop_motor(self, rpm_per_sec=10000):
+    def stop_motor(self, rpm_per_sec=1000):
         """Stop stepper motor"""
         # self.action_in_progress = True
 
         self.stopping_motor = True
         # self.csv_logging = False
-        print(f"Stopping motor")
-        ret = self.run_motor(self.direction, 0, rpm_per_sec=rpm_per_sec)  # set speed to 0
+        if self.target_rpm != 0:
+            ret = self.run_motor(self.direction, 0, rpm_per_sec=rpm_per_sec)  # set speed to 0
+            # time.sleep(0.2)
+        
+        # if ret:
+        ret = self.motor.stop_motor()
         if ret:
-            print(f"Calling stop motor from motor")
-            ret = self.motor.stop_motor()
-            print(f"Ret of stop motor: {ret}")
-            if ret:
-                self.current_set_flow = 0
-                self.current_set_rpm = 0
+            self.current_set_flow = 0
+            self.current_set_rpm = 0
 
         self.stopping_motor = False
         self.action_in_progress = False
@@ -448,7 +448,8 @@ class NewHarvest():
                         while not self.stop_current_thread and time.time() - start_time < duration:
                             time.sleep(0.01)
 
-            ret = self.stop_motor()
+            if self.target_rpm != 0:
+                ret = self.stop_motor()
 
         self.csv_logging = False
 
