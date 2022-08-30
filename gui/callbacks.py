@@ -319,7 +319,7 @@ class NewHarvestCallbacks():
             set_calibration_file = self.new_harvest.get_calibration_filename()
             slope = round(self.new_harvest.get_slope(), 3)
 
-            current_set_rpm = int(self.new_harvest.get_rpm())
+            current_set_rpm = self.new_harvest.target_rpm
             if current_set_rpm > MAX_RPM:
                 display_rpm_warning = True
             # print(f"Set calibration file: {set_calibration_file}")

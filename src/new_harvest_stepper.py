@@ -50,6 +50,7 @@ class NewHarvest():
         # functional variables
         self.current_set_flow = 0
         self.current_set_rpm = 0
+        self.target_rpm = 0
         self.converted_rpm = 0
 
         self.state = {
@@ -297,6 +298,8 @@ class NewHarvest():
         # dir_str = "cw"
         if self.action_in_progress:
             return
+
+        self.target_rpm = speed
 
         self.action_in_progress = True
         print(f"Trying to run motor with direction: {direction} speed: {speed}")
