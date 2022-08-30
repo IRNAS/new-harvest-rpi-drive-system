@@ -86,6 +86,7 @@ def display_page(pathname):
         # current_accel = new_harvest.get_acceleration()
         print(f"Current postep settings: {current_postep_config}")
         # stop motor before changing settings
+        new_harvest.stop_thread()
         new_harvest.stop_motor()
         return generate_config_layout(current_postep_config, measurements)
     elif pathname == "/flow-plot":

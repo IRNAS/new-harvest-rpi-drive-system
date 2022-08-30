@@ -306,12 +306,15 @@ class NewHarvest():
         self.set_direction(direction)
         tick_interval = 0.1  # 100 ms is a tick
         rpm_per_tick = rpm_per_sec / (1 / tick_interval)
+
+        start_speed = self.current_set_rpm
+        accel_speed = self.current_set_rpm
+
+        ret = self.motor.set_speed(accel_speed)
         ret = self.motor.start_motor()
+        
         start_time = time.time()
         if ret:
-            start_speed = self.current_set_rpm
-            accel_speed = self.current_set_rpm
-
             print(f"Start speed: {start_speed} Accel speed: {accel_speed}")
             ret = self.motor.set_speed(accel_speed)
             while accel_speed - speed != 0:
@@ -449,7 +452,8 @@ class NewHarvest():
                             time.sleep(0.01)
 
             if self.target_rpm != 0:
-                ret = self.stop_motor()
+                ret = self.stop_motor(rpm_per_sec=rpm_per_sec)
+                time.sleep(1)  # wait a second for motor to completely stop
 
         self.csv_logging = False
 

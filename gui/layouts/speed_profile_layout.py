@@ -142,8 +142,23 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
                                                     dbc.Button("Browse", style={"width": "100px"})
                                                 ]
                                             ),
-                                            dropdown(id="select-speed-profile", label="Select Flow Profile", fields=profiles, dd_style={"width": "240px", "height": "30px"})
-                                    ] 
+                                            # dropdown(id="select-speed-profile", label="Select Flow Profile", fields=profiles, dd_style={"width": "240px", "height": "30px"})
+                                            html.Div(
+                                            className="d-flex flex-column mt-2",
+                                                children=[
+                                                    html.Span("Select Flow Profile:", style={"font-size": "20px", "font-weight": "bold"}),
+                                                    dcc.Dropdown(
+                                                        id=f"select-speed-profile-dropdown",
+                                                        className="mt-1",
+                                                        style={"width": "240px"},
+                                                        options=profiles,
+                                                        value=None,
+                                                        persistence=True,
+                                                        searchable=False
+                                                    ),
+                                                ]
+                                            ),
+                                        ] 
                                     )
                                 ]
                             ),
