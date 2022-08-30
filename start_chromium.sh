@@ -1,5 +1,5 @@
 #!/bin/bash
-sleep 10
+sleep 1
 xset s noblank
 xset s off
 xset -dpms

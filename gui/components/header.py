@@ -43,7 +43,7 @@ btns = dbc.Row(
             children=[
                 # dbc.Button(html.Span("Update", style={"position": "relative", "left": "-10px", "top": "-16px", "font-size": "22px", "font-weight": "bold"}), id="btn-update-service", n_clicks=0, className="mr-2", style={"height": "2px", "width": "102px", "margin-top": "-10px"}),
                 # dbc.Button(html.Span("\U000021BB", style={"position": "relative", "left": "-10px", "top": "-16px", "font-size": "24px", "font-weight": "bold"}), id="btn-restart-device", n_clicks=0, className="mr-2", style={"height": "2px", "width": "2px", "margin-top": "-10px"}),
-                dbc.Button(html.Span("\U00002716", style={"position": "relative", "left": "-10px", "top": "-16px", "font-size": "24px", "font-weight": "bold"}), id="btn-stop-chrome", n_clicks=0, className="mr-2", style={"height": "2px", "width": "2px", "margin-top": "-10px"})
+                # dbc.Button(html.Span("\U00002716", style={"position": "relative", "left": "-10px", "top": "-16px", "font-size": "24px", "font-weight": "bold"}), id="btn-stop-chrome", n_clicks=0, className="mr-2", style={"height": "2px", "width": "2px", "margin-top": "-10px"})
             ]
         )
     ]
