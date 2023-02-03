@@ -99,7 +99,7 @@ class NewHarvest():
 
         # Create another folder for local storage measurements
         try:
-            pathlib.Path("/new-harvest/measurements").mkdir(parents=True, exist_ok=True)
+            pathlib.Path("/home/pi/new-harvest-storage/measurements").mkdir(parents=True, exist_ok=True)
         except Exception as e:
             log.warning(f"Failed to create local measurements folder")
 
