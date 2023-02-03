@@ -529,14 +529,14 @@ class NewHarvestCallbacks():
         def download(n_clicks, filename):
             return dcc.send_file(filename)
 
-    # def stop_app_button_callback(self):
-    #     @app.callback(
-    #         Output("hidden-div", "children"),
-    #         Input("btn-stop-chrome", "n_clicks"),
-    #         prevent_initial_call=True
-    #     )
-    #     def stop(btn):
-    #         print(f"Stopping chromium")
-    #         import os
-    #         os.system("sudo systemctl stop new_harvest_chromium")
-    #         return None
+    def stop_app_button_callback(self):
+        @app.callback(
+            Output("hidden-div", "children"),
+            Input("btn-stop-chrome", "n_clicks"),
+            prevent_initial_call=True
+        )
+        def stop(btn):
+            print(f"Stopping chromium")
+            import os
+            os.system("sudo systemctl stop new_harvest_chromium")
+            return None

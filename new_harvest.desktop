@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=New Harvest
+Exec=sudo systemctl restart new_harvest_chromium.service
+Icon=/usr/share/pixmaps/chromium-browser.png
+X-KeepTerminal=false
