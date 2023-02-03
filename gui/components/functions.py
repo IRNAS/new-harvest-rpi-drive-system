@@ -9,6 +9,11 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
     data = y
     #print(data)
     time = [t for t in range(-data_count, 0)]
+
+    tickvals = [*range(-data_count, 30, 60)]
+    tickvals.reverse()
+    ticktext = [val // 60 for val in tickvals]
+
     fig = {
         # https://plotly.com/javascript/reference/index/
         "data": [
@@ -40,10 +45,12 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
                 "r": 40
             },
             "xaxis": {
-                "title": "<b>Time (s)</b>",
+                "title": "<b>Time (min)</b>",
                 "range": [-data_count, 30],
-                # "fixedrange": fixed_x,
-                # "zeroline": False,
+                "tickmode": "array",
+                "tickvals": tickvals,
+                "ticktext": ticktext,
+                
                 "gridcolor": "rgb(50, 50, 50)",
                 "showticklabels": True
             },

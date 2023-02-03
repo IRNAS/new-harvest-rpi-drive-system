@@ -94,6 +94,10 @@ def generate_speed_profile(speed_profile_json, calibration=None):
         # print(rpm_list)
 
     data_count = len(rpm_list)
+
+    tickvals = [*range(0, data_count+5, 60)]
+    ticktext = [val // 60 for val in tickvals]
+
     ## generate figure
     fig = {
         # https://plotly.com/javascript/reference/index/
@@ -145,9 +149,12 @@ def generate_speed_profile(speed_profile_json, calibration=None):
                 "r": -5
             },
             "xaxis": {
-                "title": "<b>Time (s)</b>",
+                "title": "<b>Time (min)</b>",
                 "range": [-10, data_count+5],
                 "fixedrange": False,
+                "tickmode": "array",
+                "tickvals": tickvals,
+                "ticktext": ticktext,
                 # "zeroline": False,
                 "gridcolor": "rgb(50, 50, 50)",
                 "showticklabels": True
