@@ -169,21 +169,21 @@ def map_calibration_step(step):
 
 def map_title(variable):
     title = ""
-    if variable == "flow":
+    if variable == "flow" or variable == "Flow":
         title = "Flow"
-    if variable == "rpm":
+    if variable == "rpm" or variable == "Rpm":
         title = "Speed"
-    if variable == "temp":
+    if variable == "temp" or variable == "Temperature":
         title = "Temp"
     return title
 
 def map_color(variable):
     color = "rgb(0,0,255)"
-    if variable == "flow":
+    if variable == "flow" or variable == "Flow":
         color = "rgb(50,160,235)"
-    if variable == "rpm":
+    if variable == "rpm" or variable == "Rpm":
         color = "rgb(250,185,50)"
-    if variable == "temp":
+    if variable == "temp" or variable == "Temperature":
         color = "rgb(250,50,80)"
     return color
 

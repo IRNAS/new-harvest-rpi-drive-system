@@ -1,3 +1,4 @@
+import csv
 import time
 import dash
 import json
@@ -540,3 +541,55 @@ class NewHarvestCallbacks():
             import os
             os.system("sudo systemctl stop new_harvest_chromium")
             return None
+
+    def static_layout_callbacks(self):
+        @app.callback(
+            Output("static-plot-graph", "figure"),
+            [
+                Input("select-measurement-dropdown", "value"),
+            ],
+            [
+                State("static-plot-graph", "figure")
+            ]
+        )
+        def update_figure(measurement_csv, figure):
+            timestamps = []
+            flow = []
+            rpm = []
+            temperature = []
+
+            if not measurement_csv:
+                return figure
+            with open(measurement_csv, newline="") as f:
+                reader = csv.reader(f)
+                header = next(reader)
+                variables = header[1:]  # Header row
+                idx = 0
+                try:
+                    for row in reader:
+                        flow.append(row[1])
+                        rpm.append(row[2])
+                        temperature.append(row[3])
+                        print(row)
+                        timestamps.append(idx)
+
+                    idx += 1
+                except Exception as e:
+                    print(e)
+
+            data = [flow, rpm, temperature]
+            titles = []
+            colors = []
+
+            if variables is not None and len(variables) > 0:
+                for v in variables:
+                    titles.append(map_title(v))
+                    colors.append(map_color(v))
+                new_data, annotations = generate_figure_data(data, titles, colors)
+
+                figure["data"] = new_data
+                figure["layout"]["annotations"] = annotations
+            else:
+                figure["data"] = []
+
+            return figure

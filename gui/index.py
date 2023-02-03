@@ -14,6 +14,7 @@ from gui.layouts.config_layout import generate_config_layout
 from gui.layouts.single_speed_layout import layout_single_speed
 from gui.layouts.speed_profile_layout import layout_speed_profile
 from gui.layouts.plot_layout import layout_plot
+from gui.layouts.plot_layout_static import layout_static_plot
 from gui.components.header import Header
 from src.new_harvest_stepper import NewHarvest
 from gui.callbacks import NewHarvestCallbacks
@@ -32,6 +33,7 @@ NewHarvestCallbacks(new_harvest).speed_profile_callbacks()
 NewHarvestCallbacks(new_harvest).config_callbacks()
 NewHarvestCallbacks(new_harvest).download_logs_callbacks()
 NewHarvestCallbacks(new_harvest).stop_app_button_callback()
+NewHarvestCallbacks(new_harvest).static_layout_callbacks()
 
 # see https://dash.plot.ly/external-resources to alter header, footer and favicon
 app.index_string = ''' 
@@ -91,6 +93,8 @@ def display_page(pathname):
         return generate_config_layout(current_postep_config, measurements)
     elif pathname == "/flow-plot":
         return layout_plot(measurements)
+    elif pathname == "/static-plot":
+        return layout_static_plot(measurements)
     else:
         return no_page
 

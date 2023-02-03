@@ -86,7 +86,13 @@ navbar = dbc.Navbar(
                         html.Li(
                             # style={"width": "25%"},
                             children=[
-                                dbc.NavItem(dbc.NavLink(id="flow-plot-navlink", children="Plot", href="/flow-plot", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px", "width": "70px"}))
+                                dbc.NavItem(dbc.NavLink(id="flow-plot-navlink", children="Real-time", href="/flow-plot", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px", "width": "100px"}))
+                            ]
+                        ),
+                        html.Li(
+                            # style={"width": "25%"},
+                            children=[
+                                dbc.NavItem(dbc.NavLink(id="static-plot-navlink", children="Plot", href="/static-plot", active="exact", style={"height": "65px", "text-align": "center", "padding-top": "24px", "width": "70px"}))
                             ]
                         ),
                         html.Li(
