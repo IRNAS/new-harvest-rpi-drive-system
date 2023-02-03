@@ -570,7 +570,6 @@ class NewHarvestCallbacks():
                         flow.append(row[1])
                         rpm.append(row[2])
                         temperature.append(row[3])
-                        print(row)
                         timestamps.append(idx)
 
                     idx += 1

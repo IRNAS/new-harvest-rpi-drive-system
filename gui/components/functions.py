@@ -8,11 +8,31 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
     """Generates figure for given data"""
     data = y
     #print(data)
+
     time = [t for t in range(-data_count, 0)]
 
-    tickvals = [*range(-data_count, 30, 60)]
-    tickvals.reverse()
-    ticktext = [val // 60 for val in tickvals]
+    xaxis = {
+        "title": "<b>Time (min)</b>",            
+        "gridcolor": "rgb(50, 50, 50)",
+        "showticklabels": True,
+    },
+
+    if data_count != 0:
+
+        tickvals = [*range(-data_count, 30, 60)]
+        tickvals.reverse()
+        ticktext = [val // 60 for val in tickvals]
+
+        xaxis = {
+            "title": "<b>Time (min)</b>",            
+            "gridcolor": "rgb(50, 50, 50)",
+            "showticklabels": True,
+            "range": [-data_count, 30],
+            "tickmode": "array",
+            "tickvals": tickvals,
+            "ticktext": ticktext
+        }
+
 
     fig = {
         # https://plotly.com/javascript/reference/index/
@@ -20,7 +40,7 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
             {
                 "type": "scatter",
                 # "x": df["Time"].tolist(),
-                "x": time[-len(data):],  # take first 300 data points
+                "x": time[-len(data):],
                 # "y": df[item].tolist(),
                 "y": data,
                 "mode": "lines",
@@ -44,16 +64,7 @@ def generate_figure(x_axis_label, y_axis_label, y, y_range=None, h=250, data_cou
                 "l": 50,
                 "r": 40
             },
-            "xaxis": {
-                "title": "<b>Time (min)</b>",
-                "range": [-data_count, 30],
-                "tickmode": "array",
-                "tickvals": tickvals,
-                "ticktext": ticktext,
-                
-                "gridcolor": "rgb(50, 50, 50)",
-                "showticklabels": True
-            },
+            "xaxis": xaxis,
             "yaxis": {
                 "title": "<b>" + y_axis_label + "</b>",
                 "range": y_range,

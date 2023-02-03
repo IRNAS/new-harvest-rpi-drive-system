@@ -4,7 +4,7 @@ from ..components.flow_graph import generate_graph_section
 from ..components.functions import generate_figure
 
 def generate_static_graph():
-    fig = generate_figure(y=[], x_axis_label="", y_axis_label="")
+    fig = generate_figure(y=[], x_axis_label="Time (s)", y_axis_label="", data_count=0)
 
     graph_container = html.Div(
         # className="d-flex flex-direction-column",
