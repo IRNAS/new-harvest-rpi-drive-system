@@ -34,6 +34,7 @@ NewHarvestCallbacks(new_harvest).config_callbacks()
 NewHarvestCallbacks(new_harvest).download_logs_callbacks()
 NewHarvestCallbacks(new_harvest).stop_app_button_callback()
 NewHarvestCallbacks(new_harvest).static_layout_callbacks()
+NewHarvestCallbacks(new_harvest).usb_mounted_callback()
 
 # see https://dash.plot.ly/external-resources to alter header, footer and favicon
 app.index_string = ''' 

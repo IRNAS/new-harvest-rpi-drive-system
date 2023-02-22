@@ -4,6 +4,7 @@ import dash
 import json
 import logging
 import datetime
+import subprocess
 
 from gui.app import app
 # import dash_core_components as dcc
@@ -46,6 +47,8 @@ class NewHarvestCallbacks():
         self.prev_direction = self.direction
 
         self.action_in_progress = False
+
+        self.usb_mounted = False
 
         print(f"INITING CALLBACKS")
 
@@ -541,6 +544,32 @@ class NewHarvestCallbacks():
             import os
             os.system("sudo systemctl stop new_harvest_chromium")
             return None
+
+    def usb_mounted_callback(self):
+        @app.callback(
+            Output("USB-unmounted-alert", "displayed"),
+            Input("header-refresh-interval", "n_intervals"),
+        )
+        def check_usb_mounted(n):
+            proc = subprocess.Popen(["sudo", "blkid"], stdout=subprocess.PIPE)
+            (output, err) = proc.communicate()
+            p_status = proc.wait()
+            devices = list(filter(lambda x: "/dev/sd" in x, output.decode("utf-8").split("\n")))  # find all devices with /dev/sd*
+            mounted = len(devices) > 0
+
+            display_alert = False
+            # Check if usb has just been unmounted and notify user
+            if not mounted and self.usb_mounted:
+                display_alert = True
+
+            # Update most recent state
+            if mounted:
+                self.usb_mounted = True
+            else:
+                self.usb_mounted = False
+
+            return display_alert
+
 
     def static_layout_callbacks(self):
         @app.callback(

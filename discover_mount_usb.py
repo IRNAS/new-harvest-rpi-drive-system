@@ -47,4 +47,4 @@ while True:
         print("Trying to remount device")
         os.system(f"mount -U {device_UUID}")
 
-    time.sleep(0.1)
+    time.sleep(5)

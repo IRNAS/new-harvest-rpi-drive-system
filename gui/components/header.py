@@ -21,13 +21,13 @@ def Header():
                 submit_n_clicks=0
             ),
             dcc.ConfirmDialog(
-            id="USB-mounted-alert",
-            message="USB storage device successfully mounted! Press OK to restart the device.",
-            submit_n_clicks=0
+                id="USB-mounted-alert",
+                message="USB storage device successfully mounted! Press OK to restart the device.",
+                submit_n_clicks=0
             ),
             dcc.ConfirmDialog(
                 id="USB-unmounted-alert",
-                message="USB storage device was unmounted. Please reinsert and restart the device!",
+                message="USB storage device was unmounted. Please reinsert the storage device!",
                 submit_n_clicks=0
             ),
             navbar
@@ -56,6 +56,7 @@ navbar = dbc.Navbar(
             className="navbar-collapse collapse",
             style={"background": "rgb(210, 220, 220)"},
             children=[
+                dcc.Interval(id="header-refresh-interval", interval=5000, n_intervals=0),
                 html.Ul(
                     id="nav",
                     className="navbar-nav mr-auto",
