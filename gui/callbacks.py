@@ -129,14 +129,16 @@ class NewHarvestCallbacks():
                             calib_dialog_message = "Calibration done. Enter high rpm calibration volume (mL) and press next"
 
                         if self.current_calibration_step == CalibrationStep.COMPLETED:
+                            try:
+                                calib = Calibration()
+                                calib.load_calibration(filename)
+                                slope = calib.get_slope()
+                                self.new_harvest.set_calibration(calib)
 
-                            calib = Calibration()
-                            calib.load_calibration(filename)
-                            slope = calib.get_slope()
-                            self.new_harvest.set_calibration(calib)
-
-                            display_calib_dialog = True
-                            calib_dialog_message = f"Calibration saved to {filename}.\nCalculated (mL/min)/rpm: {round(slope, 2)}"
+                                display_calib_dialog = True
+                                calib_dialog_message = f"Calibration saved to {filename}.\nCalculated (mL/min)/rpm: {round(slope, 2)}"
+                            except Exception as e:
+                                print(e)
 
                     if self.current_calibration_step == CalibrationStep.LOW_RPM_RUNNING:
                         self.calibration_percent_done = min((((time.time() - self.calibration_start_time) / set_time) * 49), 49)
@@ -209,8 +211,11 @@ class NewHarvestCallbacks():
                         self.new_harvest.run_thread(target=self.new_harvest.run_high_rpm_calibration, args=(high_rpm_in, set_time, ))
                         self.btn_click = None
                     if self.btn_click == "SAVE":
-                        self.new_harvest.save_calibration_data(filename, low_rpm_in, high_rpm_in, low_rpm_vol, high_rpm_vol, set_time)
-                        self.btn_click = None
+                        try:
+                            self.new_harvest.save_calibration_data(filename, low_rpm_in, high_rpm_in, low_rpm_vol, high_rpm_vol, set_time)
+                            self.btn_click = None
+                        except Exception as e:
+                            print(e)
 
             return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress, start_disabled, stop_disabled, next_disabled, current_step_num
                     
@@ -431,8 +436,11 @@ class NewHarvestCallbacks():
                     print(f"Uploaded: {profile_contents}")
                     if profile_contents is not None and ".json" in profile_filename:
                         json_profile = parse_json_contents(profile_contents)
-                        with open(f"/mnt/storage/profiles/{profile_filename}", "w") as f:
-                            json.dump(parse_json_contents(profile_contents), f)
+                        try:
+                            with open(f"/mnt/storage/profiles/{profile_filename}", "w") as f:
+                                json.dump(parse_json_contents(profile_contents), f)
+                        except Exception as e:
+                            print(e)
                                                         
                         profile = self.new_harvest.load_speed_profile(speed_profile_json=json_profile, profile_filename=profile_filename)
                         print(f"Loaded speed profile: {profile}")
@@ -452,8 +460,11 @@ class NewHarvestCallbacks():
                     if calib_contents is not None and ".json" in calibration_filename:
                         calib = Calibration()
                         calib.set_calibration(parse_json_contents(calib_contents), calibration_filename)
-                        with open(f"/mnt/storage/calibrations/{calibration_filename}", "w") as f:
-                            json.dump(parse_json_contents(calib_contents), f)
+                        try:
+                            with open(f"/mnt/storage/calibrations/{calibration_filename}", "w") as f:
+                                json.dump(parse_json_contents(calib_contents), f)
+                        except Exception as e:
+                            print(e)
                         self.new_harvest.set_calibration(calib)
 
                 if prop_id == "select-calibration-sp-dropdown":

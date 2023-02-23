@@ -68,19 +68,30 @@ app.layout = html.Div([
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
 def display_page(pathname):
+    try:
+        measurements = load_filenames("/mnt/storage/measurements")
+    except Exception as e:
+        print(e)
+        measurements = []
+    try:
+        measurements_local = load_filenames("/home/pi/new-harvest-storage/measurements")
+    except Exception as e:
+        print(e)
+        measurements_local = []
 
-    measurements = load_filenames("/mnt/storage/measurements")
+    all_measurements = measurements + measurements_local
+
     calibs = load_filenames("/mnt/storage/calibrations")
     
     if pathname == "/calibration":
         return layout_calibration
     elif pathname == "/single-speed-control":
         
-        return layout_single_speed(calibs, measurements)
+        return layout_single_speed(calibs, all_measurements)
     elif pathname == "/speed-profile":
         
         profiles = load_filenames("/mnt/storage/profiles")
-        return layout_speed_profile(calibs, profiles, measurements)
+        return layout_speed_profile(calibs, profiles, all_measurements)
     elif pathname == "/postep-config":
         try:
             current_postep_config = new_harvest.get_postep_config()
@@ -91,11 +102,11 @@ def display_page(pathname):
         # stop motor before changing settings
         new_harvest.stop_thread()
         new_harvest.stop_motor()
-        return generate_config_layout(current_postep_config, measurements)
+        return generate_config_layout(current_postep_config, all_measurements)
     elif pathname == "/flow-plot":
-        return layout_plot(measurements)
+        return layout_plot(all_measurements)
     elif pathname == "/static-plot":
-        return layout_static_plot(measurements)
+        return layout_static_plot(all_measurements)
     else:
         return no_page
 
