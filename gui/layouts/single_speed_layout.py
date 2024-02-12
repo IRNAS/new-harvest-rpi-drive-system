@@ -122,7 +122,7 @@ def generate_single_speed_layout(calibs, measurements, dir_toggle_state):
                                         style={"width": "30%"},
                                         children=[
                                             html.Span("CW", style={"font-size": "16px", "margin-top": "3px"}),
-                                            custom_toggle(id="direction-toggle"),
+                                            custom_toggle(id="direction-toggle", checked=dir_toggle_state),
                                             html.Span("CCW", style={"font-size": "16px", "margin-top": "3px"})
                                         ]
                                     )

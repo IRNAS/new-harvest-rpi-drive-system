@@ -88,11 +88,12 @@ def display_page(pathname):
     if pathname == "/calibration":
         return layout_calibration
     elif pathname == "/single-speed-control":
-        
+        print(f"Prev direction from callbacks: {callbacks.prev_direction}")
         return layout_single_speed(calibs, all_measurements, callbacks.prev_direction)
     elif pathname == "/speed-profile":
         
         profiles = load_filenames("/mnt/storage/profiles")
+        print(f"Prev direction from callbacks: {callbacks.prev_direction}")
         return layout_speed_profile(calibs, profiles, all_measurements, callbacks.prev_direction)
     elif pathname == "/postep-config":
         try:
