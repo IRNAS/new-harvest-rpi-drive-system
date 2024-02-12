@@ -330,6 +330,12 @@ class NewHarvestCallbacks():
             slope = round(self.new_harvest.get_slope(), 3)
 
             current_set_rpm = self.new_harvest.target_rpm
+
+            # Include microstepping into RPM calculation
+            settings = self.new_harvest.config
+            print(f"Postep settings: {settings}")
+            microstepping = settings.get("microstepping", 8)
+            current_set_rpm = round((current_set_rpm / 2**int(microstepping)), 2)
             if current_set_rpm > MAX_RPM:
                 display_rpm_warning = True
             # print(f"Set calibration file: {set_calibration_file}")

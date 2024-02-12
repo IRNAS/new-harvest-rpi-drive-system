@@ -120,6 +120,8 @@ class NewHarvest():
         self.stop_moving_motor = False
         self.stopping_motor = False
 
+        self.config = self.get_postep_config()
+
         self.state_loop = None
 
         self.profile_filename = None
@@ -190,6 +192,10 @@ class NewHarvest():
 
     def set_postep_config(self, fsc=None, idlec=None, overheatc=None, step_mode=None):
         self.motor.set_driver_settings(fsc, idlec, overheatc, step_mode)
+
+        # Update config after setting
+        time.sleep(1)
+        self.config = self.get_postep_config()
 
     def get_state(self):
         return self.state
