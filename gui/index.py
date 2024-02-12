@@ -26,15 +26,17 @@ log.setLevel(logging.ERROR)
 new_harvest = NewHarvest()  # instantiate RHmicro class, measurements start on press of "Start" button
 # new_harvest = None
 
-NewHarvestCallbacks(new_harvest).calibration_callbacks()
-NewHarvestCallbacks(new_harvest).single_speed_callbacks()
-NewHarvestCallbacks(new_harvest).graph_update_callbacks()
-NewHarvestCallbacks(new_harvest).speed_profile_callbacks()
-NewHarvestCallbacks(new_harvest).config_callbacks()
-NewHarvestCallbacks(new_harvest).download_logs_callbacks()
-NewHarvestCallbacks(new_harvest).stop_app_button_callback()
-NewHarvestCallbacks(new_harvest).static_layout_callbacks()
-NewHarvestCallbacks(new_harvest).usb_mounted_callback()
+callbacks = NewHarvestCallbacks(new_harvest)
+
+callbacks.calibration_callbacks()
+callbacks.single_speed_callbacks()
+callbacks.graph_update_callbacks()
+callbacks.speed_profile_callbacks()
+callbacks.config_callbacks()
+callbacks.download_logs_callbacks()
+callbacks.stop_app_button_callback()
+callbacks.static_layout_callbacks()
+callbacks.usb_mounted_callback()
 
 # see https://dash.plot.ly/external-resources to alter header, footer and favicon
 app.index_string = ''' 
@@ -87,11 +89,11 @@ def display_page(pathname):
         return layout_calibration
     elif pathname == "/single-speed-control":
         
-        return layout_single_speed(calibs, all_measurements)
+        return layout_single_speed(calibs, all_measurements, callbacks.prev_direction)
     elif pathname == "/speed-profile":
         
         profiles = load_filenames("/mnt/storage/profiles")
-        return layout_speed_profile(calibs, profiles, all_measurements)
+        return layout_speed_profile(calibs, profiles, all_measurements, callbacks.prev_direction)
     elif pathname == "/postep-config":
         try:
             current_postep_config = new_harvest.get_postep_config()

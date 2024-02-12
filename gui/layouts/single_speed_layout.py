@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 from ..components.custom_toggle import custom_toggle
 from ..components.input_fields import dropdown
 
-def generate_single_speed_layout(calibs, measurements):
+def generate_single_speed_layout(calibs, measurements, dir_toggle_state):
     """
     Control layout generation with all widgets (buttons, sliders, and input windows).
     """
@@ -160,7 +160,7 @@ def generate_single_speed_layout(calibs, measurements):
 
     return control_layout
 
-def layout_single_speed(calibs, measurements):
+def layout_single_speed(calibs, measurements, dir_toggle_state):
     return dbc.Container(
         id="main-layout",
         style={"padding-right": "0px", "padding-left": "0px"},
@@ -171,6 +171,6 @@ def layout_single_speed(calibs, measurements):
             ),
             dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
             # dcc.Interval(id="check-dir-interval", interval=500, n_intervals=0),
-            generate_single_speed_layout(calibs, measurements)
+            generate_single_speed_layout(calibs, measurements, dir_toggle_state)
         ]
     )

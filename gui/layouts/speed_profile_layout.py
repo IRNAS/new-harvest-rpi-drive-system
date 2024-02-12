@@ -5,7 +5,7 @@ from ..components.custom_toggle import custom_toggle
 from ..components.input_fields import dropdown
 from ..components.speed_profile_plot import generate_speed_profile_plot_container
 
-def generate_speed_profile_layout(calibs, profiles, measurements):
+def generate_speed_profile_layout(calibs, profiles, measurements, dir_state):
     """
     Control layout generation with all widgets (buttons, sliders, and input windows).
     """
@@ -85,7 +85,7 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
                                         style={"width": "30%", "margin-left": "124px"},
                                         children=[
                                             html.Span("CW", style={"font-size": "16px", "margin-top": "3px"}),
-                                            custom_toggle(id="direction-toggle-sp"),
+                                            custom_toggle(id="direction-toggle-sp", checked=dir_state),
                                             html.Span("CCW", style={"font-size": "16px", "margin-top": "3px"})
                                         ]
                                     )
@@ -185,7 +185,7 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
 
     return speed_profile_layout
 
-def layout_speed_profile(calibs, profiles, measurements):
+def layout_speed_profile(calibs, profiles, measurements, dir_state):
     return dbc.Container(
         id="main-layout",
         style={"padding-right": "0px", "padding-left": "0px"},
@@ -197,6 +197,6 @@ def layout_speed_profile(calibs, profiles, measurements):
             ),
             dcc.Interval(id="flow-update-interval", interval=1000, n_intervals=0),
             dcc.Interval(id="graph-refresh-interval", interval=1000, n_intervals=0),
-            generate_speed_profile_layout(calibs, profiles, measurements)
+            generate_speed_profile_layout(calibs, profiles, measurements, dir_state)
         ]
     )
