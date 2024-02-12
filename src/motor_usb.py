@@ -12,16 +12,18 @@ DC_MODE = 0
 STEPPER_MODE = 1
 
 class Direction():
-    ACW = "acw"
-    CW = "cw"
+    ACW = "cw"
+    CW = "acw"
 
 class Motor():
     def __init__(self, mode=STEPPER_MODE):
         """Init stepper motor control"""
 
+        self.dir_class = Direction()
+
         self.postep = None
         self.current_speed = 0
-        self.current_direction = "cw"
+        self.current_direction = self.dir_class.CW
 
         self.current_settings = []
         self.is_gain = 0
@@ -55,10 +57,10 @@ class Motor():
                 duty2_acw = 0
                 duty2_ccw = 0
 
-                if self.current_direction == "cw":
+                if self.current_direction == self.dir_class.CW:
                     duty1_ccw = 0
                     duty2_ccw = int(speed)
-                if self.current_direction == "acw":
+                if self.current_direction == self.dir_class.ACW:
                     duty1_acw = 0
                     duty2_acw = int(speed)
 

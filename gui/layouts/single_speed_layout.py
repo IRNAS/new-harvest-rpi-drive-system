@@ -121,9 +121,9 @@ def generate_single_speed_layout(calibs, measurements):
                                         className="d-flex flex-row mt-2 justify-content-between",
                                         style={"width": "30%"},
                                         children=[
-                                            html.Span("CCW", style={"font-size": "16px", "margin-top": "3px"}),
+                                            html.Span("CW", style={"font-size": "16px", "margin-top": "3px"}),
                                             custom_toggle(id="direction-toggle"),
-                                            html.Span("CW", style={"font-size": "16px", "margin-top": "3px"})
+                                            html.Span("CCW", style={"font-size": "16px", "margin-top": "3px"})
                                         ]
                                     )
                                 ]

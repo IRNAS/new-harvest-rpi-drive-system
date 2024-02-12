@@ -6,8 +6,8 @@ log = logging.getLogger()
 POSTEP_ADDRESS = 0x46
 
 class Direction():
-    ACW = 0
-    CW = 1
+    ACW = 1
+    CW = 0
 
 class Stepper():
     def __init__(self):

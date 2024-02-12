@@ -84,9 +84,9 @@ def generate_speed_profile_layout(calibs, profiles, measurements):
                                         className="d-flex flex-row mt-2 justify-content-between",
                                         style={"width": "30%", "margin-left": "124px"},
                                         children=[
-                                            html.Span("CCW", style={"font-size": "16px", "margin-top": "3px"}),
+                                            html.Span("CW", style={"font-size": "16px", "margin-top": "3px"}),
                                             custom_toggle(id="direction-toggle-sp"),
-                                            html.Span("CW", style={"font-size": "16px", "margin-top": "3px"})
+                                            html.Span("CCW", style={"font-size": "16px", "margin-top": "3px"})
                                         ]
                                     )
                                 ]

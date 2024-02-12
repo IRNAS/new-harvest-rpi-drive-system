@@ -183,6 +183,7 @@ class NewHarvest():
     def get_postep_config(self):
         """Return current postep config in json format"""
         settings_json = self.motor.get_driver_settings()
+        print(settings_json)
         return settings_json
         # microstepping = config[36]
 
@@ -336,9 +337,9 @@ class NewHarvest():
                 
                 self.direction = self.motor.get_direction()
                 if self.direction == "cw":
-                    mult = 1
-                else:
                     mult = -1
+                else:
+                    mult = 1
                 self.converted_rpm = mult * accel_speed
                 self.current_set_rpm = accel_speed
                 time.sleep(tick_interval)

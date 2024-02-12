@@ -264,6 +264,7 @@ class NewHarvestCallbacks():
                 split = ctx.triggered[0]["prop_id"].split(".")
                 prop_id = split[0]
                 # print(split)
+                print(f"Dir state, line 268: {dir_state}")
 
                 if prop_id == "btn-start":
                     self.motor_running = True
