@@ -313,6 +313,7 @@ class NewHarvest():
             return
 
         self.target_rpm = speed
+        print(f"Target rpm: {self.target_rpm}")
 
         self.action_in_progress = True
         print(f"Trying to run motor with direction: {direction} speed: {speed}")

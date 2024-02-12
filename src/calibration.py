@@ -38,7 +38,8 @@ class Calibration():
         """Get function that describes relation between rpm and flow"""
         # equation in form of y = ax + b, b is 0 as there is no flow at 0 rpm
         duration_m = self.calib.get("duration", 1) / 60.0
-        self.slope = (self.calib.get("high_rpm_vol", 1) - self.calib.get("low_rpm_vol", 1)) / (self.calib.get("high_rpm", 2) - self.calib.get("low_rpm", 1))   # slope in mL/min/rpm
+        
+        self.slope = (self.calib.get("high_rpm_vol", 1) - self.calib.get("low_rpm_vol", 1)) / (self.calib.get("high_rpm", 2) - self.calib.get("low_rpm", 1)) / duration_m  # slope in mL/min/rpm
         print(f"Calculated slope: {self.slope}")
 
     def get_slope(self):
