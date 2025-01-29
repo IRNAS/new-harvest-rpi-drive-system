@@ -1,3 +1,4 @@
+flask==2.0.0
 dash_core_components==1.16.0
 dash==1.20.0
 dash_daq==0.5.0

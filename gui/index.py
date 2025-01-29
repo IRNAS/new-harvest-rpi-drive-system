@@ -23,7 +23,7 @@ from gui.components.functions import load_filenames
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
-new_harvest = NewHarvest()  # instantiate RHmicro class, measurements start on press of "Start" button
+new_harvest = NewHarvest()  # instantiate class, measurements start on press of "Start" button
 # new_harvest = None
 
 callbacks = NewHarvestCallbacks(new_harvest)

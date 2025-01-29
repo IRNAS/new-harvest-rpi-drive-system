@@ -1,9 +1,9 @@
 sudo pip3 install -r requirements.txt
 
-wget https://download.anydesk.com/rpi/anydesk_6.2.1-1_armhf.deb
-sudo dpkg -i anydesk_6.2.1-1_armhf.deb
-sudo apt-get -f install
-rm anydesk_6.2.1-1_armhf.deb
+wget https://download.anydesk.com/rpi/anydesk_6.3.0-1_armhf.deb
+sudo dpkg -i anydesk_6.3.0-1_armhf.deb
+sudo apt-get -f install -y
+rm anydesk_6.3.0-1_armhf.deb
 sudo systemctl daemon-reload
 sudo systemctl restart anydesk
 
@@ -26,6 +26,10 @@ echo "$ID" > anydesk_id.txt
 echo "Adding $USER to input"
 sudo usermod -a -G input $USER
 echo "Creating startup script"
+
+pip3 install -r requirements.txt
+
+sudo cp new_harvest.desktop $HOME/Desktop/new_harvest.desktop
 sudo cp new_harvest.service /etc/systemd/system/new_harvest.service
 sudo cp new_harvest_chromium.service /etc/systemd/system/new_harvest_chromium.service
 sudo cp mount_usb.service /etc/systemd/system/mount_usb.service

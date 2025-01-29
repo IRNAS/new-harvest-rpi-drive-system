@@ -3,8 +3,9 @@ Description="New Harvest Motor Control"
 After=multi-user.target
 
 [Service]
+User=pi
 WorkingDirectory=/home/pi/new-harvest-rpi-drive-system
-ExecStart=python3 -m gui.index
+ExecStart=bash start_service.sh
 Restart=on-failure
 RestartSec=5
 

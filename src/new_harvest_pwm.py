@@ -113,8 +113,9 @@ class NewHarvest():
 
     def __del__(self):
         self.state_loop_running = False
-        if self.state_loop.is_alive():
-            self.state_loop.join()
+        if self.state_loop:
+            if self.state_loop.is_alive():
+                self.state_loop.join()
 
     def state_update_loop(self):
         """Periodically update state"""

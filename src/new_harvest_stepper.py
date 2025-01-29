@@ -120,7 +120,11 @@ class NewHarvest():
         self.stop_moving_motor = False
         self.stopping_motor = False
 
-        self.config = self.get_postep_config()
+        try:
+            self.config = self.get_postep_config()
+        except Exception as e:
+            print(f"Failed to get postep config: {e}")
+            self.config = None
 
         self.state_loop = None
 
@@ -130,8 +134,9 @@ class NewHarvest():
 
     def __del__(self):
         self.state_loop_running = False
-        if self.state_loop.is_alive():
-            self.state_loop.join()
+        if self.state_loop:
+            if self.state_loop.is_alive():
+                self.state_loop.join()
 
     def state_update_loop(self):
         """Periodically update state"""
