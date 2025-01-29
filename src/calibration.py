@@ -1,4 +1,6 @@
 import json
+import numpy as np
+from sklearn.linear_model import LinearRegression
 
 class Calibration():
     def __init__(self):
@@ -34,12 +36,28 @@ class Calibration():
         print(f"Set calibration: {self.calib} with filename: {self.filename}")
         self.calc_slope()
 
+    # def calc_slope(self):
+    #     """Get function that describes relation between rpm and flow"""
+    #     # equation in form of y = ax + b, b is 0 as there is no flow at 0 rpm
+    #     duration_m = self.calib.get("duration", 1) / 60.0
+        
+    #     self.slope = (self.calib.get("high_rpm_vol", 1) - self.calib.get("low_rpm_vol", 1)) / (self.calib.get("high_rpm", 2) - self.calib.get("low_rpm", 1)) / duration_m  # slope in mL/min/rpm
+    #     print(f"Calculated slope: {self.slope}")
+
     def calc_slope(self):
         """Get function that describes relation between rpm and flow"""
-        # equation in form of y = ax + b, b is 0 as there is no flow at 0 rpm
         duration_m = self.calib.get("duration", 1) / 60.0
+        # New slope calculation using linear regression
+        X = np.array([0, self.calib.get("low_rpm", 1), self.calib.get("high_rpm", 1)]).reshape((-1, 1))
+        y = np.array([0, self.calib.get("low_rpm_vol", 1), self.calib.get("high_rpm_vol", 1)]) / duration_m
+        model = LinearRegression(fit_intercept=False)
+        model.fit(X, y)
+
+        # Perform linear regression
+        model = LinearRegression().fit(X, y)
         
-        self.slope = (self.calib.get("high_rpm_vol", 1) - self.calib.get("low_rpm_vol", 1)) / (self.calib.get("high_rpm", 2) - self.calib.get("low_rpm", 1)) / duration_m  # slope in mL/min/rpm
+        # The slope (coefficient) of the linear regression model
+        self.slope = model.coef_[0]
         print(f"Calculated slope: {self.slope}")
 
     def get_slope(self):
