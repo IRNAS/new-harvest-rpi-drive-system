@@ -3,7 +3,7 @@
 sudo pip3 install -r requirements.txt
 
 sudo apt update
-sudo apt install -y libgles-dev libegl-dev
+sudo apt install -y libgles-dev libegl-dev libopenblas-dev
 
 wget https://download.anydesk.com/rpi/anydesk_6.3.0-1_armhf.deb
 sudo dpkg -i anydesk_6.3.0-1_armhf.deb
