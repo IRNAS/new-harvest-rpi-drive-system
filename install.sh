@@ -1,4 +1,9 @@
+# This works on RPi 4 with version `2022-01-28-raspios-bullseye-armhf` of raspios.
+
 sudo pip3 install -r requirements.txt
+
+sudo apt update
+sudo apt install -y libgles-dev libegl-dev
 
 wget https://download.anydesk.com/rpi/anydesk_6.3.0-1_armhf.deb
 sudo dpkg -i anydesk_6.3.0-1_armhf.deb
