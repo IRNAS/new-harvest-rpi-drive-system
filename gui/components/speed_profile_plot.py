@@ -1,16 +1,12 @@
 # import matplotlib.pyplot as plt
 import math
 from dash import dcc, html
-# def get_rpm(flow, calibration):
-#     """Return required rpm to get desired flow"""
-#     # print(f"Calculating rpm from selected flow: {flow} and slope: {self.slope}")
-#     return flow / 0.058
 
 def generate_speed_profile_plot_container(id, speed_profile_json, calibration):
     """
     Generate speed profile plot section of GUI
     """
-    fig = generate_speed_profile(speed_profile_json, calibration)
+    fig = generate_speed_profile(speed_profile_json, microstepping, gear_ratio, calibration)
     # print(f"Figure: {fig}")
 
     graph_container = html.Div(
@@ -42,7 +38,7 @@ def generate_speed_profile_plot_container(id, speed_profile_json, calibration):
     # print(graph_container)
     return graph_container
 
-def generate_speed_profile(speed_profile_json, calibration=None):
+def generate_speed_profile(speed_profile_json, microstepping, gear_ratio, calibration=None):
     """Generates figure for given speed_profile_json"""
     rpm_list = []  # we're storing flow data
     flow_list = []
@@ -57,7 +53,7 @@ def generate_speed_profile(speed_profile_json, calibration=None):
             flow = speed_setting.get("flow", 0)
             rpm_per_second = speed_setting.get("rpm_per_second", 100)
 
-            rpm = int(calibration.get_rpm(flow))
+            rpm = int(calibration.get_rpm(flow, microstepping, gear_ratio))
             # print(f"Target rpm: {rpm}")
             start = rpm_list[-1]
             stop = rpm

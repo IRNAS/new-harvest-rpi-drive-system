@@ -267,13 +267,14 @@ class NewHarvest():
 
         return self.speed_profile
 
-    def set_flow(self, direction, flow, new_log=False, type="", rpm_per_sec=10000):
+    def set_flow(self, direction, flow, microstepping, gear_ratio, new_log=False, type="", rpm_per_sec=10000):
         """convert flow to rpm and set speed"""
         if self.action_in_progress:
             return
 
         try:
-            rpm = self.calibration.get_rpm(flow)
+            rpm = self.calibration.get_rpm(flow, microstepping, gear_ratio)
+            # rpm is in "real" rpm, which accounts for microstepping and gear ratio
             ret = self.run_motor(direction, rpm, new_log=new_log, type=type, rpm_per_sec=rpm_per_sec)
             # print(f"Ret in set flow: {ret}")
             if ret:
@@ -370,7 +371,12 @@ class NewHarvest():
         self.stop_moving_motor = False
         return ret
 
-    def run_low_rpm_calibration(self, speed, duration):
+    def run_low_rpm_calibration(self, speed, duration, microstepping, gear_ratio):
+        """Speed is in real RPM, which account for micro stepping and gear ratio."""
+
+        # Convert speed into RPM for driver
+        rpm = int(speed * gear_ratio * microstepping)
+
         if self.current_state == State.IDLE:
             self.current_state = State.CALIBRATION
         
@@ -378,7 +384,7 @@ class NewHarvest():
             self.current_calibration_step = CalibrationStep.LOW_RPM_RUNNING
 
             print(f"Starting low rpm calibration")
-            ret = self.run_motor(Direction.CW, speed)
+            ret = self.run_motor(Direction.CW, rpm)
 
             start_time = time.time()
             while not self.stop_current_thread and time.time() - start_time < duration:
@@ -391,8 +397,11 @@ class NewHarvest():
                 else:
                     self.current_calibration_step = CalibrationStep.LOW_RPM_DONE
 
-    def run_high_rpm_calibration(self, speed, duration):
-        """Run selected calibration step"""
+    def run_high_rpm_calibration(self, speed, duration, microstepping, gear_ratio):
+        """Speed is in real RPM, which account for micro stepping and gear ratio."""
+
+        # Convert speed into RPM for driver
+        rpm = int(speed * gear_ratio * microstepping)
 
         print(f"Current calibration step: {self.current_calibration_step}, current state: {self.current_state}")
         if self.current_calibration_step == CalibrationStep.LOW_RPM_DONE and self.current_state == State.CALIBRATION:
@@ -400,7 +409,7 @@ class NewHarvest():
             print(f"Starting high rpm calibration")
             self.current_calibration_step = CalibrationStep.HIGH_RPM_RUNNING
 
-            ret = self.run_motor(Direction.CW, speed)
+            ret = self.run_motor(Direction.CW, rpm)
 
             start_time = time.time()
             while not self.stop_current_thread and time.time() - start_time < duration:
@@ -419,8 +428,12 @@ class NewHarvest():
             self.stop_thread()  # stop currently running thread
             self.current_calibration_step = CalibrationStep.IDLE
 
-    def save_calibration_data(self, filename, low_rpm, high_rpm, low_rpm_vol, high_rpm_vol, duration):
+    def save_calibration_data(self, filename, low_rpm, high_rpm, low_rpm_vol, high_rpm_vol, duration, microstepping, gear_ratio):
         """Save data to calibration file"""
+
+        # Convert low_rpm and high_rpm to real RPM
+        low_rpm = int(low_rpm * gear_ratio * microstepping)
+        high_rpm = int(high_rpm * gear_ratio * microstepping)
 
         print(f"Current calibration step: {self.current_calibration_step}")
         calib_json = {}
@@ -429,6 +442,8 @@ class NewHarvest():
         calib_json["low_rpm_vol"] = low_rpm_vol
         calib_json["high_rpm_vol"] = high_rpm_vol
         calib_json["duration"] = duration
+        calib_json["microstepping"] = microstepping
+        calib_json["gear_ratio"] = gear_ratio
 
         if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE or self.current_calibration_step == CalibrationStep.COMPLETED:
             with open(filename, "w") as calib_file:

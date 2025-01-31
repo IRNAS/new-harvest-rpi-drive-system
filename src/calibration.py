@@ -70,6 +70,9 @@ class Calibration():
         rpm = int(flow / self.slope)
         print(f"Calculated rpm: {rpm}")
         return rpm
+    
+    def get_raw_rpm(self, flow, microstepping, gear_ratio):
+        return self.get_rpm(flow) * microstepping * gear_ratio
 
     # def get_max_flow(self, rpm):
     #     """Return max possible flow with given slope"""

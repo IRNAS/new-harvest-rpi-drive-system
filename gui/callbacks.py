@@ -21,6 +21,8 @@ log.setLevel(logging.ERROR)
 ACW = 0
 CW = 1
 
+gear_ratio = 1
+
 class NewHarvestCallbacks():
     """Wrapper class"""
     def __init__(self, new_harvest):
@@ -93,7 +95,15 @@ class NewHarvestCallbacks():
             ]
         )
         def update_calib_status(n, btn_start, btn_stop, btn_cont, confirm, low_rpm_in, low_rpm_vol, high_rpm_in, high_rpm_vol, set_time, filename, current_step, start_disabled, stop_disabled, next_disabled, current_step_num):
-            """Update calib status and display dialogs"""
+            """Update calib status and display dialogs.
+            
+            
+            low_rpm_in: int
+            high_rpm_in: int
+
+            These two values should already account for the microstepping and reduction gear ratio.
+            The user should be inputting the actual RPM values, not raw RPM values.
+            """
 
             display_calib_dialog = False
             calib_dialog_message = ""
@@ -213,7 +223,11 @@ class NewHarvestCallbacks():
                         self.btn_click = None
                     if self.btn_click == "SAVE":
                         try:
-                            self.new_harvest.save_calibration_data(filename, low_rpm_in, high_rpm_in, low_rpm_vol, high_rpm_vol, set_time)
+                            # We should fetch current settings here and save it into the json as well, that way we can load the correct values when we load the calibration
+                            settings = self.new_harvest.config
+                            print(f"Postep settings: {settings}")
+                            microstepping = 2**settings.get("microstepping", 8)
+                            self.new_harvest.save_calibration_data(filename, low_rpm_in, high_rpm_in, low_rpm_vol, high_rpm_vol, set_time, microstepping, gear_ratio)
                             self.btn_click = None
                         except Exception as e:
                             print(e)
@@ -333,10 +347,11 @@ class NewHarvestCallbacks():
             current_set_rpm = self.new_harvest.target_rpm
             print(f"Rpm read from new_harvest: {current_set_rpm}")
             # Include microstepping into RPM calculation
-            settings = self.new_harvest.config
-            print(f"Postep settings: {settings}")
-            microstepping = settings.get("microstepping", 8)
-            current_set_rpm = round((current_set_rpm / 2**int(microstepping)), 2)
+            # settings = self.new_harvest.config
+            # print(f"Postep settings: {settings}")
+            # microstepping = settings.get("microstepping", 8)
+            # current_set_rpm = round((current_set_rpm / 2**int(microstepping)), 2)
+            current_set_rpm = round(current_set_rpm, 2)
             print(f"Current set rpm: {current_set_rpm}")
             if current_set_rpm > MAX_RPM:
                 display_rpm_warning = True
@@ -417,6 +432,10 @@ class NewHarvestCallbacks():
             display_confirm_dialog = False
             confirm_dialog_message = ""
 
+            settings = self.new_harvest.config
+            print(f"Postep settings: {settings}")
+            microstepping = 2**settings.get("microstepping", 8)
+
             ctx = dash.callback_context
             if ctx.triggered:
                 split = ctx.triggered[0]["prop_id"].split(".")
@@ -435,7 +454,7 @@ class NewHarvestCallbacks():
 
                 if prop_id == "confirm-dialog-sp" and confirm:
                     if self.btn_click == "START":
-                        self.new_harvest.run_thread(target=self.new_harvest.run_speed_profile, args=(dir_state, num_repeat, ))
+                        self.new_harvest.run_thread(target=self.new_harvest.run_speed_profile, args=(dir_state, num_repeat, microstepping, gear_ratio))
                         self.btn_click = None
                     if self.btn_click == "STOP":
                         self.new_harvest.stop_thread()

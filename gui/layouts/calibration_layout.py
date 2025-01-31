@@ -22,10 +22,10 @@ def generate_calibration_layout():
                                 id="low-rpm-input",
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
-                                value=1000,
+                                value=2,
                                 persistence=True,
                                 min=0,
-                                max=100000,
+                                max=3000,
                                 className="bold-input"
                             )
                         ]
@@ -64,10 +64,10 @@ def generate_calibration_layout():
                                 id="high-rpm-input",
                                 type="number",
                                 debounce=True,  # must be set to true for onscreen keyboard to work
-                                value=3000,
+                                value=10,
                                 persistence=True,
                                 min=0,
-                                max=100000,
+                                max=3000,
                                 # max=90,
                                 # min=10,
                                 className="bold-input"

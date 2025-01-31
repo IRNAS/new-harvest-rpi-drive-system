@@ -27,6 +27,8 @@ echo "Adding $USER to input"
 sudo usermod -a -G input $USER
 echo "Creating startup script"
 
+sudo apt-get install libopenblas-dev
+
 pip3 install -r requirements.txt
 
 sudo cp new_harvest.desktop $HOME/Desktop/new_harvest.desktop
