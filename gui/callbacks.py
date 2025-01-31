@@ -1,3 +1,4 @@
+import os
 import csv
 import time
 import dash
@@ -333,10 +334,13 @@ class NewHarvestCallbacks():
             current_set_rpm = self.new_harvest.target_rpm
             print(f"Rpm read from new_harvest: {current_set_rpm}")
             # Include microstepping into RPM calculation
-            settings = self.new_harvest.config
-            print(f"Postep settings: {settings}")
-            microstepping = settings.get("microstepping", 8)
-            current_set_rpm = round((current_set_rpm / 2**int(microstepping)), 2)
+            try:
+                settings = self.new_harvest.config
+                print(f"Postep settings: {settings}")
+                microstepping = settings.get("microstepping", 8)
+                current_set_rpm = round((current_set_rpm / 2**int(microstepping)), 2)
+            except Exception as e:
+                print(f"Failed to load settings: {e}")
             print(f"Current set rpm: {current_set_rpm}")
             if current_set_rpm > MAX_RPM:
                 display_rpm_warning = True
@@ -555,15 +559,45 @@ class NewHarvestCallbacks():
 
     def stop_app_button_callback(self):
         @app.callback(
-            Output("hidden-div", "children"),
-            Input("btn-stop-chrome", "n_clicks"),
+            [
+                Output("hidden-div", "children"),
+                Output("confirm-shutdown-alert", "displayed"),
+                Output("confirm-restart-alert", "displayed"),
+            ],
+            [
+                Input("btn-stop-chrome", "n_clicks"),
+                Input("btn-shutdown", "n_clicks"),
+                Input("btn-restart-device", "n_clicks"),
+                Input("confirm-shutdown-alert", "submit_n_clicks"),
+                Input("confirm-restart-alert", "submit_n_clicks"),
+            ],
             prevent_initial_call=True
         )
-        def stop(btn):
-            print(f"Stopping chromium")
-            import os
-            os.system("sudo systemctl stop new_harvest_chromium")
-            return None
+        def stop(btn_chrome,  btn_shutdown, btn_restart, confirm_shutdown, confirm_restart):
+            ctx = dash.callback_context
+            if ctx.triggered:
+                split = ctx.triggered[0]["prop_id"].split(".")
+                prop_id = split[0]
+
+                if prop_id == "btn-stop-chrome":
+                    print(f"Stopping chromium")
+                    os.system("sudo systemctl stop new_harvest_chromium")
+                    return None, False, False
+                if prop_id == "btn-shutdown":
+                    return None, True, False
+                
+                if prop_id == "btn-restart-device":
+                    return None, False, True
+                
+                if prop_id == "confirm-shutdown-alert" and confirm_shutdown:
+                    print(f"Shutting down device")
+                    os.system("sudo shutdown now")
+                    return None, False, False
+                
+                if prop_id == "confirm-restart-alert" and confirm_restart:
+                    print(f"Restarting device")
+                    os.system("sudo reboot now")
+                    return None, False, False
 
     def usb_mounted_callback(self):
         @app.callback(

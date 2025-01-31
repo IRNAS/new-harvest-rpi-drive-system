@@ -11,18 +11,18 @@ def Header():
                 submit_n_clicks=0
             ),
             dcc.ConfirmDialog(
-                id="confirm-refresh-alert",
-                message="Are you sure you want to restart the program?",
+                id="confirm-restart-alert",
+                message="Are you sure you want to reboot the device?",
                 submit_n_clicks=0
             ),
             dcc.ConfirmDialog(
-                id="confirm-update-alert",
-                message="Are you sure you want to update the device?",
+                id="confirm-shutdown-alert",
+                message="Are you sure you want to shut the device down?",
                 submit_n_clicks=0
             ),
             dcc.ConfirmDialog(
                 id="USB-mounted-alert",
-                message="USB storage device successfully mounted! Press OK to restart the device.",
+                message="USB storage device successfully mounted! Press OK to reboot the device.",
                 submit_n_clicks=0
             ),
             dcc.ConfirmDialog(
@@ -37,12 +37,12 @@ def Header():
 btns = dbc.Row(
     no_gutters=True,
     className="mt-2",
-    style={"width": "60px"},
+    style={"width": "110px", "height": "18px"},
     children=[
-        dbc.Col(
+        dbc.Row(
             children=[
-                # dbc.Button(html.Span("Update", style={"position": "relative", "left": "-10px", "top": "-16px", "font-size": "22px", "font-weight": "bold"}), id="btn-update-service", n_clicks=0, className="mr-2", style={"height": "2px", "width": "102px", "margin-top": "-10px"}),
-                # dbc.Button(html.Span("\U000021BB", style={"position": "relative", "left": "-10px", "top": "-16px", "font-size": "24px", "font-weight": "bold"}), id="btn-restart-device", n_clicks=0, className="mr-2", style={"height": "2px", "width": "2px", "margin-top": "-10px"}),
+                dbc.Button(html.Span("\U000023FC", style={"position": "relative", "left": "-10px", "top": "-16px", "font-size": "22px", "font-weight": "bold"}), id="btn-shutdown", n_clicks=0, className="mr-2", style={"height": "2px", "width": "2px", "margin-top": "-10px"}),
+                dbc.Button(html.Span("\U000021BB", style={"position": "relative", "left": "-12px", "top": "-18px", "font-size": "24px", "font-weight": "bold"}), id="btn-restart-device", n_clicks=0, className="mr-2", style={"height": "2px", "width": "2px", "margin-top": "-10px"}),
                 dbc.Button(html.Span("\U00002716", style={"position": "relative", "left": "-10px", "top": "-16px", "font-size": "24px", "font-weight": "bold"}), id="btn-stop-chrome", n_clicks=0, className="mr-2", style={"height": "2px", "width": "2px", "margin-top": "-10px"})
             ]
         )
