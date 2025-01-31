@@ -69,7 +69,9 @@ class NewHarvestCallbacks():
                 Output("btn-start-calib", "disabled"),
                 Output("btn-stop-calib", "disabled"),
                 Output("btn-continue-calib", "disabled"),
-                Output("current-step-num-span", "children")
+                Output("current-step-num-span", "children"),
+                Output("real-rpm-val-span", "children"),
+                Output("microstepping-val-span", "children")
             ],
             [
                 Input("check-state-interval", "n_intervals"),
@@ -219,7 +221,10 @@ class NewHarvestCallbacks():
                         except Exception as e:
                             print(e)
 
-            return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress, start_disabled, stop_disabled, next_disabled, current_step_num
+            microstepping = f"1 / {int(2 ** self.new_harvest.get_microstepping())}"
+            real_rpm = self.new_harvest.target_real_rpm
+
+            return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress, start_disabled, stop_disabled, next_disabled, current_step_num, real_rpm, microstepping
                     
     def single_speed_callbacks(self):
 
@@ -331,16 +336,7 @@ class NewHarvestCallbacks():
             set_calibration_file = self.new_harvest.get_calibration_filename()
             slope = round(self.new_harvest.get_slope(), 3)
             time.sleep(2)
-            current_set_rpm = self.new_harvest.target_rpm
-            print(f"Rpm read from new_harvest: {current_set_rpm}")
-            # Include microstepping into RPM calculation
-            try:
-                settings = self.new_harvest.config
-                print(f"Postep settings: {settings}")
-                microstepping = settings.get("microstepping", 8)
-                current_set_rpm = round((current_set_rpm / 2**int(microstepping)), 2)
-            except Exception as e:
-                print(f"Failed to load settings: {e}")
+            current_set_rpm = self.new_harvest.target_real_rpm
             print(f"Current set rpm: {current_set_rpm}")
             if current_set_rpm > MAX_RPM:
                 display_rpm_warning = True

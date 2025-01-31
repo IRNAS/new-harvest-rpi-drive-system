@@ -142,24 +142,61 @@ def generate_calibration_layout():
                 className="d-flex flex-row mt-3",
                 children=[
                     html.Div(
+                        className="d-flex dropdown-entry",
+                        style={"padding-right": "64px"},
+                        children=[
+                            html.Div(
+                                className="d-flex justify-content-left",
+                                children=[
+                                    html.Span(id="microstepping-setting-span", children="Microstepping: ", className="h4 font-weight-bold"),
+                                    html.Span(id="microstepping-val-span", children="", className="h4 font-weight-bold", style={"margin-left": "34px"})
+                                ]
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        className="d-flex dropdown-entry",
+                        style={"padding-right": "64px"},
+                        children=[
+                            html.Div(
+                                className="d-flex justify-content-left",
+                                children=[
+                                    html.Span(id="real-rpm-span", children="Real RPM:", className="h4 font-weight-bold"),
+                                    html.Span(id="real-rpm-val-span", children="0", className="h4 font-weight-bold", style={"margin-left": "34px"})
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            ),
+            html.Div(
+                className="d-flex flex-row mt-3",
+                children=[
+                    html.Div(
                         className="d-flex  ",
-                        # style={"width": "50%", "padding-right": "50px"},
+                        style={"padding-right": "110px"},
                         children=[
                             html.Span(id="current-step-num-span", children="Current step (0/5): ", className="h4 font-weight-bold"),
                             html.Span(id="current-step-span", children="Idle", className="h4 font-weight-bold", style={"margin-left": "34px"})
                         ]
-                    ),
+                    )
                 ]
             ),
             html.Div(
                 className="d-flex justify-content-left",
                 children=[
-                    dbc.Progress(
-                        id="calib-progress",
-                        value=0, 
-                        style={"width": "334px", "height": "24px", "border-radius": "4px"},
-                        striped=True,
-                        animated=True
+                    html.Div(
+                        className="d-flex",
+                        style={"padding-right": "25px"},
+                        children=[
+                            dbc.Progress(
+                                id="calib-progress",
+                                value=0, 
+                                style={"width": "334px", "height": "24px", "border-radius": "4px"},
+                                striped=True,
+                                animated=True
+                            )
+                        ]
                     )
                 ]
             ),

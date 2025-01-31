@@ -40,6 +40,9 @@ class NewHarvest():
         self.direction = False
         self.action_in_progress = False
 
+        # Motor reduction value
+        self.reduction = 128
+
         # run all motor commands threaded so nothing is blocked
         self.thread = None
         self.stop_current_thread = False
@@ -51,6 +54,7 @@ class NewHarvest():
         self.current_set_flow = 0
         self.current_set_rpm = 0
         self.target_rpm = 0
+        self.target_real_rpm = 0
         self.converted_rpm = 0
 
         self.state = {
@@ -320,6 +324,14 @@ class NewHarvest():
         self.target_rpm = speed
         print(f"Target rpm: {self.target_rpm}")
 
+        # Calculate real rpm and set that as well
+        microstepping = self.get_microstepping()
+
+        print(f"Microstepping: {microstepping}")
+        print(f"Reduction: {self.reduction}")
+            
+        self.target_real_rpm = round(self.target_rpm / (2**int(microstepping) * self.reduction), 2)
+
         self.action_in_progress = True
         print(f"Trying to run motor with direction: {direction} speed: {speed}")
         self.set_direction(direction)
@@ -482,3 +494,9 @@ class NewHarvest():
             return self.calibration.get_slope()
         except Exception as e:
             return 0
+
+    def get_microstepping(self):
+        if self.config:
+            return self.config.get("microstepping", 8)
+        else:
+            return 8
