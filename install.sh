@@ -19,15 +19,6 @@ sudo raspi-config nonint do_vnc_resolution "1280x1024"
 # Disable screen blanking
 sudo raspi-config nonint do_blanking 1
 
-# Configure anydesk unattened access
-echo "axzn42b632c" | sudo anydesk --set-password
-# Save anydesk ID to file system and print it
-ID=$(anydesk --get-id)
-echo "================================================ 
-ANYDESK ID: $ID 
-================================================"
-echo "$ID" > anydesk_id.txt
-
 echo "Adding $USER to input"
 sudo usermod -a -G input $USER
 echo "Creating startup script"
