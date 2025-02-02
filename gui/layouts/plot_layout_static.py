@@ -37,6 +37,14 @@ def generate_static_graph():
 def generate_plot_layout(measurements):
     # Reverse to sort descending by date
     measurements = sorted(measurements, key=lambda x: x['label'], reverse=True)
+    # Remove duplicates
+    seen = set()
+    unique_measurements = []
+    for measurement in measurements:
+        if measurement['label'] not in seen:
+            unique_measurements.append(measurement)
+            seen.add(measurement['label'])
+    measurements = unique_measurements
 
     plot_layout = html.Div(
         id="plot-display",
