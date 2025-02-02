@@ -89,7 +89,6 @@ def generate_figure_data(y, x_names, trace_colors, y_range=None, data_count=2000
     annotations = []
 
     for y_data, name, color in zip(y, x_names, trace_colors):
-    
         # print(y_data)
         trace = {
             "type": "scatter",
@@ -182,7 +181,7 @@ def map_title(variable):
     title = ""
     if variable == "flow" or variable == "Flow":
         title = "Flow"
-    if variable == "rpm" or variable == "Rpm":
+    if variable == "rpm" or variable == "Raw Rpm":
         title = "Raw RPM"
     if variable == "real-rpm" or variable == "Real Rpm":
         title = "Real RPM"
@@ -194,7 +193,7 @@ def map_color(variable):
     color = "rgb(0,0,255)"
     if variable == "flow" or variable == "Flow":
         color = "rgb(50,160,235)"
-    if variable == "rpm" or variable == "Rpm":
+    if variable == "rpm" or variable == "Raw Rpm":
         color = "rgb(250,185,50)"
     if variable == "real-rpm" or variable == "Real Rpm":
         color = "rgb(250,50,250)"

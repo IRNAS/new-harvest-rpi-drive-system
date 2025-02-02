@@ -162,6 +162,7 @@ class NewHarvest():
                 self.state["rpm"].append(actual_raw_rpm)
                 self.state["real-rpm"].append(actual_real_rpm)
                 if self.csv_logging:
+                    print(f"Apend row: {self.current_set_flow}, {actual_raw_rpm}, {actual_real_rpm}, {current_temp}")
                     self.csv_writer.append_row([self.current_set_flow, actual_raw_rpm, actual_real_rpm, current_temp])
 
                 self.state["temp"] = self.state["temp"][-600:] 
