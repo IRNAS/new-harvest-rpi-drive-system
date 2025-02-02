@@ -21,13 +21,14 @@ class CsvWriter():
         
         where *args is a list of strings - data columns to append.
         """
+        HEADER = ["Timestamp", "Flow", "Raw Rpm", "Real Rpm", "Temperature"]
         try:
             if not path.isfile(self.filename_usb):
                 with open(self.filename_usb, "w", newline="") as file:
                     print(file)
                     print("Writing header")
                     writer = csv.writer(file)
-                    writer.writerow(["Timestamp", "Flow", "Raw Rpm", "Real Rpm", "Temperature"])
+                    writer.writerow(HEADER)
         except Exception as e:
             logging.error("An exception occured when trying to write header to csv file")
 
@@ -37,7 +38,7 @@ class CsvWriter():
                     print(file)
                     print("Writing header")
                     writer = csv.writer(file)
-                    writer.writerow(["Timestamp", "Flow", "Raw Rpm", "Real Rpm" "Temperature"])
+                    writer.writerow(HEADER)
         except Exception as e:
             logging.error("An exception occured when trying to write header to csv file")
 
@@ -63,6 +64,6 @@ class CsvWriter():
 
     def start_new_log(self, type, microstepping):
         time_now = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
-        self.set_filename_usb(f"/mnt/storage/measurements/{time_now}_{type}.csv")
+        self.set_filename_usb(f"/mnt/storage/measurements/{time_now}_{type}_step{microstepping}.csv")
         self.set_filename_local(f"/home/pi/new-harvest-storage/measurements/{time_now}_{type}_step{microstepping}.csv")
         self.write_header()
