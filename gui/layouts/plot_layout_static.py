@@ -90,6 +90,7 @@ def layout_static_plot(measurements):
         id="main-layout",
         style={"padding-right": "0px", "padding-left": "0px"},
         children=[
+            html.Span(id="static-plot-title", style={"font-size": "20px", "font-weight": "bold"}),
             generate_plot_layout(measurements)
         ]
     )
