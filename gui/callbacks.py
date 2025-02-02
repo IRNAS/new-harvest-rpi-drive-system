@@ -658,18 +658,20 @@ class NewHarvestCallbacks():
                 idx = 0
                 try:
                     for row in reader:
-                        if len(row) == 5:
-                            real_rpm.append(row[4])
+                        if len(variables) == 4:
+                            temperature.append(row[4])
+                            real_rpm.append(row[3])
+                        else:
+                            temperature.append(row[3])
                         flow.append(row[1])
                         raw_rpm.append(row[2])
-                        temperature.append(row[3])
                         timestamps.append(idx)
 
                     idx += 1
                 except Exception as e:
                     print(e)
 
-            if len(real_rpm) > 0:
+            if len(variables) == 4:
                 data = [flow, raw_rpm, real_rpm, temperature]
             else:
                 data = [flow, raw_rpm, temperature]
