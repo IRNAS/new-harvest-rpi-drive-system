@@ -658,8 +658,7 @@ class NewHarvestCallbacks():
                 idx = 0
                 try:
                     for row in reader:
-                        # TODO: add check for number of rows, if rows == 4, real rpm is present
-                        if len(row) == 4:
+                        if len(row) == 5:
                             real_rpm.append(row[4])
                         flow.append(row[1])
                         raw_rpm.append(row[2])
