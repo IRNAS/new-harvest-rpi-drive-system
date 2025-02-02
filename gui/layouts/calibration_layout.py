@@ -161,8 +161,8 @@ def generate_calibration_layout():
                             html.Div(
                                 className="d-flex justify-content-left",
                                 children=[
-                                    html.Span(id="real-rpm-span", children="Real RPM:", className="h4 font-weight-bold"),
-                                    html.Span(id="real-rpm-val-span", children="0", className="h4 font-weight-bold", style={"margin-left": "34px"})
+                                    html.Span(id="real-rpm-span", children="Set (raw / real) RPM:", className="h4 font-weight-bold"),
+                                    html.Span(id="real-rpm-val-span", children="0", className="h4 font-weight-bold", style={"margin-left": "24px"})
                                 ]
                             )
                         ]

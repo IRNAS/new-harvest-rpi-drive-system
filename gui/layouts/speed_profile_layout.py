@@ -79,17 +79,17 @@ def generate_speed_profile_layout(calibs, profiles, measurements, dir_state):
                             html.Div(
                                 className="d-flex flex-row mt-2",
                                 children=[
-                                    html.Span("Set (real) RPM:", className="sfs-title"),
-                                    html.Span(id="set-rpm-sp", children="0", className="sfs-value", style={"margin-left": "184px"}),
+                                    html.Span("Set (raw / real) RPM:", className="sfs-title"),
+                                    html.Span(id="set-rpm-sp", children="0", className="sfs-value", style={"margin-left": "124px"}),
                                 ]
                             ),
-                            html.Div(
-                                className="d-flex flex-row mt-2",
-                                children=[
-                                    html.Span("Set (raw) RPM:", className="sfs-title"),
-                                    html.Span(id="set-rpm-raw-sp", children="0", className="sfs-value", style={"margin-left": "184px"}),
-                                ]
-                            ),
+                            # html.Div(
+                            #     className="d-flex flex-row mt-2",
+                            #     children=[
+                            #         html.Span("Set (raw) RPM:", className="sfs-title"),
+                            #         html.Span(id="set-rpm-raw-sp", children="0", className="sfs-value", style={"margin-left": "184px"}),
+                            #     ]
+                            # ),
                             html.Div(
                                 className="d-flex flex-row",
                                 children=[

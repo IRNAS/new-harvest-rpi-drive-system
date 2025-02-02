@@ -223,8 +223,9 @@ class NewHarvestCallbacks():
 
             microstepping = f"1/{int(2 ** self.new_harvest.get_microstepping())}"
             real_rpm = self.new_harvest.target_real_rpm
+            raw_rpm = self.new_harvest.target_rpm
 
-            return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress, start_disabled, stop_disabled, next_disabled, current_step_num, real_rpm, microstepping
+            return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress, start_disabled, stop_disabled, next_disabled, current_step_num, f"{raw_rpm} / {real_rpm}", microstepping
                     
     def single_speed_callbacks(self):
 
@@ -238,7 +239,7 @@ class NewHarvestCallbacks():
                 # Output("direction-toggle", "checked"),
                 Output("slope", "children"),
                 Output("set-rpm", "children"),
-                Output("set-rpm-raw", "children"),
+                # Output("set-rpm-raw", "children"),
                 Output("confirm-dialog-rpm-alert", "message"),
                 Output("confirm-dialog-rpm-alert", "displayed")
             ],
@@ -346,7 +347,7 @@ class NewHarvestCallbacks():
 
             
 
-            return set_calibration_file, slope, real_rpm, raw_rpm, rpm_dialog_message, display_rpm_warning
+            return set_calibration_file, slope, f"{raw_rpm} / {real_rpm}", rpm_dialog_message, display_rpm_warning
 
     def graph_update_callbacks(self):
 
@@ -400,7 +401,7 @@ class NewHarvestCallbacks():
                 Output("calibration-filename-sp", "children"),
                 Output("slope-sp", "children"),
                 Output("set-rpm-sp", "children"),
-                Output("set-rpm-raw-sp", "children"),
+                # Output("set-rpm-raw-sp", "children"),
                 Output("speed-profile-plot", "figure")
             ],
             [
@@ -509,7 +510,7 @@ class NewHarvestCallbacks():
             slope = round(self.new_harvest.get_slope(), 3)
             real_rpm = self.new_harvest.target_real_rpm
             raw_rpm = self.new_harvest.target_rpm
-            return set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, real_rpm, raw_rpm, self.set_speed_profile_plot
+            return set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, f"{raw_rpm} / {real_rpm}", self.set_speed_profile_plot
 
     def config_callbacks(self):
 
