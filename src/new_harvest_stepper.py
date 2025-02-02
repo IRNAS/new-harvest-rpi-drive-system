@@ -451,6 +451,7 @@ class NewHarvest():
         calib_json["low_rpm_vol"] = low_rpm_vol
         calib_json["high_rpm_vol"] = high_rpm_vol
         calib_json["duration"] = duration
+        calib_json["microstepping"] = self.get_microstepping()
 
         if self.current_calibration_step == CalibrationStep.HIGH_RPM_DONE or self.current_calibration_step == CalibrationStep.COMPLETED:
             with open(filename, "w") as calib_file:
