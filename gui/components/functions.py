@@ -183,7 +183,9 @@ def map_title(variable):
     if variable == "flow" or variable == "Flow":
         title = "Flow"
     if variable == "rpm" or variable == "Rpm":
-        title = "Speed"
+        title = "Raw RPM"
+    if variable == "real-rpm" or variable == "Real Rpm":
+        title = "Real RPM"
     if variable == "temp" or variable == "Temperature":
         title = "Temp"
     return title
@@ -194,6 +196,8 @@ def map_color(variable):
         color = "rgb(50,160,235)"
     if variable == "rpm" or variable == "Rpm":
         color = "rgb(250,185,50)"
+    if variable == "real-rpm" or variable == "Real Rpm":
+        color = "rgb(250,50,250)"
     if variable == "temp" or variable == "Temperature":
         color = "rgb(250,50,80)"
     return color

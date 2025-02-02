@@ -221,7 +221,7 @@ class NewHarvestCallbacks():
                         except Exception as e:
                             print(e)
 
-            microstepping = f"1 / {int(2 ** self.new_harvest.get_microstepping())}"
+            microstepping = f"1/{int(2 ** self.new_harvest.get_microstepping())}"
             real_rpm = self.new_harvest.target_real_rpm
 
             return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress, start_disabled, stop_disabled, next_disabled, current_step_num, real_rpm, microstepping
@@ -238,6 +238,7 @@ class NewHarvestCallbacks():
                 # Output("direction-toggle", "checked"),
                 Output("slope", "children"),
                 Output("set-rpm", "children"),
+                Output("set-rpm-raw", "children"),
                 Output("confirm-dialog-rpm-alert", "message"),
                 Output("confirm-dialog-rpm-alert", "displayed")
             ],
@@ -336,20 +337,25 @@ class NewHarvestCallbacks():
             set_calibration_file = self.new_harvest.get_calibration_filename()
             slope = round(self.new_harvest.get_slope(), 3)
             time.sleep(2)
-            current_set_rpm = self.new_harvest.target_real_rpm
-            print(f"Current set rpm: {current_set_rpm}")
-            if current_set_rpm > MAX_RPM:
+            real_rpm = self.new_harvest.target_real_rpm
+            raw_rpm = self.new_harvest.target_rpm
+            print(f"Current set rpm: {real_rpm}")
+            if raw_rpm > MAX_RPM:
                 display_rpm_warning = True
             # print(f"Set calibration file: {set_calibration_file}")
 
             
 
-            return set_calibration_file, slope, current_set_rpm, rpm_dialog_message, display_rpm_warning
+            return set_calibration_file, slope, real_rpm, raw_rpm, rpm_dialog_message, display_rpm_warning
 
     def graph_update_callbacks(self):
 
         @app.callback(
-            Output("flow-speed-graph", "figure"),
+            [
+                Output("flow-speed-graph", "figure"),
+                Output("microstepping-val-span-fg", "children")
+
+            ],
             [
                 Input("graph-refresh-interval", "n_intervals"),
             ],
@@ -377,7 +383,8 @@ class NewHarvestCallbacks():
             else:
                 flow_figure["data"] = []
                 
-            return flow_figure
+            microstepping = f"1/{int(2 ** self.new_harvest.get_microstepping())}"
+            return flow_figure, microstepping
 
     def speed_profile_callbacks(self):
 
@@ -392,6 +399,8 @@ class NewHarvestCallbacks():
                 Output("confirm-dialog-sp", "message"),
                 Output("calibration-filename-sp", "children"),
                 Output("slope-sp", "children"),
+                Output("set-rpm-sp", "children"),
+                Output("set-rpm-raw-sp", "children"),
                 Output("speed-profile-plot", "figure")
             ],
             [
@@ -498,7 +507,9 @@ class NewHarvestCallbacks():
                 set_profile_filename = set_profile_filename.split("/")[-1]
             # print(f"Set calibration file: {set_calibration_file}")
             slope = round(self.new_harvest.get_slope(), 3)
-            return set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, self.set_speed_profile_plot
+            real_rpm = self.new_harvest.target_real_rpm
+            raw_rpm = self.new_harvest.target_rpm
+            return set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, real_rpm, raw_rpm, self.set_speed_profile_plot
 
     def config_callbacks(self):
 
@@ -634,7 +645,8 @@ class NewHarvestCallbacks():
         def update_figure(measurement_csv, figure):
             timestamps = []
             flow = []
-            rpm = []
+            raw_rpm = []
+            real_rpm = []
             temperature = []
 
             if not measurement_csv:
@@ -646,8 +658,11 @@ class NewHarvestCallbacks():
                 idx = 0
                 try:
                     for row in reader:
+                        # TODO: add check for number of rows, if rows == 4, real rpm is present
+                        if len(row) == 4:
+                            real_rpm.append(row[4])
                         flow.append(row[1])
-                        rpm.append(row[2])
+                        raw_rpm.append(row[2])
                         temperature.append(row[3])
                         timestamps.append(idx)
 
@@ -655,7 +670,10 @@ class NewHarvestCallbacks():
                 except Exception as e:
                     print(e)
 
-            data = [flow, rpm, temperature]
+            if len(real_rpm) > 0:
+                data = [flow, raw_rpm, real_rpm, temperature]
+            else:
+                data = [flow, raw_rpm, temperature]
             titles = []
             colors = []
 

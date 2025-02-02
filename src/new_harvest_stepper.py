@@ -60,7 +60,8 @@ class NewHarvest():
         self.state = {
             "flow": [],
             "rpm": [],
-            "temp": []
+            "temp": [],
+            "real-rpm": []
         }
 
         self.csv_logging = False
@@ -155,14 +156,18 @@ class NewHarvest():
                 else:
                     current_temp = None
                 self.state["flow"].append(self.current_set_flow)
-                actual_rpm = int(self.converted_rpm)
-                self.state["rpm"].append(actual_rpm)
+                actual_raw_rpm = int(self.converted_rpm)
+                microstepping = self.get_microstepping()
+                actual_real_rpm = round(actual_raw_rpm / (2**int(microstepping) * self.reduction), 2)
+                self.state["rpm"].append(actual_raw_rpm)
+                self.state["real-rpm"].append(actual_real_rpm)
                 if self.csv_logging:
-                    self.csv_writer.append_row([self.current_set_flow, actual_rpm, current_temp])
+                    self.csv_writer.append_row([self.current_set_flow, actual_raw_rpm, actual_real_rpm, current_temp])
 
                 self.state["temp"] = self.state["temp"][-600:] 
                 self.state["flow"] = self.state["flow"][-600:]
                 self.state["rpm"] = self.state["rpm"][-600:]
+                self.state["real-rpm"] = self.state["real-rpm"][-600:]
             else:
                 break
             time.sleep(1)
@@ -217,6 +222,10 @@ class NewHarvest():
 
     def get_rpm(self):
         return self.current_set_rpm
+    
+    def get_real_rpm(self):
+        microstepping = self.get_microstepping()
+        return round(self.current_set_rpm / (2**int(microstepping) * self.reduction), 2)
 
     def set_direction(self, direction):
         if direction == True or direction == "cw":

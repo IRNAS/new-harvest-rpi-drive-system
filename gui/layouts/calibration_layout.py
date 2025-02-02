@@ -149,7 +149,7 @@ def generate_calibration_layout():
                                 className="d-flex justify-content-left",
                                 children=[
                                     html.Span(id="microstepping-setting-span", children="Microstepping: ", className="h4 font-weight-bold"),
-                                    html.Span(id="microstepping-val-span", children="", className="h4 font-weight-bold", style={"margin-left": "34px"})
+                                    html.Span(id="microstepping-val-span", children="", className="h4 font-weight-bold", style={"margin-left": "66px"})
                                 ]
                             )
                         ]
