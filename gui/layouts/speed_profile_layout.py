@@ -66,14 +66,14 @@ def generate_speed_profile_layout(calibs, profiles, measurements, dir_state):
                                 className="d-flex flex-row mt-1",
                                 children=[
                                     html.Span("Slope (mL/min)/rpm:", className="sfs-title"),
-                                    html.Span(id="slope-sp", children="0", className="sfs-value", style={"margin-left": "120px"})
+                                    html.Span(id="slope-sp", children="0", className="sfs-value", style={"margin-left": "122px"})
                                 ]
                             ),
                             html.Div(
                                 className="d-flex flex-row mt-1",                        
                                 children=[
                                     html.Span("Set Flow (mL/min):", className="sfs-title"),
-                                    html.Span(id="current-flow-span", children="0", className="sfs-value", style={"margin-left": "136px"})
+                                    html.Span(id="current-flow-span", children="0", className="sfs-value", style={"margin-left": "134px"})
                                 ]
                             ),
                             html.Div(
