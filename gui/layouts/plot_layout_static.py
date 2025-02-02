@@ -36,7 +36,7 @@ def generate_static_graph():
 
 def generate_plot_layout(measurements):
     # Reverse to sort descending by date
-    measurements.reverse()
+    measurements = sorted(measurements, key=lambda x: x['label'], reverse=True)
 
     plot_layout = html.Div(
         id="plot-display",
