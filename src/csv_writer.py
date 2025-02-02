@@ -61,8 +61,8 @@ class CsvWriter():
         except Exception as e:
             logging.error("An exception occured when trying to append row to csv file")
 
-    def start_new_log(self, type):
+    def start_new_log(self, type, microstepping):
         time_now = datetime.datetime.now().strftime('%Y_%m_%d_%H_%M_%S')
         self.set_filename_usb(f"/mnt/storage/measurements/{time_now}_{type}.csv")
-        self.set_filename_local(f"/home/pi/new-harvest-storage/measurements/{time_now}_{type}.csv")
+        self.set_filename_local(f"/home/pi/new-harvest-storage/measurements/{time_now}_{type}_step{microstepping}.csv")
         self.write_header()

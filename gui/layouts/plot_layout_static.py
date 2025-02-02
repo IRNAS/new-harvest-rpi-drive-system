@@ -67,7 +67,15 @@ def generate_plot_layout(measurements):
                                 options=measurements,
                                 persistence=True,
                                 searchable=False
-                            )
+                            ),
+                            html.Div(
+                                className="d-flex justify-content-left",
+                                style={"margin-top": "10px"},
+                                children=[
+                                    html.Span(id="microstepping-setting-span", children="Microstepping: "),
+                                    html.Span(id="microstepping-val-span-static-graph", children="", style={"margin-left": "6px"})
+                                ]
+                            ),
                         ]
                     ),
                 ]

@@ -634,7 +634,10 @@ class NewHarvestCallbacks():
 
     def static_layout_callbacks(self):
         @app.callback(
-            Output("static-plot-graph", "figure"),
+            [
+                Output("static-plot-graph", "figure"),
+                Output("microstepping-val-span-static-graph", "children")
+            ],
             [
                 Input("select-measurement-dropdown", "value"),
             ],
@@ -689,4 +692,12 @@ class NewHarvestCallbacks():
             else:
                 figure["data"] = []
 
-            return figure
+            microstepping_setting = "/"
+            if "step" in measurement_csv:
+                try:
+                    val = measurement_csv.split("step")[1].split(".csv")[0]
+                    microstepping_setting = f"1/{int(2 ** int(val))}"
+                except Exception as e:
+                    print(e)
+
+            return figure, microstepping_setting

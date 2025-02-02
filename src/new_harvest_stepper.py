@@ -386,7 +386,7 @@ class NewHarvest():
         #     self.current_set_rpm = speed
 
         if new_log:
-            self.csv_writer.start_new_log(type)
+            self.csv_writer.start_new_log(type, self.get_microstepping())
             self.csv_logging = True
 
         self.stop_moving_motor = False
@@ -469,7 +469,7 @@ class NewHarvest():
         if len(self.speed_profile["profile"]) < 1:
             print(f"Speed profile set incorrectly. Returning!")
 
-        self.csv_writer.start_new_log("profile")
+        self.csv_writer.start_new_log("profile", self.get_microstepping())
         self.csv_logging = True
 
         if num_repeat is None:
