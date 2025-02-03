@@ -231,12 +231,12 @@ class NewHarvest():
         steps_s = self.steps_s  # This is the steps/s 
         # The motor needs 200 steps for a full rotation
         # therefore the RPM is
-        raw_rpm = steps_s / (200 * 2 ** self.get_microstepping()) * 60
+        raw_rpm = round(steps_s / (200 * 2 ** self.get_microstepping()) * 60, 4)
         return raw_rpm
     
     def calc_real_rpm(self):
         raw_rpm = self.calc_raw_rpm()
-        return round(raw_rpm / self.reduction, 2)
+        return round(raw_rpm / self.reduction, 4)
     
     def get_real_rpm(self):
         microstepping = self.get_microstepping()
