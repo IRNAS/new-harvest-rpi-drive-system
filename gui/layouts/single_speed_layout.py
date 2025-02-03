@@ -76,7 +76,7 @@ def generate_single_speed_layout(calibs, measurements, dir_toggle_state):
                                 className="d-flex flex-row mt-2",
                                 children=[
                                     html.Span("Set raw RPM:", className="sfs-title"),
-                                    html.Span(id="set-rpm", children="0", className="sfs-value", style={"margin-left": "194px"}),
+                                    html.Span(id="set-rpm", children="0", className="sfs-value", style={"margin-left": "196px"}),
                                 ]
                             ),
                             # html.Div(
