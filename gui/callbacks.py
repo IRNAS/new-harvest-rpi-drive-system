@@ -662,29 +662,29 @@ class NewHarvestCallbacks():
                 header = next(reader)
                 variables = header[1:]  # Header row
                 idx = 0
-                try:
-                    for row in reader:
-                        if len(variables) == 4:
-                            temperature.append(row[4])
-                            real_rpm.append(row[3])
-                        elif len(variables) == 5:
-                            temperature.append(row[5])
-                            real_rpm.append(row[3])
-                            steps_s.append(row[4])
-                        else:
-                            temperature.append(row[3])
-                        flow.append(row[1])
-                        raw_rpm.append(row[2])
-                        timestamps.append(idx)
+                for row in reader:
+                    if len(variables) == 4:
+                        temperature.append(row[4])
+                        real_rpm.append(row[3])
+                    elif len(variables) == 5:
+                        temperature.append(row[5])
+                        real_rpm.append(row[3])
+                        steps_s.append(row[4])
+                    else:
+                        temperature.append(row[3])
+                    flow.append(row[1])
+                    raw_rpm.append(row[2])
+                    timestamps.append(idx)
 
-                    idx += 1
-                except Exception as e:
-                    print(e)
+                idx += 1
+                # try:
+                # except Exception as e:
+                #     print(e)
 
             if len(variables) == 5:
                 data = [flow, raw_rpm, real_rpm, steps_s, temperature]
 
-            if len(variables) == 4:
+            elif len(variables) == 4:
                 data = [flow, raw_rpm, real_rpm, temperature]
             else:
                 data = [flow, raw_rpm, temperature]
@@ -693,6 +693,7 @@ class NewHarvestCallbacks():
 
             if variables is not None and len(variables) > 0:
                 for v in variables:
+                    print(v)
                     titles.append(map_title(v))
                     colors.append(map_color(v))
                 new_data, annotations = generate_figure_data(data, titles, colors)
