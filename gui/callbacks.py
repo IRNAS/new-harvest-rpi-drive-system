@@ -225,7 +225,7 @@ class NewHarvestCallbacks():
             real_rpm = self.new_harvest.calc_real_rpm()
             raw_rpm = self.new_harvest.calc_raw_rpm()
 
-            return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress, start_disabled, stop_disabled, next_disabled, current_step_num, f"{raw_rpm} / {real_rpm}", microstepping
+            return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress, start_disabled, stop_disabled, next_disabled, current_step_num, raw_rpm, microstepping
                     
     def single_speed_callbacks(self):
 
@@ -347,7 +347,7 @@ class NewHarvestCallbacks():
 
             
 
-            return set_calibration_file, slope, f"{raw_rpm} / {real_rpm}", rpm_dialog_message, display_rpm_warning
+            return set_calibration_file, slope, raw_rpm, rpm_dialog_message, display_rpm_warning
 
     def graph_update_callbacks(self):
 
@@ -510,7 +510,7 @@ class NewHarvestCallbacks():
             slope = round(self.new_harvest.get_slope(), 3)
             real_rpm = self.new_harvest.calc_real_rpm()
             raw_rpm = self.new_harvest.calc_raw_rpm()
-            return set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, f"{raw_rpm} / {real_rpm}", self.set_speed_profile_plot
+            return set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, raw_rpm, self.set_speed_profile_plot
 
     def config_callbacks(self):
 
@@ -682,10 +682,10 @@ class NewHarvestCallbacks():
                 #     print(e)
 
             if len(variables) == 5:
-                data = [flow, raw_rpm, real_rpm, steps_s, temperature]
+                data = [flow, raw_rpm, steps_s, temperature]
 
             elif len(variables) == 4:
-                data = [flow, raw_rpm, real_rpm, temperature]
+                data = [flow, raw_rpm, temperature]
             else:
                 data = [flow, raw_rpm, temperature]
             titles = []
@@ -693,7 +693,9 @@ class NewHarvestCallbacks():
 
             if variables is not None and len(variables) > 0:
                 for v in variables:
-                    print(v)
+                    # print(v)
+                    if v == "Real Rpm":  # We skip Real Rpm, as there is no reduction after the stepper motor
+                        continue
                     titles.append(map_title(v))
                     colors.append(map_color(v))
                 new_data, annotations = generate_figure_data(data, titles, colors)
