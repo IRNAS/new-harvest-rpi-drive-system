@@ -222,8 +222,8 @@ class NewHarvestCallbacks():
                             print(e)
 
             microstepping = f"1/{int(2 ** self.new_harvest.get_microstepping())}"
-            real_rpm = self.new_harvest.target_real_rpm
-            raw_rpm = self.new_harvest.target_rpm
+            real_rpm = self.new_harvest.calc_real_rpm()
+            raw_rpm = self.new_harvest.calc_raw_rpm()
 
             return current_step_text, calib_dialog_message, display_calib_dialog, confirm_dialog_message, display_confirm_dialog, calib_progress, start_disabled, stop_disabled, next_disabled, current_step_num, f"{raw_rpm} / {real_rpm}", microstepping
                     
@@ -338,8 +338,8 @@ class NewHarvestCallbacks():
             set_calibration_file = self.new_harvest.get_calibration_filename()
             slope = round(self.new_harvest.get_slope(), 3)
             time.sleep(2)
-            real_rpm = self.new_harvest.target_real_rpm
-            raw_rpm = self.new_harvest.target_rpm
+            real_rpm = self.new_harvest.calc_real_rpm()
+            raw_rpm = self.new_harvest.calc_raw_rpm()
             print(f"Current set rpm: {real_rpm}")
             if raw_rpm > MAX_RPM:
                 display_rpm_warning = True
@@ -508,8 +508,8 @@ class NewHarvestCallbacks():
                 set_profile_filename = set_profile_filename.split("/")[-1]
             # print(f"Set calibration file: {set_calibration_file}")
             slope = round(self.new_harvest.get_slope(), 3)
-            real_rpm = self.new_harvest.target_real_rpm
-            raw_rpm = self.new_harvest.target_rpm
+            real_rpm = self.new_harvest.calc_real_rpm()
+            raw_rpm = self.new_harvest.calc_raw_rpm()
             return set_profile_filename, flow, display_confirm_dialog, confirm_dialog_message, set_calibration_file, slope, f"{raw_rpm} / {real_rpm}", self.set_speed_profile_plot
 
     def config_callbacks(self):
@@ -653,6 +653,7 @@ class NewHarvestCallbacks():
             raw_rpm = []
             real_rpm = []
             temperature = []
+            steps_s = []
 
             if not measurement_csv:
                 return figure
@@ -666,6 +667,10 @@ class NewHarvestCallbacks():
                         if len(variables) == 4:
                             temperature.append(row[4])
                             real_rpm.append(row[3])
+                        elif len(variables) == 5:
+                            temperature.append(row[5])
+                            real_rpm.append(row[3])
+                            steps_s.append(row[4])
                         else:
                             temperature.append(row[3])
                         flow.append(row[1])
@@ -675,6 +680,9 @@ class NewHarvestCallbacks():
                     idx += 1
                 except Exception as e:
                     print(e)
+
+            if len(variables) == 5:
+                data = [flow, raw_rpm, real_rpm, steps_s, temperature]
 
             if len(variables) == 4:
                 data = [flow, raw_rpm, real_rpm, temperature]

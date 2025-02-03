@@ -17,7 +17,7 @@ def generate_calibration_layout():
                         # style={"justify-content": "space-between", "width": "260px", "margin-right": "40px"},
                         children=[
                             html.Span(
-                                "Low rpm: ", className="h4 font-weight-bold"),
+                                "Low steps/s: ", className="h4 font-weight-bold"),
                             dcc.Input(
                                 id="low-rpm-input",
                                 type="number",
@@ -35,7 +35,7 @@ def generate_calibration_layout():
                         # style={"justify-content": "space-between", "width": "260px", "margin-right": "40px"},
                         children=[
                             html.Span(
-                                "Low rpm Volume (mL): ", className="h4 font-weight-bold"),
+                                "Low Volume (mL): ", className="h4 font-weight-bold"),
                             dcc.Input(
                                 id="low-rpm-volume-input",
                                 type="number",
@@ -59,7 +59,7 @@ def generate_calibration_layout():
                         style={"padding-right": "64px"},
                         children=[
                             html.Span(
-                                "High rpm: ", className="h4 font-weight-bold"),
+                                "High steps/s: ", className="h4 font-weight-bold"),
                             dcc.Input(
                                 id="high-rpm-input",
                                 type="number",
@@ -80,7 +80,7 @@ def generate_calibration_layout():
                         # style={"width": "50%"},
                         children=[
                             html.Span(
-                                "High rpm Volume (mL): ", className="h4 font-weight-bold"),
+                                "High Volume (mL): ", className="h4 font-weight-bold"),
                             dcc.Input(
                                 id="high-rpm-volume-input",
                                 type="number",
@@ -156,7 +156,7 @@ def generate_calibration_layout():
                     ),
                     html.Div(
                         className="d-flex dropdown-entry",
-                        style={"padding-right": "64px"},
+                        style={"padding-right": "60px"},
                         children=[
                             html.Div(
                                 className="d-flex justify-content-left",

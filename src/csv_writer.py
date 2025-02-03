@@ -21,7 +21,7 @@ class CsvWriter():
         
         where *args is a list of strings - data columns to append.
         """
-        HEADER = ["Timestamp", "Flow", "Raw Rpm", "Real Rpm", "Temperature"]
+        HEADER = ["Timestamp", "Flow", "Raw Rpm", "Real Rpm", "Steps/s", "Temperature"]
         try:
             if not path.isfile(self.filename_usb):
                 with open(self.filename_usb, "w", newline="") as file:

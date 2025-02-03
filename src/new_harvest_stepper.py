@@ -53,7 +53,7 @@ class NewHarvest():
         # functional variables
         self.current_set_flow = 0
         self.current_set_rpm = 0
-        self.target_rpm = 0
+        self.steps_s = 0
         self.target_real_rpm = 0
         self.converted_rpm = 0
 
@@ -61,7 +61,8 @@ class NewHarvest():
             "flow": [],
             "rpm": [],
             "temp": [],
-            "real-rpm": []
+            "real-rpm": [],
+            "steps-s": []
         }
 
         self.csv_logging = False
@@ -156,11 +157,11 @@ class NewHarvest():
                 else:
                     current_temp = None
                 self.state["flow"].append(self.current_set_flow)
-                actual_raw_rpm = int(self.converted_rpm)
-                microstepping = self.get_microstepping()
-                actual_real_rpm = round(actual_raw_rpm / (2**int(microstepping) * self.reduction), 2)
+                actual_raw_rpm = self.calc_raw_rpm()
+                actual_real_rpm = self.calc_real_rpm()
                 self.state["rpm"].append(actual_raw_rpm)
                 self.state["real-rpm"].append(actual_real_rpm)
+                self.state["steps-s"].append(self.steps_s)
                 if self.csv_logging:
                     print(f"Apend row: {self.current_set_flow}, {actual_raw_rpm}, {actual_real_rpm}, {current_temp}")
                     self.csv_writer.append_row([self.current_set_flow, actual_raw_rpm, actual_real_rpm, current_temp])
@@ -169,6 +170,7 @@ class NewHarvest():
                 self.state["flow"] = self.state["flow"][-600:]
                 self.state["rpm"] = self.state["rpm"][-600:]
                 self.state["real-rpm"] = self.state["real-rpm"][-600:]
+                self.state["steps-s"] = self.state["steps-s"][-600:]
             else:
                 break
             time.sleep(1)
@@ -223,6 +225,18 @@ class NewHarvest():
 
     def get_rpm(self):
         return self.current_set_rpm
+    
+    def calc_raw_rpm(self):
+        # Raw RPM is calculated from the set RPM and microstepping
+        steps_s = self.steps_s  # This is the steps/s 
+        # The motor needs 200 steps for a full rotation
+        # therefore the RPM is
+        raw_rpm = steps_s / (200 * 2 ** self.get_microstepping()) * 60
+        return raw_rpm
+    
+    def calc_real_rpm(self):
+        raw_rpm = self.calc_raw_rpm()
+        return round(raw_rpm / self.reduction, 2)
     
     def get_real_rpm(self):
         microstepping = self.get_microstepping()
@@ -311,7 +325,7 @@ class NewHarvest():
 
         self.stopping_motor = True
         # self.csv_logging = False
-        if self.target_rpm != 0:
+        if self.steps_s != 0:
             ret = self.run_motor(self.direction, 0, rpm_per_sec=rpm_per_sec)  # set speed to 0
             # time.sleep(0.2)
         
@@ -331,8 +345,8 @@ class NewHarvest():
         if self.action_in_progress:
             return
 
-        self.target_rpm = speed
-        print(f"Target rpm: {self.target_rpm}")
+        self.steps_s = speed
+        print(f"Target rpm: {self.steps_s}")
 
         # Calculate real rpm and set that as well
         microstepping = self.get_microstepping()
@@ -340,7 +354,7 @@ class NewHarvest():
         print(f"Microstepping: {microstepping}")
         print(f"Reduction: {self.reduction}")
             
-        self.target_real_rpm = round(self.target_rpm / (2**int(microstepping) * self.reduction), 2)
+        self.target_real_rpm = round(self.steps_s / (2**int(microstepping) * self.reduction), 2)
 
         self.action_in_progress = True
         print(f"Trying to run motor with direction: {direction} speed: {speed}")
@@ -493,7 +507,7 @@ class NewHarvest():
                         while not self.stop_current_thread and time.time() - start_time < duration:
                             time.sleep(0.01)
 
-            if self.target_rpm != 0:
+            if self.steps_s != 0:
                 ret = self.stop_motor(rpm_per_sec=rpm_per_sec)
                 time.sleep(1)  # wait a second for motor to completely stop
 

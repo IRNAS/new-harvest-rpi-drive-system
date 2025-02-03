@@ -21,11 +21,12 @@ def generate_graph_section(id, x_axis_label, y_axis_label, y_range=[], h=250, re
                 # style={"display":"block"},
                 options=[
                     {"label": html.Span([" Flow (mL/min)"], style={"margin-right": "20px"}), "value": "flow"},
+                    {"label": html.Span([" Speed (steps/s)"], style={"margin-right": "20px"}), "value": "steps-s"},
                     {"label": html.Span([" Speed (raw rpm)"], style={"margin-right": "20px"}), "value": "rpm"},
                     {"label": html.Span([" Speed (real rpm)"], style={"margin-right": "20px"}), "value": "real-rpm"},
                     {"label": " Temperature (°C)", "value": "temp"}
                 ],
-                value=["flow", "rpm", "real-rpm", "temp"]
+                value=["flow", "steps-s", "rpm", "real-rpm", "temp"]
             ),
             html.Div(
                 # style={"width": "85%"},
